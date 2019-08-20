@@ -12,12 +12,15 @@ BaselineOfMyPrecious >> baseline: spec [
 		spec 
 			baseline: 'Equals' with: [
 				spec
+					repository: 'github://bouraqadi/PharoMisc' ];
+			baseline: 'Concurrency' with: [
+				spec
 					repository: 'github://bouraqadi/PharoMisc' ].
 
 		spec 
 			repository: 'github://bouraqadi/MyPrecious';
 			package: #MyPrecious with: [
-				spec requires: #('Equals')]
+				spec requires: #('Equals' 'Concurrency')]
 	].
 
 ]
