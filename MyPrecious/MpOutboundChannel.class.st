@@ -2,7 +2,8 @@ Class {
 	#name : #MpOutboundChannel,
 	#superclass : #MpChannel,
 	#instVars : [
-		'promisesDict'
+		'promisesDict',
+		'promisesLock'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -10,7 +11,8 @@ Class {
 { #category : #initialization }
 MpOutboundChannel >> initialize [
 	super initialize.
-	promisesDict := WeakValueDictionary new
+	promisesDict := WeakValueDictionary new.
+	promisesLock := Mutex new.
 ]
 
 { #category : #sending }
@@ -21,7 +23,8 @@ MpOutboundChannel >> newResultId [
 { #category : #sending }
 MpOutboundChannel >> receiveObject: remoteResponse [
 	| promise |
-	promise := promisesDict at: remoteResponse id ifAbsent: [^self].
+	promise := promisesLock critical: [
+		promisesDict at: remoteResponse id ifAbsent: [^self]].
 	remoteResponse trigger: promise
 
 ]
@@ -38,7 +41,8 @@ MpOutboundChannel >> send: aMessage to: receiver [
 		onRejectDo: [: exception | 
 			result := [exception signal].
 			semaphore signal].
-	promisesDict at: resultId put: promise.
+	promisesLock critical: [
+		promisesDict at: resultId put: promise].
 	self send: aMessage to: receiver resultId: resultId.
 	semaphore wait.
 	^ result value

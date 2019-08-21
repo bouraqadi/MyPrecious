@@ -3,7 +3,8 @@ Class {
 	#superclass : #MpMiddlewarePart,
 	#instVars : [
 		'exportedObjectsDict',
-		'proxiesDict'
+		'proxiesDict',
+		'lock'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -22,13 +23,8 @@ MpReferenceConverter >> export: anObject [
 MpReferenceConverter >> export: anObject id: id [ 
 	| reference |
 	reference := self newRemoteReferenceWithId: id.
-	exportedObjectsDict at: reference put: anObject.
+	lock critical: [exportedObjectsDict at: reference put: anObject].
 	^reference
-]
-
-{ #category : #exporting }
-MpReferenceConverter >> exportedObjectsDict [
-	^exportedObjectsDict
 ]
 
 { #category : #initialization }
@@ -36,7 +32,7 @@ MpReferenceConverter >> initialize [
 	super initialize.
 	exportedObjectsDict := Dictionary new.
 	proxiesDict := Dictionary new.
-
+	lock := Mutex new.
 ]
 
 { #category : #exporting }
@@ -65,7 +61,10 @@ MpReferenceConverter >> newRemoteReferenceWithId: id [
 
 { #category : #exporting }
 MpReferenceConverter >> objectAt: aRemoteReference [
-	^self exportedObjectsDict at: aRemoteReference ifAbsent: [ self proxyTo: aRemoteReference ]
+	^lock critical: [
+		exportedObjectsDict 
+			at: aRemoteReference 
+			ifAbsent: [ self proxyTo: aRemoteReference ]]
 ]
 
 { #category : #proxies }
@@ -80,7 +79,10 @@ MpReferenceConverter >> proxyClass [
 
 { #category : #proxies }
 MpReferenceConverter >> proxyTo: remoteReference [ 
-	^proxiesDict at: remoteReference ifAbsentPut: [ self newProxyTo: remoteReference]
+	^lock critical: [
+		proxiesDict 
+			at: remoteReference 
+			ifAbsentPut: [ self newProxyTo: remoteReference]]
 ]
 
 { #category : #exporting }
@@ -90,5 +92,5 @@ MpReferenceConverter >> remoteReferenceClass [
 
 { #category : #exporting }
 MpReferenceConverter >> remoteReferenceFor: anObject [
-	^self exportedObjectsDict keyAtValue: anObject ifAbsent: [ self export: anObject ]
+	^exportedObjectsDict keyAtValue: anObject ifAbsent: [ self export: anObject ]
 ]
