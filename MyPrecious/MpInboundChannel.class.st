@@ -4,18 +4,18 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
-{ #category : #receiving }
+{ #category : #communicating }
 MpInboundChannel >> exceptionResponseClass [
-	^ MpExceptionResponse
+	^ MpExceptionRemoteResponse
 ]
 
-{ #category : #receiving }
+{ #category : #communicating }
 MpInboundChannel >> normalResponseClass [
-	^ MpNormalResponse
+	^ MpNormalRemoteResponse
 ]
 
-{ #category : #receiving }
-MpInboundChannel >> receiveObject: remoteMessage [
+{ #category : #communicating }
+MpInboundChannel >> receiveMessage: remoteMessage [
 	| result response |
 	[ 
 		result := remoteMessage send.

@@ -38,7 +38,7 @@ MpChannel >> protocolClass [
 	^MpProtocol
 ]
 
-{ #category : #sending }
+{ #category : #communicating }
 MpChannel >> receiveBytes: bytes [
 	| receivedObject unmarshalledObject  |
 	receivedObject := self materializeFrom: bytes.
@@ -46,17 +46,17 @@ MpChannel >> receiveBytes: bytes [
 	self receiveObject: unmarshalledObject
 ]
 
-{ #category : #sending }
+{ #category : #communicating }
 MpChannel >> receiveObject: anObject [
-	self subclassResponsibility
+	anObject receivedByChannel: self
 ]
 
-{ #category : #sending }
+{ #category : #communicating }
 MpChannel >> sendBytes: aCollection [ 
 	self subclassResponsibility
 ]
 
-{ #category : #sending }
+{ #category : #communicating }
 MpChannel >> sendObject: anObject [
 	| marshalledObject bytes |
 	marshalledObject := self marshal: anObject.

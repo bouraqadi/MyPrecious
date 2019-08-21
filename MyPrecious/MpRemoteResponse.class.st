@@ -17,6 +17,11 @@ MpRemoteResponse >> id: anObject [
 	id := anObject
 ]
 
+{ #category : #communicating }
+MpRemoteResponse >> receivedByChannel: aChannel [
+	^aChannel receiveResponse: self 
+]
+
 { #category : #acting }
 MpRemoteResponse >> trigger: aPromise [
 	self subclassResponsibility

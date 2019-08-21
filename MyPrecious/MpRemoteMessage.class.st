@@ -36,6 +36,11 @@ MpRemoteMessage >> marshalWith: aMarshaller [
 	^aMarshaller marshalMessage: self
 ]
 
+{ #category : #communicating }
+MpRemoteMessage >> receivedByChannel: channel [
+	^channel receiveMessage: self
+]
+
 { #category : #accessing }
 MpRemoteMessage >> receiver [
 	^ receiver

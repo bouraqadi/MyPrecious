@@ -15,13 +15,13 @@ MpOutboundChannel >> initialize [
 	promisesLock := Mutex new.
 ]
 
-{ #category : #sending }
+{ #category : #communicating }
 MpOutboundChannel >> newResultId [
 	^UUID new
 ]
 
-{ #category : #sending }
-MpOutboundChannel >> receiveObject: remoteResponse [
+{ #category : #communicating }
+MpOutboundChannel >> receiveResponse: remoteResponse [
 	| promise |
 	promise := promisesLock critical: [
 		promisesDict at: remoteResponse id ifAbsent: [^self]].
@@ -29,7 +29,7 @@ MpOutboundChannel >> receiveObject: remoteResponse [
 
 ]
 
-{ #category : #sending }
+{ #category : #communicating }
 MpOutboundChannel >> send: aMessage to: receiver [
 	| promise resultId result semaphore |
 	resultId := self newResultId.
@@ -48,7 +48,7 @@ MpOutboundChannel >> send: aMessage to: receiver [
 	^ result value
 ]
 
-{ #category : #sending }
+{ #category : #communicating }
 MpOutboundChannel >> send: aMessage to: receiver resultId: resultId [
 	| remoteMessage |
 	remoteMessage := MpRemoteMessage
