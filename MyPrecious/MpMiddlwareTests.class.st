@@ -30,7 +30,7 @@ MpMiddlwareTests >> isProxy: anObject [
 
 { #category : #tests }
 MpMiddlwareTests >> middlewareClass [
-	^ MpLocalMiddleware
+	^ MpMiddlewareForTest
 ]
 
 { #category : #tests }
@@ -62,7 +62,7 @@ MpMiddlwareTests >> testArgPassByCopy [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
 	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyAt: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self passByCopyObjects do: [ : arg |
 		proxy contents: arg.
 		self denyIsProxy: valueHolder contents. 
@@ -76,7 +76,7 @@ MpMiddlwareTests >> testArgPassByReference [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
 	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyAt: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self passByReferenceObjects do: [ : arg |
 		proxy contents: arg.
 		self assertIsProxy: valueHolder contents.
@@ -91,10 +91,10 @@ MpMiddlwareTests >> testArgProxyToObjectInThirdMiddleware [
 	| a refA proxyAInB c refC proxyCInB proxyCInA |
 	a := self newValueHolder.
 	refA := middlewareA export: a.
-	proxyAInB := middlewareB proxyAt: refA.
+	proxyAInB := middlewareB proxyTo: refA.
 	c := self newValueHolder.
 	refC := middlewareC export: c.
-	proxyCInB := middlewareB proxyAt: refC.
+	proxyCInB := middlewareB proxyTo: refC.
 	proxyAInB contents: proxyCInB.
 	proxyCInA := a contents.
 	self assertIsProxy: proxyCInA.
@@ -109,7 +109,7 @@ MpMiddlwareTests >> testArgProxyToObjectInThirdMiddleware [
 MpMiddlwareTests >> testException [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: Object new.
-	proxy := middlewareB proxyAt: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self should: [proxy foo] raise: MpRemoteException
 ]
 
@@ -117,7 +117,7 @@ MpMiddlwareTests >> testException [
 MpMiddlwareTests >> testProxyCreatedOnDemand [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
-	proxy := middlewareB proxyAt: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self assertIsProxy: proxy
 ]
 
@@ -125,17 +125,21 @@ MpMiddlwareTests >> testProxyCreatedOnDemand [
 MpMiddlwareTests >> testProxyCreatedOnlyOnce [
 	| remoteReference proxy1 proxy2 |
 	remoteReference := middlewareA export: self newValueHolder.
-	proxy1 := middlewareB proxyAt: remoteReference.
-	proxy2 := middlewareB proxyAt: remoteReference.
+	proxy1 := middlewareB proxyTo: remoteReference.
+	proxy2 := middlewareB proxyTo: remoteReference.
 	self assert: proxy1 == proxy2.
 	
 ]
 
 { #category : #tests }
-MpMiddlwareTests >> testProxyCreation [
-	| remoteReference proxy |
-	remoteReference := middlewareA export: self newValueHolder.
-	proxy := middlewareB newProxyTo: remoteReference.
+MpMiddlwareTests >> testProxyCreatedWithGivenId [
+	| remoteReference proxy id |
+	id := #someUniqueID.
+	middlewareA export: self newValueHolder id: id.
+	remoteReference := MpRemoteReference new
+		objectId: id;
+		yourself.
+	proxy := middlewareB proxyTo: remoteReference.
 	self assertIsProxy: proxy
 ]
 
@@ -143,7 +147,7 @@ MpMiddlwareTests >> testProxyCreation [
 MpMiddlwareTests >> testProxyOnBlock [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: [1+2].
-	proxy := middlewareB newProxyTo: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self assert: proxy value equals: 3
 ]
 
@@ -151,7 +155,7 @@ MpMiddlwareTests >> testProxyOnBlock [
 MpMiddlwareTests >> testProxyYourself [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
-	proxy := middlewareB newProxyTo: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self assert: proxy yourself == proxy
 ]
 
@@ -160,7 +164,7 @@ MpMiddlwareTests >> testResultPassByCopy [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
 	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyAt: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self passByCopyObjects do: [ : arg |
 		valueHolder contents: arg.
 		self denyIsProxy: proxy contents. 
@@ -173,7 +177,7 @@ MpMiddlwareTests >> testResultPassByReference [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
 	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyAt: remoteReference.
+	proxy := middlewareB proxyTo: remoteReference.
 	self passByReferenceObjects do: [ : arg |
 		valueHolder contents: arg.
 		self assertIsProxy: proxy contents.
@@ -187,10 +191,10 @@ MpMiddlwareTests >> testResultProxyToObjectInThirdMiddleware [
 	| a refA proxyAInB c refC proxyCInB proxyCInA |
 	a := self newValueHolder.
 	refA := middlewareA export: a.
-	proxyAInB := middlewareB proxyAt: refA.
+	proxyAInB := middlewareB proxyTo: refA.
 	c := self newValueHolder.
 	refC := middlewareC export: c.
-	proxyCInA := middlewareA proxyAt: refC.
+	proxyCInA := middlewareA proxyTo: refC.
 	a contents: proxyCInA.
 	proxyCInB := proxyAInB contents.
 	self assertIsProxy: proxyCInB.

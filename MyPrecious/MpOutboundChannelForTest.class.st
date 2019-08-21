@@ -1,5 +1,5 @@
 Class {
-	#name : #MpLocalOutboundChannel,
+	#name : #MpOutboundChannelForTest,
 	#superclass : #MpOutboundChannel,
 	#instVars : [
 		'targetChannel'
@@ -8,17 +8,17 @@ Class {
 }
 
 { #category : #communicating }
-MpLocalOutboundChannel >> sendBytes: bytes [ 
+MpOutboundChannelForTest >> sendBytes: bytes [ 
 	targetChannel receiveBytes: bytes
 ]
 
 { #category : #accessing }
-MpLocalOutboundChannel >> targetChannel [
+MpOutboundChannelForTest >> targetChannel [
 	^ targetChannel
 ]
 
 { #category : #accessing }
-MpLocalOutboundChannel >> targetChannel: inboundChannel [
+MpOutboundChannelForTest >> targetChannel: inboundChannel [
 	targetChannel := inboundChannel.
 	inboundChannel targetChannel: self
 ]

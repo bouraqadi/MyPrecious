@@ -1,8 +1,8 @@
 Class {
 	#name : #MpMarshaller,
-	#superclass : #Object,
+	#superclass : #MpMiddlewarePart,
 	#instVars : [
-		'middleware'
+		'proxyFactory'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -53,23 +53,18 @@ MpMarshaller >> marshallExceptionResponse: aMmExceptionResponse [
 ]
 
 { #category : #accessing }
-MpMarshaller >> middleware [
-	^ middleware
-]
-
-{ #category : #accessing }
-MpMarshaller >> middleware: anObject [
-	middleware := anObject
-]
-
-{ #category : #accessing }
 MpMarshaller >> objectAt: aRemoteReference [
-	^self middleware objectAt: aRemoteReference
+	^self referenceConverter objectAt: aRemoteReference
+]
+
+{ #category : #accessing }
+MpMarshaller >> referenceConverter [
+	^self middleware referenceConverter
 ]
 
 { #category : #accessing }
 MpMarshaller >> remoteReferenceFor: anObject [ 
-	^self middleware remoteReferenceFor: anObject
+	^self referenceConverter remoteReferenceFor: anObject
 ]
 
 { #category : #marshalling }

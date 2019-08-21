@@ -1,9 +1,6 @@
 Class {
 	#name : #MpChannel,
-	#superclass : #Object,
-	#instVars : [
-		'middleware'
-	],
+	#superclass : #MpMiddlewarePart,
 	#category : #'MyPrecious-Kernel'
 }
 
@@ -32,18 +29,13 @@ MpChannel >> materializeFrom: bytes [
 ]
 
 { #category : #accessing }
-MpChannel >> middleware [
-	^ middleware
+MpChannel >> protocol [
+	^self protocolClass new
 ]
 
 { #category : #accessing }
-MpChannel >> middleware: anObject [
-	middleware := anObject
-]
-
-{ #category : #protocol }
-MpChannel >> protocol [
-	^MpProtocol new
+MpChannel >> protocolClass [
+	^MpProtocol
 ]
 
 { #category : #sending }

@@ -1,5 +1,5 @@
 Class {
-	#name : #MpLocalInboundChannel,
+	#name : #MpInboundChannelForTest,
 	#superclass : #MpInboundChannel,
 	#instVars : [
 		'targetChannel'
@@ -8,16 +8,16 @@ Class {
 }
 
 { #category : #sending }
-MpLocalInboundChannel >> sendBytes: bytes [ 
+MpInboundChannelForTest >> sendBytes: bytes [ 
 	targetChannel receiveBytes: bytes
 ]
 
 { #category : #accessing }
-MpLocalInboundChannel >> targetChannel [
+MpInboundChannelForTest >> targetChannel [
 	^ targetChannel
 ]
 
 { #category : #accessing }
-MpLocalInboundChannel >> targetChannel: anObject [
+MpInboundChannelForTest >> targetChannel: anObject [
 	targetChannel := anObject
 ]
