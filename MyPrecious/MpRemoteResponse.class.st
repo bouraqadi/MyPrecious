@@ -1,5 +1,5 @@
 Class {
-	#name : #MpResponse,
+	#name : #MpRemoteResponse,
 	#superclass : #Object,
 	#instVars : [
 		'id'
@@ -8,16 +8,16 @@ Class {
 }
 
 { #category : #accessing }
-MpResponse >> id [
+MpRemoteResponse >> id [
 	^ id
 ]
 
 { #category : #accessing }
-MpResponse >> id: anObject [
+MpRemoteResponse >> id: anObject [
 	id := anObject
 ]
 
 { #category : #acting }
-MpResponse >> trigger: aPromise [
+MpRemoteResponse >> trigger: aPromise [
 	self subclassResponsibility
 ]

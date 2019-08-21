@@ -1,6 +1,6 @@
 Class {
-	#name : #MpExceptionResponse,
-	#superclass : #MpResponse,
+	#name : #MpExceptionRemoteResponse,
+	#superclass : #MpRemoteResponse,
 	#instVars : [
 		'exception'
 	],
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-MpExceptionResponse class >> id: id exception: exception [
+MpExceptionRemoteResponse class >> id: id exception: exception [
 	^self new
 		id: id;
 		exception: exception;
@@ -16,21 +16,21 @@ MpExceptionResponse class >> id: id exception: exception [
 ]
 
 { #category : #accessing }
-MpExceptionResponse >> exception [
+MpExceptionRemoteResponse >> exception [
 	^ exception
 ]
 
 { #category : #accessing }
-MpExceptionResponse >> exception: anObject [
+MpExceptionRemoteResponse >> exception: anObject [
 	exception := anObject
 ]
 
 { #category : #marshalling }
-MpExceptionResponse >> marshalWith: marshaller [
+MpExceptionRemoteResponse >> marshalWith: marshaller [
 	^marshaller marshallExceptionResponse: self
 ]
 
 { #category : #acting }
-MpExceptionResponse >> trigger: aPromise [
+MpExceptionRemoteResponse >> trigger: aPromise [
 	aPromise rejectWith: self exception
 ]

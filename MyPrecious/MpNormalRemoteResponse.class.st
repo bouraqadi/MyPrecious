@@ -1,6 +1,6 @@
 Class {
-	#name : #MpNormalResponse,
-	#superclass : #MpResponse,
+	#name : #MpNormalRemoteResponse,
+	#superclass : #MpRemoteResponse,
 	#instVars : [
 		'result'
 	],
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-MpNormalResponse class >> id: id result: result [
+MpNormalRemoteResponse class >> id: id result: result [
 	^self new
 		id: id;
 		result: result;
@@ -16,26 +16,26 @@ MpNormalResponse class >> id: id result: result [
 ]
 
 { #category : #marshalling }
-MpNormalResponse >> marshalWith: marshaller [
+MpNormalRemoteResponse >> marshalWith: marshaller [
 	^marshaller marshalNormalResponse: self
 ]
 
 { #category : #accessing }
-MpNormalResponse >> result [
+MpNormalRemoteResponse >> result [
 	^ result
 ]
 
 { #category : #accessing }
-MpNormalResponse >> result: anObject [
+MpNormalRemoteResponse >> result: anObject [
 	result := anObject
 ]
 
 { #category : #acting }
-MpNormalResponse >> trigger: aPromise [
+MpNormalRemoteResponse >> trigger: aPromise [
 	aPromise fulfillWith: self result
 ]
 
 { #category : #marshalling }
-MpNormalResponse >> unmarshalWith: marshaller [
+MpNormalRemoteResponse >> unmarshalWith: marshaller [
 	^marshaller unmarshalNormalResponse: self
 ]
