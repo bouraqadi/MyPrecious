@@ -152,6 +152,20 @@ MpMiddlwareTests >> testProxyOnBlock [
 ]
 
 { #category : #tests }
+MpMiddlwareTests >> testProxyOnClass [
+	| remoteReference classProxy instanceProxy otherRemoteRef otherClassProxy |
+	remoteReference := middlewareA export: Object.
+	classProxy := middlewareB proxyTo: remoteReference.
+	self assertIsProxy: classProxy.
+	instanceProxy := classProxy new.
+	self assertIsProxy: instanceProxy.
+	self assert: (instanceProxy isKindOf: classProxy).
+	otherRemoteRef := middlewareA export: Array.
+	otherClassProxy := middlewareB proxyTo: otherRemoteRef.
+	self deny: classProxy == otherClassProxy
+]
+
+{ #category : #tests }
 MpMiddlwareTests >> testProxyYourself [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
