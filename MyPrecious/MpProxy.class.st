@@ -1,6 +1,6 @@
 Class {
 	#name : #MpProxy,
-	#superclass : #Object,
+	#superclass : #ProtoObject,
 	#instVars : [
 		'channel',
 		'remoteReference'
@@ -56,4 +56,9 @@ MpProxy >> sendViaChannelSelector: selector [
 { #category : #evaluating }
 MpProxy >> value [
 	^self sendViaChannelSelector: #value
+]
+
+{ #category : #accessing }
+MpProxy >> yourself [
+	^self
 ]
