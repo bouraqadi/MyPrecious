@@ -31,21 +31,21 @@ MpOutboundChannel >> receiveResponse: remoteResponse [
 
 { #category : #communicating }
 MpOutboundChannel >> send: aMessage to: receiver [
-	| promise resultId result semaphore |
+	| promise resultId resultBlock semaphore |
 	resultId := self newResultId.
 	semaphore := Semaphore new.		
 	promise := CcPromise
 		onFulfillDo: [: answer | 
-			result := answer.
+			resultBlock := [answer].
 			semaphore signal] 
 		onRejectDo: [: exception | 
-			result := [exception signal].
+			resultBlock := [exception signal].
 			semaphore signal].
 	promisesLock critical: [
 		promisesDict at: resultId put: promise].
 	self send: aMessage to: receiver resultId: resultId.
 	semaphore wait.
-	^ result value
+	^ resultBlock value
 ]
 
 { #category : #communicating }

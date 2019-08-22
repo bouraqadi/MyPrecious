@@ -1,6 +1,11 @@
 Extension { #name : #ProtoObject }
 
 { #category : #'*MyPrecious' }
+ProtoObject >> actualClass [
+	^self class
+]
+
+{ #category : #'*MyPrecious' }
 ProtoObject >> isPassByCopy [
 	^false
 ]
