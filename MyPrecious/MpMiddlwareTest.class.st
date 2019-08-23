@@ -24,7 +24,11 @@ MpMiddlwareTest >> denyIsProxy: anObject [
 
 { #category : #tests }
 MpMiddlwareTest >> isProxy: anObject [
-	^anObject actualClass includesBehavior: MpProxy
+	"We cannot rely on the class messare or messages that use it such as isKindOf:"
+	"This is proxies are supposed to capture all message including class"
+	| actualClass |
+	actualClass := (ProtoObject compiledMethodAt: #class) valueWithReceiver: anObject arguments: #().
+	^actualClass includesBehavior: MpProxy
 
 ]
 

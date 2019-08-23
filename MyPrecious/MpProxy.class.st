@@ -10,14 +10,9 @@ Class {
 
 { #category : #'instance creation' }
 MpProxy class >> channel: aChannel remoteReference: aRemoteReference [
-	^ self new
+	^ self basicNew
 		channel: aChannel remoteReference: aRemoteReference;
 		yourself
-]
-
-{ #category : #'class membership' }
-MpProxy >> actualClass [
-	^super class
 ]
 
 { #category : #'initialize-release' }
@@ -28,34 +23,19 @@ MpProxy >> channel: aChannel remoteReference: aRemoteReference [
 
 { #category : #'class membership' }
 MpProxy >> class [
-	^self sendViaChannelSelector: #class
+	| message |
+	message := Message selector: #class.
+	^ self doesNotUnderstand: message
 ]
 
 { #category : #'reflective operations' }
 MpProxy >> doesNotUnderstand: aMessage [
-	^ self sendViaChannelMessage: aMessage
+	^ channel send: aMessage to: self
 ]
 
 { #category : #marshalling }
 MpProxy >> marshalWith: marshaller [
 	^marshaller marshalRemoteReference: remoteReference
-]
-
-{ #category : #'reflective operations' }
-MpProxy >> sendViaChannelMessage: aMessage [
-	^ channel send: aMessage to: self
-]
-
-{ #category : #'reflective operations' }
-MpProxy >> sendViaChannelSelector: selector [
-	| message |
-	message := Message selector: selector.
-	^ self sendViaChannelMessage: message
-]
-
-{ #category : #evaluating }
-MpProxy >> value [
-	^self sendViaChannelSelector: #value
 ]
 
 { #category : #accessing }
