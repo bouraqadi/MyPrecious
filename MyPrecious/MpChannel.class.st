@@ -2,7 +2,6 @@ Class {
 	#name : #MpChannel,
 	#superclass : #MpMiddlewarePart,
 	#instVars : [
-		'protocol',
 		'promisesDict',
 		'promisesLock'
 	],
@@ -24,7 +23,6 @@ MpChannel >> exceptionResponseClass [
 { #category : #initialization }
 MpChannel >> initialize [
 	super initialize.
-	protocol := self protocolClass channel: self.
 	promisesDict := WeakValueDictionary new.
 	promisesLock := Mutex new.
 ]
@@ -42,8 +40,8 @@ MpChannel >> marshaller [
 ]
 
 { #category : #communicating }
-MpChannel >> newResultId [
-	^UUID new
+MpChannel >> materializeFrom: bytes [ 
+	^FLMaterializer materializeFromByteArray: bytes
 ]
 
 { #category : #communicating }
@@ -51,15 +49,11 @@ MpChannel >> normalResponseClass [
 	^ MpNormalRemoteResponse
 ]
 
-{ #category : #accessing }
-MpChannel >> protocol [
-	^ protocol
-]
-
-{ #category : #accessing }
-MpChannel >> protocolClass [
-	^self middleware protocolClass
-
+{ #category : #communicating }
+MpChannel >> receiveBytes: bytes [
+	| receivedObject  |
+	receivedObject := self materializeFrom: bytes.
+	self receiveObject: receivedObject
 ]
 
 { #category : #communicating }
@@ -97,7 +91,7 @@ MpChannel >> receiveResponse: remoteResponse [
 { #category : #communicating }
 MpChannel >> send: aMessage to: receiver [
 	| promise resultId resultBlock semaphore |
-	resultId := self newResultId.
+	resultId := self newId.
 	semaphore := Semaphore new.		
 	promise := CcPromise
 		onFulfillDo: [: answer | 
@@ -125,10 +119,22 @@ MpChannel >> send: aMessage to: receiver resultId: resultId [
 ]
 
 { #category : #communicating }
+MpChannel >> sendBytes: bytes [
+	self subclassResponsibility
+
+]
+
+{ #category : #communicating }
 MpChannel >> sendObject: anObject [
-	| marshalledObject |
+	| marshalledObject bytes |
 	marshalledObject := self marshal: anObject.
-	self protocol sendObject: marshalledObject  
+	bytes := self serialize: anObject.
+	self sendBytes: bytes
+]
+
+{ #category : #communicating }
+MpChannel >> serialize: anObject [ 
+	^FLSerializer serializeToByteArray: anObject
 ]
 
 { #category : #communicating }

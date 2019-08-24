@@ -23,3 +23,8 @@ MpMiddlewarePart >> middleware [
 MpMiddlewarePart >> middleware: anObject [
 	middleware := anObject
 ]
+
+{ #category : #accessing }
+MpMiddlewarePart >> newId [
+	^UUID new asString
+]

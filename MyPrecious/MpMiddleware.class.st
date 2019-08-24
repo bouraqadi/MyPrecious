@@ -64,11 +64,6 @@ MpMiddleware >> marshallerClass [
 ]
 
 { #category : #initialization }
-MpMiddleware >> protocolClass [
-	^self subclassResponsibility
-]
-
-{ #category : #initialization }
 MpMiddleware >> proxyClass [
 	^MpProxy
 ]

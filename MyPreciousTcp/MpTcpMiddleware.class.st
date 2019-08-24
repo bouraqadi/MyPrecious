@@ -31,11 +31,6 @@ MpTcpMiddleware >> port: portNumber [
 ]
 
 { #category : #accessing }
-MpTcpMiddleware >> protocolClass [
-	^MpTcpProtocol
-]
-
-{ #category : #accessing }
 MpTcpMiddleware >> server [
 	^server
 ]

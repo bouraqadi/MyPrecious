@@ -17,11 +17,6 @@ MpMiddlewareForTest >> channelFactoryClass [
 	^MpChannelFactoryForTest
 ]
 
-{ #category : #accessing }
-MpMiddlewareForTest >> protocolClass [
-	^MpProtocolForTest
-]
-
 { #category : #initialization }
 MpMiddlewareForTest >> referenceConverterClass [
 	^MpReferenceConverterForTest

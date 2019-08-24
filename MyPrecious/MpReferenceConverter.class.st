@@ -26,7 +26,7 @@ MpReferenceConverter >> channelTo: remoteReference [
 
 { #category : #exporting }
 MpReferenceConverter >> export: anObject [
-	^self export: anObject id: self newExportId
+	^self export: anObject id: self newId
 ]
 
 { #category : #exporting }
@@ -45,11 +45,6 @@ MpReferenceConverter >> initialize [
 	lock := Mutex new.
 ]
 
-{ #category : #exporting }
-MpReferenceConverter >> newExportId [
-	^UUID new asString
-]
-
 { #category : #proxies }
 MpReferenceConverter >> newProxyTo: remoteReference [
 	| channel |
@@ -66,7 +61,8 @@ MpReferenceConverter >> newProxyTo: remoteReference channel: channel [
 MpReferenceConverter >> newRemoteReferenceWithId: id [
 	^self remoteReferenceClass new
 		objectId: id;
-		address: self address
+		address: self address;
+		yourself
 
 ]
 
