@@ -26,8 +26,14 @@ MpTcpMiddleware >> initialize [
 ]
 
 { #category : #initialization }
+MpTcpMiddleware >> localHostAddress [
+	^NetNameResolver localHostAddress
+]
+
+{ #category : #initialization }
 MpTcpMiddleware >> port: portNumber [
-	self server port: portNumber 
+	self server port: portNumber.
+	address := MpIpFullAddress ip: self localHostAddress port: portNumber 
 ]
 
 { #category : #accessing }

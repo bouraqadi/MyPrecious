@@ -15,11 +15,6 @@ MpMiddleware >> address [
 	^address
 ]
 
-{ #category : #accessing }
-MpMiddleware >> address: anAddress [
-	^address := anAddress
-]
-
 { #category : #initialization }
 MpMiddleware >> channelClass [
 	self subclassResponsibility

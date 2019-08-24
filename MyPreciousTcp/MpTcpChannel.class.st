@@ -52,3 +52,8 @@ MpTcpChannel >> sendBytes: bytes [
 MpTcpChannel >> socketStream [
 	^socketStream
 ]
+
+{ #category : #accessing }
+MpTcpChannel >> socketStream: aSocketStream [
+	socketStream := aSocketStream
+]

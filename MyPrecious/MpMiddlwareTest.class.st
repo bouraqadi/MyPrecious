@@ -11,6 +11,11 @@ Class {
 }
 
 { #category : #tests }
+MpMiddlwareTest >> allMiddleware [
+	^{ middlewareA . middlewareB . middlewareC }
+]
+
+{ #category : #tests }
 MpMiddlwareTest >> assertIsProxy: anObject [
 		self assert: (self isProxy: anObject). 
 
