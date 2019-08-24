@@ -4,10 +4,21 @@ Class {
 	#instVars : [
 		'marshaller',
 		'referenceConverter',
-		'channelFactory'
+		'channelFactory',
+		'address'
 	],
 	#category : #'MyPrecious-Kernel'
 }
+
+{ #category : #accessing }
+MpMiddleware >> address [
+	^address
+]
+
+{ #category : #accessing }
+MpMiddleware >> address: anAddress [
+	^address := anAddress
+]
 
 { #category : #accessing }
 MpMiddleware >> channelFactory [
@@ -16,7 +27,7 @@ MpMiddleware >> channelFactory [
 
 { #category : #initialization }
 MpMiddleware >> channelFactoryClass [
-	^MpChannelFactory
+	^self subclassResponsibility
 ]
 
 { #category : #exporting }

@@ -10,8 +10,18 @@ Class {
 }
 
 { #category : #accessing }
+MpReferenceConverter >> address [
+	^self middleware address
+]
+
+{ #category : #accessing }
 MpReferenceConverter >> channelFactory [
 	^self middleware channelFactory.
+]
+
+{ #category : #proxies }
+MpReferenceConverter >> channelTo: remoteReference [ 
+	^self channelFactory channelTo: remoteReference
 ]
 
 { #category : #exporting }
@@ -43,7 +53,7 @@ MpReferenceConverter >> newExportId [
 { #category : #proxies }
 MpReferenceConverter >> newProxyTo: remoteReference [
 	| channel |
-	channel := self outboundChannelTo: remoteReference.
+	channel := self channelTo: remoteReference.
 	^ self newProxyTo: remoteReference channel: channel
 ]
 
@@ -56,7 +66,8 @@ MpReferenceConverter >> newProxyTo: remoteReference channel: channel [
 MpReferenceConverter >> newRemoteReferenceWithId: id [
 	^self remoteReferenceClass new
 		objectId: id;
-		yourself
+		address: self address
+
 ]
 
 { #category : #exporting }
@@ -65,11 +76,6 @@ MpReferenceConverter >> objectAt: aRemoteReference [
 		exportedObjectsDict 
 			at: aRemoteReference 
 			ifAbsent: [ self proxyTo: aRemoteReference ]]
-]
-
-{ #category : #proxies }
-MpReferenceConverter >> outboundChannelTo: remoteReference [ 
-	^self channelFactory outboundChannelTo: remoteReference
 ]
 
 { #category : #proxies }

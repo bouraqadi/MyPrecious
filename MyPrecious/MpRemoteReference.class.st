@@ -4,10 +4,21 @@ Class {
 	#traits : 'TEquality',
 	#classTraits : 'TEquality classTrait',
 	#instVars : [
-		'objectId'
+		'objectId',
+		'address'
 	],
 	#category : #'MyPrecious-Kernel'
 }
+
+{ #category : #accessing }
+MpRemoteReference >> address [
+	^address
+]
+
+{ #category : #accessing }
+MpRemoteReference >> address: anAddress [
+	^address := anAddress
+]
 
 { #category : #accessing }
 MpRemoteReference >> objectId [

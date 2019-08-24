@@ -5,11 +5,6 @@ Class {
 }
 
 { #category : #communicating }
-MpTcpChannelFactory >> inboundChannelClass [
-	^MpTcpInboundChannel 
-]
-
-{ #category : #communicating }
-MpTcpChannelFactory >> outboundChannelClass [
-	^MpTcpOutboundChannel
+MpTcpChannelFactory >> channelClass [
+	^MpTcpChannel
 ]

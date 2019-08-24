@@ -5,24 +5,19 @@ Class {
 }
 
 { #category : #communicating }
-MpChannelFactoryForTest >> inboundChannelClass [
-	^ MpInboundChannelForTest
+MpChannelFactoryForTest >> channelClass [
+	^MpChannelForTest 
 ]
 
 { #category : #communicating }
-MpChannelFactoryForTest >> newOutboundChannelTo: remoteReference [
-	| otherMiddleware inboundChannel |
+MpChannelFactoryForTest >> channelTo: remoteReference [
+	| otherMiddleware inboundChannel outboundChannel |
 	otherMiddleware := self registry at: remoteReference.
-	inboundChannel := otherMiddleware channelFactory inboundChannel.
-	^(super newOutboundChannelTo: remoteReference)
-		targetChannel: inboundChannel;
-		yourself.
-	
-]
-
-{ #category : #communicating }
-MpChannelFactoryForTest >> outboundChannelClass [
-	^MpOutboundChannelForTest 
+	inboundChannel := otherMiddleware channelFactory newChannel.
+	outboundChannel := self newChannel.
+	outboundChannel targetChannel: inboundChannel.
+	inboundChannel targetChannel: outboundChannel.
+	^outboundChannel
 ]
 
 { #category : #communicating }

@@ -5,35 +5,18 @@ Class {
 }
 
 { #category : #communicating }
-MpChannelFactory >> inboundChannel [
-	^self newInboundChannel
-]
-
-{ #category : #communicating }
-MpChannelFactory >> inboundChannelClass [
+MpChannelFactory >> channelClass [
 	self subclassResponsibility
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newInboundChannel [
-	^self inboundChannelClass middleware: self middleware
+MpChannelFactory >> channelTo: remoteReference [
+	^self subclassResponsibility
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newOutboundChannelTo: remoteReference [
-	^self outboundChannelClass middleware: self middleware
-
-]
-
-{ #category : #communicating }
-MpChannelFactory >> outboundChannelClass [
-	self subclassResponsibility
-]
-
-{ #category : #communicating }
-MpChannelFactory >> outboundChannelTo: remoteReference [
-	^self newOutboundChannelTo: remoteReference
-
+MpChannelFactory >> newChannel [
+	^self channelClass middleware: self middleware
 ]
 
 { #category : #accessing }

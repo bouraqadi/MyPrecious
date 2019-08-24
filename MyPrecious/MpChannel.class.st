@@ -1,6 +1,11 @@
 Class {
 	#name : #MpChannel,
 	#superclass : #MpMiddlewarePart,
+	#instVars : [
+		'protocol',
+		'promisesDict',
+		'promisesLock'
+	],
 	#category : #'MyPrecious-Kernel'
 }
 
@@ -11,7 +16,20 @@ MpChannel class >> middleware: aMiddleware [
 		yourself
 ]
 
-{ #category : #protocol }
+{ #category : #communicating }
+MpChannel >> exceptionResponseClass [
+	^ MpExceptionRemoteResponse
+]
+
+{ #category : #initialization }
+MpChannel >> initialize [
+	super initialize.
+	protocol := self protocolClass channel: self.
+	promisesDict := WeakValueDictionary new.
+	promisesLock := Mutex new.
+]
+
+{ #category : #communicating }
 MpChannel >> marshal: anObject [ 
 	^self marshaller marshal: anObject 
 
@@ -23,53 +41,96 @@ MpChannel >> marshaller [
 	^self middleware marshaller
 ]
 
-{ #category : #protocol }
-MpChannel >> materializeFrom: bytes [ 
-	^self protocol materializeFromByteArray: bytes
+{ #category : #communicating }
+MpChannel >> newResultId [
+	^UUID new
+]
+
+{ #category : #communicating }
+MpChannel >> normalResponseClass [
+	^ MpNormalRemoteResponse
 ]
 
 { #category : #accessing }
 MpChannel >> protocol [
-	^self protocolClass new
+	^ protocol
 ]
 
 { #category : #accessing }
 MpChannel >> protocolClass [
-	^MpProtocol
+	^self subclassResponsibility
 ]
 
 { #category : #communicating }
-MpChannel >> receiveBytes: bytes [
-	| receivedObject unmarshalledObject  |
-	receivedObject := self materializeFrom: bytes.
-	unmarshalledObject := self unmarshal: receivedObject.
-	self receiveObject: unmarshalledObject
+MpChannel >> receiveMessage: remoteMessage [
+	| result response |
+	[ 
+		result := remoteMessage send.
+		response := self normalResponseClass
+			id: remoteMessage resultId
+			result: result 
+	] on: Exception do: [ :exception | 
+		response := self exceptionResponseClass
+				id: remoteMessage resultId
+				exception: exception 
+	].
+	self sendObject: response
 ]
 
 { #category : #communicating }
 MpChannel >> receiveObject: anObject [
-	anObject receivedByChannel: self
+	| unmarshalledObject |
+	unmarshalledObject := self unmarshal: anObject.
+	unmarshalledObject receivedByChannel: self
 ]
 
 { #category : #communicating }
-MpChannel >> sendBytes: aCollection [ 
-	self subclassResponsibility
+MpChannel >> receiveResponse: remoteResponse [
+	| promise |
+	promise := promisesLock critical: [
+		promisesDict at: remoteResponse id ifAbsent: [^self]].
+	remoteResponse trigger: promise
+
+]
+
+{ #category : #communicating }
+MpChannel >> send: aMessage to: receiver [
+	| promise resultId resultBlock semaphore |
+	resultId := self newResultId.
+	semaphore := Semaphore new.		
+	promise := CcPromise
+		onFulfillDo: [: answer | 
+			resultBlock := [answer].
+			semaphore signal] 
+		onRejectDo: [: exception | 
+			resultBlock := [exception signal].
+			semaphore signal].
+	promisesLock critical: [
+		promisesDict at: resultId put: promise].
+	self send: aMessage to: receiver resultId: resultId.
+	semaphore wait.
+	^ resultBlock value
+]
+
+{ #category : #communicating }
+MpChannel >> send: aMessage to: receiver resultId: resultId [
+	| remoteMessage |
+	remoteMessage := MpRemoteMessage
+		selector: aMessage selector
+		arguments: aMessage arguments
+		receiver: receiver 
+		resultId: resultId.
+	self sendObject: remoteMessage
 ]
 
 { #category : #communicating }
 MpChannel >> sendObject: anObject [
-	| marshalledObject bytes |
+	| marshalledObject |
 	marshalledObject := self marshal: anObject.
-	bytes := self serialize: marshalledObject.
-	self sendBytes: bytes
+	self protocol sendObject: marshalledObject  
 ]
 
-{ #category : #protocol }
-MpChannel >> serialize: remoteMessage [ 
-	^self protocol serializeToByteArray: remoteMessage
-]
-
-{ #category : #protocol }
+{ #category : #communicating }
 MpChannel >> unmarshal: anObject [ 
 	^self marshaller unmarshal: anObject.
 ]
