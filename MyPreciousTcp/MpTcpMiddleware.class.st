@@ -7,6 +7,11 @@ Class {
 	#category : #MyPreciousTcp
 }
 
+{ #category : #communicating }
+MpTcpMiddleware >> channelClass [
+	^MpTcpChannel
+]
+
 { #category : #initialization }
 MpTcpMiddleware >> channelFactoryClass [
 	^MpTcpChannelFactory
@@ -23,6 +28,11 @@ MpTcpMiddleware >> initialize [
 { #category : #initialization }
 MpTcpMiddleware >> port: portNumber [
 	self server port: portNumber 
+]
+
+{ #category : #accessing }
+MpTcpMiddleware >> protocolClass [
+	^MpTcpProtocol
 ]
 
 { #category : #accessing }

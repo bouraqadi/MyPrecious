@@ -6,7 +6,8 @@ Class {
 
 { #category : #communicating }
 MpChannelFactory >> channelClass [
-	self subclassResponsibility
+	^self middleware channelClass
+
 ]
 
 { #category : #communicating }
@@ -17,9 +18,4 @@ MpChannelFactory >> channelTo: remoteReference [
 { #category : #communicating }
 MpChannelFactory >> newChannel [
 	^self channelClass middleware: self middleware
-]
-
-{ #category : #accessing }
-MpChannelFactory >> referenceConverter [
-	^self middleware referenceConverter.
 ]

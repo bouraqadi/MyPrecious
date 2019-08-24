@@ -20,6 +20,11 @@ MpMiddleware >> address: anAddress [
 	^address := anAddress
 ]
 
+{ #category : #initialization }
+MpMiddleware >> channelClass [
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 MpMiddleware >> channelFactory [
 	^ channelFactory
@@ -58,6 +63,16 @@ MpMiddleware >> marshallerClass [
 	^MpMarshaller
 ]
 
+{ #category : #initialization }
+MpMiddleware >> protocolClass [
+	^self subclassResponsibility
+]
+
+{ #category : #initialization }
+MpMiddleware >> proxyClass [
+	^MpProxy
+]
+
 { #category : #proxies }
 MpMiddleware >> proxyTo: remoteReference [ 
 	^self referenceConverter proxyTo: remoteReference 
@@ -71,4 +86,9 @@ MpMiddleware >> referenceConverter [
 { #category : #initialization }
 MpMiddleware >> referenceConverterClass [
 	^MpReferenceConverter
+]
+
+{ #category : #exporting }
+MpMiddleware >> remoteReferenceClass [
+	^MpRemoteReference
 ]

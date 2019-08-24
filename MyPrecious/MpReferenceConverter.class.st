@@ -80,7 +80,7 @@ MpReferenceConverter >> objectAt: aRemoteReference [
 
 { #category : #proxies }
 MpReferenceConverter >> proxyClass [
-	^MpProxy
+	^self middleware proxyClass
 ]
 
 { #category : #proxies }
@@ -91,9 +91,9 @@ MpReferenceConverter >> proxyTo: remoteReference [
 			ifAbsentPut: [ self newProxyTo: remoteReference]]
 ]
 
-{ #category : #exporting }
+{ #category : #initialization }
 MpReferenceConverter >> remoteReferenceClass [
-	^MpRemoteReference
+	^self middleware remoteReferenceClass
 ]
 
 { #category : #exporting }

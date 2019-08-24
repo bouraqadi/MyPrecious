@@ -58,7 +58,8 @@ MpChannel >> protocol [
 
 { #category : #accessing }
 MpChannel >> protocolClass [
-	^self subclassResponsibility
+	^self middleware protocolClass
+
 ]
 
 { #category : #communicating }

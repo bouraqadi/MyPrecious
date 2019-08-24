@@ -7,11 +7,6 @@ Class {
 	#category : #'MyPrecious-Tests'
 }
 
-{ #category : #accessing }
-MpChannelForTest >> protocolClass [
-	^MpProtocolForTest
-]
-
 { #category : #communicating }
 MpChannelForTest >> sendBytes: bytes [ 
 	targetChannel receiveBytes: bytes

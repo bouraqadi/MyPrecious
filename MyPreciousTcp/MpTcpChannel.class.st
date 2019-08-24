@@ -13,11 +13,6 @@ MpTcpChannel >> communicateVia: aSocketStream [
 	[socketStream isConnected] whileTrue: [ self receiveObject ]
 ]
 
-{ #category : #accessing }
-MpTcpChannel >> protocolClass [
-	^MpTcpProtocol
-]
-
 { #category : #communicating }
 MpTcpChannel >> receiveObject [
 	self protocol receiveBytes
