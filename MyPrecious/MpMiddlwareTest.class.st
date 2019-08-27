@@ -1,6 +1,8 @@
 Class {
 	#name : #MpMiddlwareTest,
 	#superclass : #TestCase,
+	#traits : 'CcTConcurrencyTest',
+	#classTraits : 'CcTConcurrencyTest classTrait',
 	#instVars : [
 		'middlewareA',
 		'middlewareB',

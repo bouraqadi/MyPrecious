@@ -1,6 +1,9 @@
 Class {
 	#name : #MpTcpChannelFactory,
 	#superclass : #MpChannelFactory,
+	#instVars : [
+		'inboundChannels'
+	],
 	#category : #MyPreciousTcp
 }
 
@@ -12,4 +15,24 @@ MpTcpChannelFactory >> channelTo: remoteReference [
 	^self newChannel
 		socketStream: socketStream;
 		yourself
+]
+
+{ #category : #communicating }
+MpTcpChannelFactory >> communicateVia: socketStream [
+	| channel |
+	channel := self newChannel.
+	inboundChannels add: channel.
+	[channel communicateVia: socketStream] fork.
+
+]
+
+{ #category : #accessing }
+MpTcpChannelFactory >> inboundChannels [
+	^ inboundChannels
+]
+
+{ #category : #initialization }
+MpTcpChannelFactory >> initialize [
+	super initialize.
+	inboundChannels := Set new.
 ]

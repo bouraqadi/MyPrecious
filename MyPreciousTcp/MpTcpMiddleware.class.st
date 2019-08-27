@@ -17,12 +17,27 @@ MpTcpMiddleware >> channelFactoryClass [
 	^MpTcpChannelFactory
 ]
 
+{ #category : #accessing }
+MpTcpMiddleware >> inboundChannels [
+	^self channelFactory inboundChannels
+]
+
 { #category : #initialization }
 MpTcpMiddleware >> initialize [
 	super initialize.
 	server := self serverClass new. 
 	server withCommunicationStreamDo: [ : stream | 
-			self channelFactory newChannel communicateVia: stream ].
+			self communicateVia: stream ].
+]
+
+{ #category : #testing }
+MpTcpMiddleware >> isStarted [
+	^self server isStarted
+]
+
+{ #category : #testing }
+MpTcpMiddleware >> isStopped [
+	^self server isStopped
 ]
 
 { #category : #initialization }
@@ -48,10 +63,10 @@ MpTcpMiddleware >> serverClass [
 
 { #category : #activity }
 MpTcpMiddleware >> start [
-	^server start
+	^self server start
 ]
 
 { #category : #activity }
 MpTcpMiddleware >> stop [
-	^server stop
+	^self server stop
 ]
