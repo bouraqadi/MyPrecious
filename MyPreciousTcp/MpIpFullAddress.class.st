@@ -37,3 +37,12 @@ MpIpFullAddress >> port [
 MpIpFullAddress >> port: anObject [
 	port := anObject
 ]
+
+{ #category : #printing }
+MpIpFullAddress >> printOn: aStream [
+	aStream
+		<< 'IP: ';
+		print: self ip;
+		<< ' - Port: ';
+		<< self port
+]

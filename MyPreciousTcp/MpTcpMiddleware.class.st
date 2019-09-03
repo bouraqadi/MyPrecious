@@ -17,9 +17,9 @@ MpTcpMiddleware >> channelFactoryClass [
 	^MpTcpChannelFactory
 ]
 
-{ #category : #accessing }
-MpTcpMiddleware >> inboundChannels [
-	^self channelFactory inboundChannels
+{ #category : #communicating }
+MpTcpMiddleware >> communicateVia: stream [
+	self channelFactory communicateVia: stream
 ]
 
 { #category : #initialization }

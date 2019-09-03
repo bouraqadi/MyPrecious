@@ -15,7 +15,7 @@ MpTcpChannel >> byteCountArraySize [
 { #category : #communicating }
 MpTcpChannel >> communicateVia: aSocketStream [
 	socketStream := aSocketStream.
-	[socketStream isConnected] whileTrue: [ self receiveBytes ]
+	[[ self receiveBytes ] repeat ] on: ConnectionTimedOut, ConnectionClosed do: [ : ex| ]
 ]
 
 { #category : #communicating }
