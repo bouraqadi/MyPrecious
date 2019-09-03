@@ -82,3 +82,8 @@ MpMiddleware >> referenceConverterClass [
 MpMiddleware >> remoteReferenceClass [
 	^MpRemoteReference
 ]
+
+{ #category : #communicating }
+MpMiddleware >> waitForResultTimeoutDuration [
+	^500 milliSeconds
+]

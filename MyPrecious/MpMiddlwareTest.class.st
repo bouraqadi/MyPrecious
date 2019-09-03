@@ -229,3 +229,20 @@ MpMiddlwareTest >> testResultProxyToObjectInThirdMiddleware [
 		self assert: c contents equals: arg]
 	
 ]
+
+{ #category : #tests }
+MpMiddlwareTest >> testTimeoutRemoteMessage [
+	| proxy remoteReference infiniteWaitSemaphore doneSemaphore isTimeout |
+	infiniteWaitSemaphore := Semaphore new.
+	doneSemaphore := Semaphore new.
+	remoteReference := middlewareA export: infiniteWaitSemaphore.
+	proxy := middlewareB proxyTo: remoteReference.
+	isTimeout := false.
+	[ 
+		[proxy wait] on: CcPromiseTimeout do: [: ex | isTimeout := true].
+		doneSemaphore signal.
+	 ] fork.
+	self assertSemaphore: doneSemaphore signaledWithinMilliseconds: 200.
+	self assert: isTimeout
+
+]

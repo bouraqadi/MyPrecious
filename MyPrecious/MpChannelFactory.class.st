@@ -11,11 +11,21 @@ MpChannelFactory >> channelClass [
 ]
 
 { #category : #communicating }
-MpChannelFactory >> channelTo: remoteReference [
-	^self subclassResponsibility
+MpChannelFactory >> newChannel [
+	^self channelClass middleware: self middleware
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newChannel [
-	^self channelClass middleware: self middleware
+MpChannelFactory >> newInboundChannel [
+	^self newChannel
+]
+
+{ #category : #communicating }
+MpChannelFactory >> newOutboundChannel [
+	^self newChannel
+]
+
+{ #category : #communicating }
+MpChannelFactory >> outboundChannelTo: remoteReference [
+	^self subclassResponsibility
 ]

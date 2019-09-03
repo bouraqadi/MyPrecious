@@ -19,11 +19,6 @@ MpReferenceConverter >> channelFactory [
 	^self middleware channelFactory.
 ]
 
-{ #category : #proxies }
-MpReferenceConverter >> channelTo: remoteReference [ 
-	^self channelFactory channelTo: remoteReference
-]
-
 { #category : #exporting }
 MpReferenceConverter >> export: anObject [
 	^self export: anObject id: self newId
@@ -48,7 +43,7 @@ MpReferenceConverter >> initialize [
 { #category : #proxies }
 MpReferenceConverter >> newProxyTo: remoteReference [
 	| channel |
-	channel := self channelTo: remoteReference.
+	channel := self outboundChannelTo: remoteReference.
 	^ self newProxyTo: remoteReference channel: channel
 ]
 
@@ -72,6 +67,11 @@ MpReferenceConverter >> objectAt: aRemoteReference [
 		exportedObjectsDict 
 			at: aRemoteReference 
 			ifAbsent: [ self proxyTo: aRemoteReference ]]
+]
+
+{ #category : #proxies }
+MpReferenceConverter >> outboundChannelTo: remoteReference [ 
+	^self channelFactory outboundChannelTo: remoteReference
 ]
 
 { #category : #proxies }

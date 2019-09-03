@@ -1,44 +1,37 @@
 Class {
-	#name : #MpProxy,
-	#superclass : #ProtoObject,
+	#name : #MpProxyForDebug,
+	#superclass : #Object,
 	#instVars : [
 		'channel',
 		'remoteReference'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Tests'
 }
 
 { #category : #'instance creation' }
-MpProxy class >> channel: aChannel remoteReference: aRemoteReference [
+MpProxyForDebug class >> channel: aChannel remoteReference: aRemoteReference [
 	^ self basicNew
 		channel: aChannel remoteReference: aRemoteReference;
 		yourself
 ]
 
 { #category : #'initialize-release' }
-MpProxy >> channel: aChannel remoteReference: aRemoteReference [
+MpProxyForDebug >> channel: aChannel remoteReference: aRemoteReference [
 	remoteReference := aRemoteReference. 
 	channel := aChannel.
 ]
 
-{ #category : #'class membership' }
-MpProxy >> class [
-	| message |
-	message := Message selector: #class.
-	^ self doesNotUnderstand: message
-]
-
 { #category : #'reflective operations' }
-MpProxy >> doesNotUnderstand: aMessage [
+MpProxyForDebug >> doesNotUnderstand: aMessage [
 	^ channel sendMessageSynchronously: aMessage to: self
 ]
 
 { #category : #marshalling }
-MpProxy >> marshalWith: marshaller [
+MpProxyForDebug >> marshalWith: marshaller [
 	^marshaller marshalRemoteReference: remoteReference
 ]
 
 { #category : #accessing }
-MpProxy >> yourself [
+MpProxyForDebug >> yourself [
 	^self
 ]

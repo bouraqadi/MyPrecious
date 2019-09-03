@@ -89,26 +89,13 @@ MpChannel >> receiveResponse: remoteResponse [
 ]
 
 { #category : #communicating }
-MpChannel >> send: aMessage to: receiver [
-	| promise resultId resultBlock semaphore |
-	resultId := self newId.
-	semaphore := Semaphore new.		
-	promise := CcPromise
-		onFulfillDo: [: answer | 
-			resultBlock := [answer].
-			semaphore signal] 
-		onRejectDo: [: exception | 
-			resultBlock := [exception signal].
-			semaphore signal].
-	promisesLock critical: [
-		promisesDict at: resultId put: promise].
-	self send: aMessage to: receiver resultId: resultId.
-	semaphore wait.
-	^ resultBlock value
+MpChannel >> sendBytes: bytes [
+	self subclassResponsibility
+
 ]
 
 { #category : #communicating }
-MpChannel >> send: aMessage to: receiver resultId: resultId [
+MpChannel >> sendMessageNoWait: aMessage to: receiver resultId: resultId [
 	| remoteMessage |
 	remoteMessage := MpRemoteMessage
 		selector: aMessage selector
@@ -119,9 +106,19 @@ MpChannel >> send: aMessage to: receiver resultId: resultId [
 ]
 
 { #category : #communicating }
-MpChannel >> sendBytes: bytes [
-	self subclassResponsibility
-
+MpChannel >> sendMessageSynchronously: aMessage to: receiver [
+	| promise resultId resultBlock |
+	resultId := self newId.
+	promise := CcPromise
+		onFulfillDo: [: answer | 
+			resultBlock := [answer]] 
+		onRejectDo: [: exception | 
+			resultBlock := [exception signal]].
+	promisesLock critical: [
+		promisesDict at: resultId put: promise].
+	self sendMessageNoWait: aMessage to: receiver resultId: resultId.
+	promise wait: self waitForResultTimeoutDuration.
+	^ resultBlock value
 ]
 
 { #category : #communicating }
@@ -140,4 +137,9 @@ MpChannel >> serialize: anObject [
 { #category : #communicating }
 MpChannel >> unmarshal: anObject [ 
 	^self marshaller unmarshal: anObject.
+]
+
+{ #category : #communicating }
+MpChannel >> waitForResultTimeoutDuration [
+	^self middleware waitForResultTimeoutDuration
 ]

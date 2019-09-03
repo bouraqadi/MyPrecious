@@ -26,3 +26,8 @@ MpMiddlewareForTest >> referenceConverterClass [
 MpMiddlewareForTest >> registry [
 	^ Registry ifNil: [Registry := WeakValueDictionary new ]
 ]
+
+{ #category : #communicating }
+MpMiddlewareForTest >> waitForResultTimeoutDuration [
+	^100 milliSeconds
+]
