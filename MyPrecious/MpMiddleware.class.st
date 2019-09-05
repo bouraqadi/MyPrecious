@@ -46,6 +46,11 @@ MpMiddleware >> inboundChannelWith: anObject [
 ]
 
 { #category : #initialization }
+MpMiddleware >> inboundChannels [
+	^self channelFactory inboundChannels
+]
+
+{ #category : #initialization }
 MpMiddleware >> initialize [
 	super initialize.
 	referenceConverter := self referenceConverterClass middleware: self.

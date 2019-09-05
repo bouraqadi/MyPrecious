@@ -1,9 +1,6 @@
 Class {
 	#name : #MpTcpChannelFactoryForTest,
 	#superclass : #MpTcpChannelFactory,
-	#instVars : [
-		'inboundChannels'
-	],
 	#category : #MyPreciousTcp
 }
 

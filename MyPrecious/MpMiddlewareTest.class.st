@@ -11,11 +11,6 @@ Class {
 	#category : #'MyPrecious-Tests'
 }
 
-{ #category : #testing }
-MpMiddlewareTest class >> isAbstract [
-	^self == MpMiddlewareTest
-]
-
 { #category : #tests }
 MpMiddlewareTest >> allMiddleware [
 	^{ middlewareA . middlewareB . middlewareC }
@@ -34,11 +29,6 @@ MpMiddlewareTest >> denyIsProxy: anObject [
 ]
 
 { #category : #tests }
-MpMiddlewareTest >> inboundChannelAt: aMiddleware linkedTo: otherSideOutboundChannel [
-	self subclassResponsibility
-]
-
-{ #category : #tests }
 MpMiddlewareTest >> isProxy: anObject [
 	"We cannot rely on the class messare or messages that use it such as isKindOf:"
 	"This is proxies are supposed to capture all message including class"
@@ -50,7 +40,7 @@ MpMiddlewareTest >> isProxy: anObject [
 
 { #category : #tests }
 MpMiddlewareTest >> middlewareClass [
-	^ self subclassResponsibility
+	^ MpMiddlewareForTest
 ]
 
 { #category : #tests }
@@ -135,11 +125,12 @@ MpMiddlewareTest >> testException [
 
 { #category : #tests }
 MpMiddlewareTest >> testInboundChannelReceiveObject [
-	| remoteReferenceA inboundChannelA message outboundChannelB total |
+	| remoteReferenceA inboundChannelA message total |
 	total := 0.
 	remoteReferenceA := middlewareA export: [: x | total := x + total].
-	outboundChannelB := middlewareB outboundChannelTo: remoteReferenceA.
-	inboundChannelA := self inboundChannelAt: middlewareA linkedTo: outboundChannelB. 
+	middlewareB outboundChannelTo: remoteReferenceA.
+	self assert: middlewareA inboundChannels size equals: 1.
+	inboundChannelA := middlewareA inboundChannels anyOne. 
 	message := MpRemoteMessage
 		selector: #value:
 		arguments: #(2)
@@ -160,23 +151,8 @@ MpMiddlewareTest >> testOutboundChannelSendMessageNoWait [
 		arguments: #(2).
 	outboundChannelB := middlewareB outboundChannelTo: remoteReferenceA.
 	outboundChannelB sendMessageNoWait: message to: proxyB responseId: #any.
-	self assert: total equals: 2
+	self waitUntil: [total = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
 	
-]
-
-{ #category : #tests }
-MpMiddlewareTest >> testOutboundChannelSendMessageSynchronously [
-	| remoteReferenceA message outboundChannelB proxyB total result |
-	total := 1.
-	remoteReferenceA := middlewareA export: [: x | total := x + total].
-	proxyB := middlewareB proxyTo: remoteReferenceA.
-	message := Message
-		selector: #value:
-		arguments: #(2).
-	outboundChannelB := middlewareB outboundChannelTo: remoteReferenceA.
-	self shouldnt: [result := outboundChannelB sendMessageSynchronously: message to: proxyB] raise: CcPromiseTimeout.
-	self assert: total equals: 3.
-	self assert: result equals: 3
 ]
 
 { #category : #tests }

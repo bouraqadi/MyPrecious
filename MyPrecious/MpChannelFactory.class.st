@@ -2,7 +2,8 @@ Class {
 	#name : #MpChannelFactory,
 	#superclass : #MpMiddlewarePart,
 	#instVars : [
-		'inboundChannels'
+		'inboundChannels',
+		'outboundChannelsDict'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -26,7 +27,8 @@ MpChannelFactory >> inboundChannels [
 { #category : #initialization }
 MpChannelFactory >> initialize [
 	super initialize.
-	inboundChannels := Set new
+	inboundChannels := Set new.
+	outboundChannelsDict := Dictionary new.
 ]
 
 { #category : #communicating }
@@ -45,7 +47,11 @@ self inform: 'New Inbound Channel. No GC!!!'.
 
 { #category : #communicating }
 MpChannelFactory >> newOutboundChannelTo: remoteReference [
-	^self newChannel
+	| newChannel |
+	newChannel := self newChannel.
+	outboundChannelsDict at: remoteReference put: newChannel.
+self inform: 'New Outbound Channel. No GC!!!'.
+	^newChannel
 ]
 
 { #category : #communicating }
@@ -64,5 +70,11 @@ MpChannelFactory >> newStartedOutboundChannelTo: remoteReference [
 
 { #category : #communicating }
 MpChannelFactory >> outboundChannelTo: remoteReference [
+	outboundChannelsDict at: remoteReference ifPresent: [: channel | ^channel ].
 	^self newStartedOutboundChannelTo: remoteReference
+]
+
+{ #category : #accessing }
+MpChannelFactory >> outboundChannelsDict [
+	^outboundChannelsDict
 ]

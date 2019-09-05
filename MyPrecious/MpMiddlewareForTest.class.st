@@ -20,11 +20,6 @@ MpMiddlewareForTest >> channelFactoryClass [
 ]
 
 { #category : #initialization }
-MpMiddlewareForTest >> inboundChannels [
-	^self channelFactory inboundChannels
-]
-
-{ #category : #initialization }
 MpMiddlewareForTest >> referenceConverterClass [
 	^MpReferenceConverterForTest
 ]

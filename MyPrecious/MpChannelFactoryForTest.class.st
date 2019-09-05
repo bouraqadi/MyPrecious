@@ -16,7 +16,7 @@ MpChannelFactoryForTest >> newInboundChannelWith: anObject [
 MpChannelFactoryForTest >> newOutboundChannelTo: remoteReference [
 	| otherMiddleware inboundChannel |
 	otherMiddleware := self registry at: remoteReference.
-	inboundChannel := otherMiddleware channelFactory newInboundChannelWith: nil.
+	inboundChannel := otherMiddleware channelFactory inboundChannelWith: nil.
 	^(super newOutboundChannelTo: remoteReference)
 		sendQueue: inboundChannel receiveQueue;
 		receiveQueue: inboundChannel sendQueue;
