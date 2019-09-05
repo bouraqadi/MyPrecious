@@ -5,18 +5,18 @@ Class {
 		'selector',
 		'arguments',
 		'receiver',
-		'resultId'
+		'responseId'
 	],
 	#category : #'MyPrecious-Kernel'
 }
 
 { #category : #'instance creation' }
-MpRemoteMessage class >> selector: selector arguments: args receiver: receiver resultId: resultId [
+MpRemoteMessage class >> selector: selector arguments: args receiver: receiver responseId: responseId [
 	^self new
 		selector: selector; 
 		arguments: args; 
 		receiver: receiver;
-		resultId: resultId; 
+		responseId: responseId; 
 		yourself
 
 ]
@@ -52,13 +52,13 @@ MpRemoteMessage >> receiver: anObject [
 ]
 
 { #category : #accessing }
-MpRemoteMessage >> resultId [
-	^ resultId
+MpRemoteMessage >> responseId [
+	^ responseId
 ]
 
 { #category : #accessing }
-MpRemoteMessage >> resultId: anObject [
-	resultId := anObject
+MpRemoteMessage >> responseId: anObject [
+	responseId := anObject
 ]
 
 { #category : #accessing }

@@ -41,6 +41,11 @@ MpReferenceConverter >> initialize [
 ]
 
 { #category : #proxies }
+MpReferenceConverter >> newOutboundChannelTo: remoteReference [ 
+	^self channelFactory outboundChannelTo: remoteReference
+]
+
+{ #category : #proxies }
 MpReferenceConverter >> newProxyTo: remoteReference [
 	| channel |
 	channel := self outboundChannelTo: remoteReference.

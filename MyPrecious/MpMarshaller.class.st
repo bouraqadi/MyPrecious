@@ -81,7 +81,7 @@ MpMarshaller >> unmarshalMessage: message [
 		selector: message selector
 		arguments: unmarshalledArgs
 		receiver: unmarshalledReceiver 
-		resultId: message resultId.
+		responseId: message responseId.
 ]
 
 { #category : #marshalling }

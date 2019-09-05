@@ -17,17 +17,12 @@ MpTcpMiddleware >> channelFactoryClass [
 	^MpTcpChannelFactory
 ]
 
-{ #category : #communicating }
-MpTcpMiddleware >> communicateVia: stream [
-	self channelFactory communicateVia: stream
-]
-
 { #category : #initialization }
 MpTcpMiddleware >> initialize [
 	super initialize.
 	server := self serverClass new. 
 	server withCommunicationStreamDo: [ : stream | 
-			self communicateVia: stream ].
+			self inboundChannelWith: stream ].
 ]
 
 { #category : #testing }

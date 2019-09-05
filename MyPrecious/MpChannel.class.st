@@ -3,7 +3,8 @@ Class {
 	#superclass : #MpMiddlewarePart,
 	#instVars : [
 		'promisesDict',
-		'promisesLock'
+		'promisesLock',
+		'receptionService'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -25,6 +26,7 @@ MpChannel >> initialize [
 	super initialize.
 	promisesDict := WeakValueDictionary new.
 	promisesLock := Mutex new.
+	receptionService := CcService repeat: [ self receptionStep ]
 ]
 
 { #category : #communicating }
@@ -49,6 +51,16 @@ MpChannel >> normalResponseClass [
 	^ MpNormalRemoteResponse
 ]
 
+{ #category : #accessing }
+MpChannel >> promisesDict [
+	^ promisesDict
+]
+
+{ #category : #communicating }
+MpChannel >> receiveBytes [
+	self subclassResponsibility
+]
+
 { #category : #communicating }
 MpChannel >> receiveBytes: bytes [
 	| receivedObject  |
@@ -62,11 +74,11 @@ MpChannel >> receiveMessage: remoteMessage [
 	[ 
 		result := remoteMessage send.
 		response := self normalResponseClass
-			id: remoteMessage resultId
+			id: remoteMessage responseId
 			result: result 
 	] on: Exception do: [ :exception | 
 		response := self exceptionResponseClass
-				id: remoteMessage resultId
+				id: remoteMessage responseId
 				exception: exception 
 	].
 	self sendObject: response
@@ -89,19 +101,24 @@ MpChannel >> receiveResponse: remoteResponse [
 ]
 
 { #category : #communicating }
+MpChannel >> receptionStep [
+	self receiveBytes: self receiveBytes
+]
+
+{ #category : #communicating }
 MpChannel >> sendBytes: bytes [
 	self subclassResponsibility
 
 ]
 
 { #category : #communicating }
-MpChannel >> sendMessageNoWait: aMessage to: receiver resultId: resultId [
+MpChannel >> sendMessageNoWait: aMessage to: receiver responseId: responseId [
 	| remoteMessage |
 	remoteMessage := MpRemoteMessage
 		selector: aMessage selector
 		arguments: aMessage arguments
 		receiver: receiver 
-		resultId: resultId.
+		responseId: responseId.
 	self sendObject: remoteMessage
 ]
 
@@ -116,7 +133,7 @@ MpChannel >> sendMessageSynchronously: aMessage to: receiver [
 			resultBlock := [exception signal]].
 	promisesLock critical: [
 		promisesDict at: resultId put: promise].
-	self sendMessageNoWait: aMessage to: receiver resultId: resultId.
+	self sendMessageNoWait: aMessage to: receiver responseId: resultId.
 	promise wait: self waitForResultTimeoutDuration.
 	^ resultBlock value
 ]
@@ -132,6 +149,16 @@ MpChannel >> sendObject: anObject [
 { #category : #communicating }
 MpChannel >> serialize: anObject [ 
 	^FLSerializer serializeToByteArray: anObject
+]
+
+{ #category : #activity }
+MpChannel >> start [
+	receptionService start
+]
+
+{ #category : #activity }
+MpChannel >> stop [
+	receptionService stop
 ]
 
 { #category : #communicating }

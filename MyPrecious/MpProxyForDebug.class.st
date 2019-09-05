@@ -1,10 +1,6 @@
 Class {
 	#name : #MpProxyForDebug,
-	#superclass : #Object,
-	#instVars : [
-		'channel',
-		'remoteReference'
-	],
+	#superclass : #MpProxy,
 	#category : #'MyPrecious-Tests'
 }
 
@@ -15,6 +11,16 @@ MpProxyForDebug class >> channel: aChannel remoteReference: aRemoteReference [
 		yourself
 ]
 
+{ #category : #accessing }
+MpProxyForDebug >> channel [
+	^ channel
+]
+
+{ #category : #accessing }
+MpProxyForDebug >> channel: anObject [
+	channel := anObject
+]
+
 { #category : #'initialize-release' }
 MpProxyForDebug >> channel: aChannel remoteReference: aRemoteReference [
 	remoteReference := aRemoteReference. 
@@ -23,15 +29,20 @@ MpProxyForDebug >> channel: aChannel remoteReference: aRemoteReference [
 
 { #category : #'reflective operations' }
 MpProxyForDebug >> doesNotUnderstand: aMessage [
-	^ channel sendMessageSynchronously: aMessage to: self
-]
-
-{ #category : #marshalling }
-MpProxyForDebug >> marshalWith: marshaller [
-	^marshaller marshalRemoteReference: remoteReference
+	| method |
+	(#(class value) includes: aMessage selector) ifTrue: [^super doesNotUnderstand: aMessage].
+	method := [Object compiledMethodAt: aMessage selector] 
+		on: KeyNotFound 
+		do: [: ex| ^super doesNotUnderstand: aMessage].
+	^method valueWithReceiver: self arguments: aMessage arguments 
 ]
 
 { #category : #accessing }
-MpProxyForDebug >> yourself [
-	^self
+MpProxyForDebug >> remoteReference [
+	^ remoteReference
+]
+
+{ #category : #accessing }
+MpProxyForDebug >> remoteReference: anObject [
+	remoteReference := anObject
 ]

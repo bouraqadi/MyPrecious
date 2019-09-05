@@ -1,8 +1,6 @@
 Class {
 	#name : #MpTcpMiddlewareTest,
-	#superclass : #MpMiddlwareTest,
-	#traits : 'CcTWaitPolling',
-	#classTraits : 'CcTWaitPolling classTrait',
+	#superclass : #MpMiddlewareTest,
 	#category : #MyPreciousTcp
 }
 

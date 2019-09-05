@@ -7,21 +7,12 @@ Class {
 	#category : #MyPreciousTcp
 }
 
-{ #category : #accessing }
-MpTcpChannelFactoryForTest >> inboundChannels [
-	^inboundChannels
-]
-
-{ #category : #initialization }
-MpTcpChannelFactoryForTest >> initialize [
-	super initialize.
-	inboundChannels := Set new.
-]
-
-{ #category : #initialization }
-MpTcpChannelFactoryForTest >> newInboundChannel [
+{ #category : #communicating }
+MpTcpChannelFactoryForTest >> newInboundChannelWith: anObject [
 	| newChannel |
-	newChannel := super newInboundChannel.
-	inboundChannels add: newChannel.
+	newChannel := (super newInboundChannelWith: anObject)
+		sendQueue: SharedQueue new;
+		receiveQueue: SharedQueue new;
+		yourself.
 	^newChannel
 ]

@@ -1,6 +1,8 @@
 Class {
 	#name : #MpMiddlewareForTest,
 	#superclass : #MpMiddleware,
+	#traits : 'MpTMiddlewareDebugSupport',
+	#classTraits : 'MpTMiddlewareDebugSupport classTrait',
 	#classVars : [
 		'Registry'
 	],
@@ -9,12 +11,17 @@ Class {
 
 { #category : #communicating }
 MpMiddlewareForTest >> channelClass [
-	^MpChannelForTest 
+	^MpChannelForTest
 ]
 
 { #category : #initialization }
 MpMiddlewareForTest >> channelFactoryClass [
 	^MpChannelFactoryForTest
+]
+
+{ #category : #initialization }
+MpMiddlewareForTest >> inboundChannels [
+	^self channelFactory inboundChannels
 ]
 
 { #category : #initialization }
@@ -25,9 +32,4 @@ MpMiddlewareForTest >> referenceConverterClass [
 { #category : #accessing }
 MpMiddlewareForTest >> registry [
 	^ Registry ifNil: [Registry := WeakValueDictionary new ]
-]
-
-{ #category : #communicating }
-MpMiddlewareForTest >> waitForResultTimeoutDuration [
-	^100 milliSeconds
 ]

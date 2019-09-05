@@ -1,6 +1,8 @@
 Class {
 	#name : #MpTcpMiddlewareForTest,
 	#superclass : #MpTcpMiddleware,
+	#traits : 'MpTMiddlewareDebugSupport',
+	#classTraits : 'MpTMiddlewareDebugSupport classTrait',
 	#category : #MyPreciousTcp
 }
 

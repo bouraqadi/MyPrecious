@@ -13,12 +13,6 @@ MpTcpChannel >> byteCountArraySize [
 ]
 
 { #category : #communicating }
-MpTcpChannel >> communicateVia: aSocketStream [
-	socketStream := aSocketStream.
-	[[ self receiveBytes ] repeat ] on: ConnectionTimedOut, ConnectionClosed do: [ : ex| ]
-]
-
-{ #category : #communicating }
 MpTcpChannel >> next: numberOfBytes [
 	^self socketStream next: numberOfBytes
 ]
@@ -30,11 +24,11 @@ MpTcpChannel >> nextPutAll: bytes [
 
 { #category : #communicating }
 MpTcpChannel >> receiveBytes [
-	| bytesCountSize bytesCount bytes |
+	| bytesCountSize bytesCount |
 	bytesCountSize := (self next: self byteCountArraySize) asInteger.
 	bytesCount := (self next: bytesCountSize) asInteger.
-	bytes := self next: bytesCount.
-	self receiveBytes: bytes
+	^self next: bytesCount.
+
 ]
 
 { #category : #communicating }

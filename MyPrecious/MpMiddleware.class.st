@@ -40,6 +40,11 @@ MpMiddleware >> export: anObject id: aString [
 	^self referenceConverter export: anObject id: aString 
 ]
 
+{ #category : #communicating }
+MpMiddleware >> inboundChannelWith: anObject [
+	^self channelFactory inboundChannelWith: anObject
+]
+
 { #category : #initialization }
 MpMiddleware >> initialize [
 	super initialize.
@@ -56,6 +61,11 @@ MpMiddleware >> marshaller [
 { #category : #initialization }
 MpMiddleware >> marshallerClass [
 	^MpMarshaller
+]
+
+{ #category : #communicating }
+MpMiddleware >> outboundChannelTo: remoteReference [
+	^self channelFactory outboundChannelTo: remoteReference
 ]
 
 { #category : #initialization }

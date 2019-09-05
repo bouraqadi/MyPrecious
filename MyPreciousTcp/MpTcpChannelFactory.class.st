@@ -5,18 +5,18 @@ Class {
 }
 
 { #category : #communicating }
-MpTcpChannelFactory >> communicateVia: socketStream [
-	| channel |
-	channel := self newInboundChannel.
-	channel communicateVia: socketStream
+MpTcpChannelFactory >> newInboundChannelWith: socketStream [
+	^(super newInboundChannelWith: socketStream)
+		socketStream: socketStream;
+		yourself
 ]
 
 { #category : #communicating }
-MpTcpChannelFactory >> outboundChannelTo: remoteReference [ 
+MpTcpChannelFactory >> newOutboundChannelTo: remoteReference [ 
 	| socketStream remoteAddress |
 	remoteAddress := remoteReference address.
 	socketStream := ZdcSocketStream openConnectionToHost: remoteAddress ip port: remoteAddress port.
-	^self newOutboundChannel
+	^(super newOutboundChannelTo: remoteReference)
 		socketStream: socketStream;
 		yourself
 ]

@@ -5,14 +5,22 @@ Class {
 }
 
 { #category : #communicating }
-MpChannelFactoryForTest >> outboundChannelTo: remoteReference [
-	| otherMiddleware inboundChannel outboundChannel |
+MpChannelFactoryForTest >> newInboundChannelWith: anObject [
+	^(super newInboundChannelWith: anObject)
+		sendQueue: SharedQueue new;
+		receiveQueue: SharedQueue new;
+		yourself
+]
+
+{ #category : #communicating }
+MpChannelFactoryForTest >> newOutboundChannelTo: remoteReference [
+	| otherMiddleware inboundChannel |
 	otherMiddleware := self registry at: remoteReference.
-	inboundChannel := otherMiddleware channelFactory newInboundChannel.
-	outboundChannel := self newOutboundChannel.
-	outboundChannel targetChannel: inboundChannel.
-	inboundChannel targetChannel: outboundChannel.
-	^outboundChannel
+	inboundChannel := otherMiddleware channelFactory newInboundChannelWith: nil.
+	^(super newOutboundChannelTo: remoteReference)
+		sendQueue: inboundChannel receiveQueue;
+		receiveQueue: inboundChannel sendQueue;
+		yourself
 ]
 
 { #category : #communicating }
