@@ -3,12 +3,12 @@ Trait {
 	#category : #'MyPrecious-Tests'
 }
 
+{ #category : #communicating }
+MpTMiddlewareDebugSupport >> defaultWaitForResultTimeoutDuration [
+	^100 milliSeconds
+]
+
 { #category : #initialization }
 MpTMiddlewareDebugSupport >> proxyClass [
 	^MpProxyForDebug
-]
-
-{ #category : #communicating }
-MpTMiddlewareDebugSupport >> waitForResultTimeoutDuration [
-	^100 milliSeconds
 ]

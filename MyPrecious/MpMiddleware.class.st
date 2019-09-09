@@ -5,7 +5,8 @@ Class {
 		'marshaller',
 		'referenceConverter',
 		'channelFactory',
-		'address'
+		'address',
+		'waitForResultTimeoutDuration'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -28,6 +29,11 @@ MpMiddleware >> channelFactory [
 { #category : #initialization }
 MpMiddleware >> channelFactoryClass [
 	^self subclassResponsibility
+]
+
+{ #category : #initialization }
+MpMiddleware >> defaultWaitForResultTimeoutDuration [
+	^500 milliSeconds 
 ]
 
 { #category : #exporting }
@@ -56,6 +62,7 @@ MpMiddleware >> initialize [
 	referenceConverter := self referenceConverterClass middleware: self.
 	marshaller := self marshallerClass middleware: self.
 	channelFactory := self channelFactoryClass middleware: self.
+	self waitForResultTimeoutDuration: self defaultWaitForResultTimeoutDuration
 ]
 
 { #category : #accessing }
@@ -100,5 +107,10 @@ MpMiddleware >> remoteReferenceClass [
 
 { #category : #communicating }
 MpMiddleware >> waitForResultTimeoutDuration [
-	^500 milliSeconds
+	^waitForResultTimeoutDuration
+]
+
+{ #category : #accessing }
+MpMiddleware >> waitForResultTimeoutDuration: anObject [
+	waitForResultTimeoutDuration := anObject
 ]

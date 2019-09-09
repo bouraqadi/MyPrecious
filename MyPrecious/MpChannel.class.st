@@ -29,6 +29,16 @@ MpChannel >> initialize [
 	receptionService := CcService repeat: [ self receptionStep ]
 ]
 
+{ #category : #activity }
+MpChannel >> isStarted [
+	^receptionService isStarted
+]
+
+{ #category : #activity }
+MpChannel >> isStopped [
+	^receptionService isStopped
+]
+
 { #category : #communicating }
 MpChannel >> marshal: anObject [ 
 	^self marshaller marshal: anObject 
@@ -133,8 +143,12 @@ MpChannel >> sendMessageSynchronously: aMessage to: receiver [
 			resultBlock := [exception signal]].
 	promisesLock critical: [
 		promisesDict at: resultId put: promise].
-	self sendMessageNoWait: aMessage to: receiver responseId: resultId.
-	promise wait: self waitForResultTimeoutDuration.
+	[self sendMessageNoWait: aMessage to: receiver responseId: resultId] 
+		on: Exception 
+		do: [: ex | self signalErrorSendingMessage: aMessage].
+	[promise wait: self waitForResultTimeoutDuration] 
+		on: CcPromiseTimeout 
+		do: [: ex | self signalTimeoutOfPromise: promise forResultOfMessage: aMessage].
 	^ resultBlock value
 ]
 
@@ -149,6 +163,21 @@ MpChannel >> sendObject: anObject [
 { #category : #communicating }
 MpChannel >> serialize: anObject [ 
 	^FLSerializer serializeToByteArray: anObject
+]
+
+{ #category : #communicating }
+MpChannel >> signalErrorSendingMessage: aMessage [
+	MpRemoteMessageSendError new
+		message: aMessage;
+		signal
+]
+
+{ #category : #communicating }
+MpChannel >> signalTimeoutOfPromise: promise forResultOfMessage: aMessage [
+	MpRemoteMessageResultTimeout new
+		resultPromise: promise;
+		message: aMessage;
+		signal
 ]
 
 { #category : #activity }

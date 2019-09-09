@@ -1,6 +1,8 @@
 Class {
 	#name : #MpTcpMiddleware,
 	#superclass : #MpMiddleware,
+	#traits : 'MpTMiddlewareDebugSupport',
+	#classTraits : 'MpTMiddlewareDebugSupport classTrait',
 	#instVars : [
 		'server'
 	],

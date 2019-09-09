@@ -32,6 +32,14 @@ MpTcpChannel >> receiveBytes [
 ]
 
 { #category : #communicating }
+MpTcpChannel >> receptionStep [
+	"Upon timeout wait a bit and continue"
+	[ super receptionStep ] 
+		on: ConnectionTimedOut 
+		do: [ : ex | 100 milliSeconds wait]
+]
+
+{ #category : #communicating }
 MpTcpChannel >> sendBytes: bytes [
 	| bytesCountArray bytesCountSizeArray|
 	bytesCountArray := bytes size asByteArray.

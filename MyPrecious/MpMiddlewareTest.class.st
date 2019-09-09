@@ -18,6 +18,11 @@ MpMiddlewareTest >> allMiddleware [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> assert: anObject instanceOf: aClass [
+	self assert: (self is: anObject instanceOf: aClass)
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> assertIsProxy: anObject [
 		self assert: (self isProxy: anObject). 
 
@@ -30,13 +35,18 @@ MpMiddlewareTest >> denyIsProxy: anObject [
 ]
 
 { #category : #tests }
-MpMiddlewareTest >> isProxy: anObject [
+MpMiddlewareTest >> is: anObject instanceOf: aClass [
 	"We cannot rely on the class messare or messages that use it such as isKindOf:"
 	"This is proxies are supposed to capture all message including class"
 	| actualClass |
 	actualClass := (ProtoObject compiledMethodAt: #class) valueWithReceiver: anObject arguments: #().
-	^actualClass includesBehavior: MpProxy
+	^actualClass includesBehavior: aClass
 
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> isProxy: anObject [
+	^self is: anObject instanceOf: MpProxy
 ]
 
 { #category : #tests }
@@ -234,6 +244,17 @@ MpMiddlewareTest >> testProxyYourself [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> testRemoteMessageSendFailure [
+	| proxyB remoteReferenceA outboundChannelB |
+	remoteReferenceA := middlewareA export: Object new.
+	outboundChannelB := middlewareB channelFactory newChannel.
+	proxyB := middlewareB proxyClass channel: outboundChannelB remoteReference: remoteReferenceA.
+	self should: [proxyB foo] raise: MpRemoteMessageSendError.
+	self assert: proxyB instanceOf: MpProxyForDebug
+
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> testResultPassByCopy [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
@@ -287,11 +308,11 @@ MpMiddlewareTest >> testTimeoutRemoteMessage [
 	remoteReference := middlewareA export: infiniteWaitSemaphore.
 	proxy := middlewareB proxyTo: remoteReference.
 	isTimeout := false.
-	[ 
-		[proxy wait] on: CcPromiseTimeout do: [: ex | isTimeout := true].
+	[
+		[proxy wait] on: MpRemoteMessageResultTimeout do: [: ex | isTimeout := true].
 		doneSemaphore signal.
 	 ] fork.
 	self assertSemaphore: doneSemaphore signaledWithinMilliseconds: 200.
-	self assert: isTimeout
+	self assert: isTimeout.
 
 ]

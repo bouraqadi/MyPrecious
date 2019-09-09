@@ -21,12 +21,6 @@ MpProxyForDebug >> channel: anObject [
 	channel := anObject
 ]
 
-{ #category : #'initialize-release' }
-MpProxyForDebug >> channel: aChannel remoteReference: aRemoteReference [
-	remoteReference := aRemoteReference. 
-	channel := aChannel.
-]
-
 { #category : #'reflective operations' }
 MpProxyForDebug >> doesNotUnderstand: aMessage [
 	| method |
