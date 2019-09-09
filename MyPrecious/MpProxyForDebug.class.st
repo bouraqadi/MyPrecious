@@ -1,6 +1,9 @@
 Class {
 	#name : #MpProxyForDebug,
 	#superclass : #MpProxy,
+	#instVars : [
+		'isExceptionOccured'
+	],
 	#category : #'MyPrecious-Tests'
 }
 
@@ -31,6 +34,17 @@ MpProxyForDebug >> doesNotUnderstand: aMessage [
 	^method valueWithReceiver: self arguments: aMessage arguments 
 ]
 
+{ #category : #'reflective operations' }
+MpProxyForDebug >> isExceptionOccured [
+	isExceptionOccured ifNil: [ ^false ].
+	^isExceptionOccured
+]
+
+{ #category : #'reflective operations' }
+MpProxyForDebug >> isExceptionOccured: aBoolean [
+	isExceptionOccured := aBoolean
+]
+
 { #category : #accessing }
 MpProxyForDebug >> remoteReference [
 	^ remoteReference
@@ -43,5 +57,10 @@ MpProxyForDebug >> remoteReference: anObject [
 
 { #category : #'reflective operations' }
 MpProxyForDebug >> remoteSend: aMessage [
-	^super doesNotUnderstand: aMessage
+	self isExceptionOccured ifTrue: [ ^nil ].
+	[^super doesNotUnderstand: aMessage]
+		on: Exception
+		do: [ : ex | 
+			self isExceptionOccured: true.
+			ex pass ]
 ]
