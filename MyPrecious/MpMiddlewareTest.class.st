@@ -6,7 +6,8 @@ Class {
 	#instVars : [
 		'middlewareA',
 		'middlewareB',
-		'middlewareC'
+		'middlewareC',
+		'initialServices'
 	],
 	#category : #'MyPrecious-Tests'
 }
@@ -59,12 +60,29 @@ MpMiddlewareTest >> passByReferenceObjects [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> runCaseManaged [
+	"We don't want SUnit terminate our processes, because it makes debugging difficult. 
+	We want to see currently active processes/services while debugging failures.
+	Our setup/tearDown deal with clean up."
+	self runCase
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> setUp [
 	super setUp.
+	initialServices := CcService allInstances.
 	middlewareA := 	self middlewareClass new.
 	middlewareB := 	self middlewareClass new.
 	middlewareC := 	self middlewareClass new.
 
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> tearDown [
+	| newServices |
+	super tearDown.
+	newServices := CcService allInstances copyWithoutAll: initialServices.
+	newServices do: #stop
 ]
 
 { #category : #tests }
@@ -129,7 +147,7 @@ MpMiddlewareTest >> testInboundChannelReceiveObject [
 	total := 0.
 	remoteReferenceA := middlewareA export: [: x | total := x + total].
 	middlewareB outboundChannelTo: remoteReferenceA.
-	self assert: middlewareA inboundChannels size equals: 1.
+	self waitUntil: [middlewareA inboundChannels size = 1] timeout: 100 milliSeconds.
 	inboundChannelA := middlewareA inboundChannels anyOne. 
 	message := MpRemoteMessage
 		selector: #value:
