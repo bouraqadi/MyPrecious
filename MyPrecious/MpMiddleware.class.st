@@ -75,6 +75,11 @@ MpMiddleware >> marshallerClass [
 	^MpMarshaller
 ]
 
+{ #category : #exporting }
+MpMiddleware >> objectAt: remoteReference [
+	^self referenceConverter objectAt: remoteReference
+]
+
 { #category : #communicating }
 MpMiddleware >> outboundChannelTo: remoteReference [
 	^self channelFactory outboundChannelTo: remoteReference
@@ -103,6 +108,11 @@ MpMiddleware >> referenceConverterClass [
 { #category : #exporting }
 MpMiddleware >> remoteReferenceClass [
 	^MpRemoteReference
+]
+
+{ #category : #exporting }
+MpMiddleware >> remoteReferenceFor: anObject [
+	^self referenceConverter remoteReferenceFor: anObject
 ]
 
 { #category : #communicating }

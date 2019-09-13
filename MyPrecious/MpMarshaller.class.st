@@ -1,9 +1,6 @@
 Class {
 	#name : #MpMarshaller,
 	#superclass : #MpMiddlewarePart,
-	#instVars : [
-		'proxyFactory'
-	],
 	#category : #'MyPrecious-Kernel'
 }
 

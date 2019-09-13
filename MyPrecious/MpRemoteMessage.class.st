@@ -36,6 +36,15 @@ MpRemoteMessage >> marshalWith: aMarshaller [
 	^aMarshaller marshalMessage: self
 ]
 
+{ #category : #printing }
+MpRemoteMessage >> printOn: aStream [
+	super printOn: aStream.
+	self selector ifNil: [ ^self ].
+	aStream
+		<< ' #';
+		<< self selector
+]
+
 { #category : #communicating }
 MpRemoteMessage >> receivedByChannel: channel [
 	^channel receiveMessage: self

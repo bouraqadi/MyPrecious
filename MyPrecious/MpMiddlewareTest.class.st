@@ -56,7 +56,7 @@ MpMiddlewareTest >> middlewareClass [
 
 { #category : #tests }
 MpMiddlewareTest >> newValueHolder [
-	^ ValueHolder new
+	^ MpValueHolderForTest new
 ]
 
 { #category : #tests }
@@ -152,6 +152,39 @@ MpMiddlewareTest >> testException [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> testExportObject [
+	| exportedObject remoteReferenceA |
+	exportedObject := Object new.
+	remoteReferenceA := middlewareA export: exportedObject.
+	self assert: (middlewareA export: exportedObject) equals: remoteReferenceA.
+	self deny: (middlewareA export: exportedObject deepCopy) equals: remoteReferenceA.
+	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testExportedArrayReference [
+	| exportedArray remoteReferenceA remoteReferenceACopy |
+	exportedArray := #().
+	remoteReferenceA := middlewareA export: exportedArray.
+	self assert: (middlewareA objectAt: remoteReferenceA) == exportedArray.
+	remoteReferenceACopy := remoteReferenceA deepCopy.
+	self assert: (middlewareA objectAt: remoteReferenceACopy) == exportedArray.
+	self assert: (middlewareA remoteReferenceFor: exportedArray) equals: remoteReferenceA.	
+	self deny: (middlewareA remoteReferenceFor: exportedArray copy) equals: remoteReferenceA.	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testExportedObjectReference [
+	| exportedObject remoteReferenceA remoteReferenceACopy |
+	exportedObject := Object new.
+	remoteReferenceA := middlewareA export: exportedObject.
+	self assert: (middlewareA objectAt: remoteReferenceA) == exportedObject.
+	remoteReferenceACopy := remoteReferenceA deepCopy.
+	self assert: (middlewareA objectAt: remoteReferenceACopy) == exportedObject.
+	
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> testInboundChannelReceiveObject [
 	| remoteReferenceA inboundChannelA message total |
 	total := 0.
@@ -230,6 +263,17 @@ MpMiddlewareTest >> testProxyOnClass [
 	otherRemoteRef := middlewareA export: Array.
 	otherClassProxy := middlewareB proxyTo: otherRemoteRef.
 	self deny: classProxy == otherClassProxy
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testProxyUnicity [
+	| remoteReferenceA proxyB remoteReferenceACopy |
+	remoteReferenceA := middlewareA export: Object new.
+	proxyB := middlewareB proxyTo: remoteReferenceA.
+	self assert: (middlewareB proxyTo: remoteReferenceA) == proxyB.
+	remoteReferenceACopy := remoteReferenceA deepCopy.
+	self assert: (middlewareB proxyTo: remoteReferenceACopy) == proxyB.
+	
 ]
 
 { #category : #tests }
