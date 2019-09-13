@@ -153,24 +153,27 @@ MpMiddlewareTest >> testException [
 
 { #category : #tests }
 MpMiddlewareTest >> testExportObject [
-	| exportedObject remoteReferenceA |
-	exportedObject := Object new.
+	| exportedObject remoteReferenceA exportedObjectCopy |
+	exportedObject := self newValueHolder.
 	remoteReferenceA := middlewareA export: exportedObject.
 	self assert: (middlewareA export: exportedObject) equals: remoteReferenceA.
-	self deny: (middlewareA export: exportedObject deepCopy) equals: remoteReferenceA.
+	exportedObjectCopy := self newValueHolder.
+	self assert: exportedObjectCopy equals: exportedObject.
+	self deny: exportedObjectCopy == exportedObject.
+	self deny: (middlewareA export: exportedObjectCopy) equals: remoteReferenceA.
 	
 ]
 
 { #category : #tests }
 MpMiddlewareTest >> testExportedArrayReference [
 	| exportedArray remoteReferenceA remoteReferenceACopy |
-	exportedArray := #().
+	exportedArray := Array new.
 	remoteReferenceA := middlewareA export: exportedArray.
 	self assert: (middlewareA objectAt: remoteReferenceA) == exportedArray.
-	remoteReferenceACopy := remoteReferenceA deepCopy.
+	remoteReferenceACopy := remoteReferenceA deepCopy. 
 	self assert: (middlewareA objectAt: remoteReferenceACopy) == exportedArray.
 	self assert: (middlewareA remoteReferenceFor: exportedArray) equals: remoteReferenceA.	
-	self deny: (middlewareA remoteReferenceFor: exportedArray copy) equals: remoteReferenceA.	
+	self deny: (middlewareA remoteReferenceFor: Array new) equals: remoteReferenceA.	
 ]
 
 { #category : #tests }

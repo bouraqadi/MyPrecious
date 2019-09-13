@@ -21,21 +21,25 @@ MpReferenceConverter >> channelFactory [
 
 { #category : #exporting }
 MpReferenceConverter >> export: anObject [
-	^self export: anObject id: self newId
+	lock critical: [
+		self remoteReferenceFor: anObject ifPresent: [ : existingReference | ^existingReference ].
+		^self export: anObject id: self newId
+	]
 ]
 
 { #category : #exporting }
 MpReferenceConverter >> export: anObject id: id [ 
 	| reference |
-	reference := self newRemoteReferenceWithId: id.
-	lock critical: [exportedObjectsDict at: reference put: anObject].
+	lock critical: [
+		reference := self newRemoteReferenceWithId: id.
+		exportedObjectsDict at: reference put: anObject].
 	^reference
 ]
 
 { #category : #initialization }
 MpReferenceConverter >> initialize [
 	super initialize.
-	exportedObjectsDict := Dictionary new.
+	exportedObjectsDict := MpIdentityValueDictionary new.
 	proxiesDict := Dictionary new.
 	lock := Mutex new.
 ]
@@ -100,4 +104,9 @@ MpReferenceConverter >> remoteReferenceClass [
 { #category : #exporting }
 MpReferenceConverter >> remoteReferenceFor: anObject [
 	^exportedObjectsDict keyAtValue: anObject ifAbsent: [ self export: anObject ]
+]
+
+{ #category : #exporting }
+MpReferenceConverter >> remoteReferenceFor: anObject ifPresent: aBlock [
+	^exportedObjectsDict keyAtValue: anObject ifPresent: aBlock
 ]
