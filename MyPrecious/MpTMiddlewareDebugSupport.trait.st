@@ -7,8 +7,3 @@ Trait {
 MpTMiddlewareDebugSupport >> defaultWaitForResultTimeoutDuration [
 	^100 milliSeconds
 ]
-
-{ #category : #initialization }
-MpTMiddlewareDebugSupport >> proxyClass [
-	^MpProxyForDebug
-]

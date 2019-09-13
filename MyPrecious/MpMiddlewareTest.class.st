@@ -205,10 +205,7 @@ MpMiddlewareTest >> testProxyCreatedOnlyOnce [
 MpMiddlewareTest >> testProxyCreatedWithGivenId [
 	| remoteReference proxy id |
 	id := #someUniqueID.
-	middlewareA export: self newValueHolder id: id.
-	remoteReference := MpRemoteReference new
-		objectId: id;
-		yourself.
+	remoteReference :=  middlewareA export: self newValueHolder id: id.
 	proxy := middlewareB proxyTo: remoteReference.
 	self assertIsProxy: proxy
 ]
@@ -250,7 +247,6 @@ MpMiddlewareTest >> testRemoteMessageSendFailure [
 	outboundChannelB := middlewareB channelFactory newChannel.
 	proxyB := middlewareB proxyClass channel: outboundChannelB remoteReference: remoteReferenceA.
 	self should: [proxyB foo] raise: MpRemoteMessageSendError.
-	self assert: proxyB instanceOf: MpProxyForDebug
 
 ]
 

@@ -3,14 +3,15 @@ Class {
 	#superclass : #ProtoObject,
 	#instVars : [
 		'channel',
-		'remoteReference'
+		'remoteReference',
+		'isDebugging'
 	],
 	#category : #'MyPrecious-Kernel'
 }
 
 { #category : #'instance creation' }
 MpProxy class >> channel: aChannel remoteReference: aRemoteReference [
-	^ self basicNew
+	^ self new
 		channel: aChannel remoteReference: aRemoteReference;
 		yourself
 ]
@@ -24,13 +25,26 @@ MpProxy >> channel: aChannel remoteReference: aRemoteReference [
 { #category : #'class membership' }
 MpProxy >> class [
 	| message |
+	isDebugging ifTrue: [^super class]. "Make it possible to debug + avoid infinite debuggers"
 	message := Message selector: #class.
 	^ self doesNotUnderstand: message
 ]
 
 { #category : #'reflective operations' }
 MpProxy >> doesNotUnderstand: aMessage [
-	^ channel sendMessageSynchronously: aMessage to: self
+	| result |
+	result := [channel sendMessageSynchronously: aMessage to: self] 
+		on: Error do: [: ex | 
+			isDebugging := true.
+			ex pass].
+	isDebugging := false.
+	^result
+]
+
+{ #category : #'initialize-release' }
+MpProxy >> initialize [
+	super initialize.
+	isDebugging := false.
 ]
 
 { #category : #marshalling }
