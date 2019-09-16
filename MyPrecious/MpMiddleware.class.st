@@ -51,7 +51,7 @@ MpMiddleware >> inboundChannelWith: anObject [
 	^self channelFactory inboundChannelWith: anObject
 ]
 
-{ #category : #initialization }
+{ #category : #communicating }
 MpMiddleware >> inboundChannels [
 	^self channelFactory inboundChannels
 ]
@@ -83,6 +83,11 @@ MpMiddleware >> objectAt: remoteReference [
 { #category : #communicating }
 MpMiddleware >> outboundChannelTo: remoteReference [
 	^self channelFactory outboundChannelTo: remoteReference
+]
+
+{ #category : #communicating }
+MpMiddleware >> outboundChannelsDict [
+	^self channelFactory outboundChannelsDict
 ]
 
 { #category : #initialization }

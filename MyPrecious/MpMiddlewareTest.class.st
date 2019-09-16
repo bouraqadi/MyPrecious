@@ -144,6 +144,20 @@ MpMiddlewareTest >> testArgProxyToObjectInThirdMiddleware [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> testChannelsCreation [
+	| valueHolderA remoteReferenceA proxyB |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	self assert: middlewareA inboundChannels isEmpty.
+	self assert: middlewareB outboundChannelsDict isEmpty.
+	proxyB := middlewareB proxyTo: remoteReferenceA.
+	self waitUntil: [middlewareA inboundChannels size = 1].
+	self waitUntil: [middlewareB outboundChannelsDict size = 1].
+	self assert: (middlewareA inboundChannels anyOne) isStarted.
+	self assert: (middlewareB outboundChannelsDict at: remoteReferenceA) isStarted.
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> testException [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: Object new.
@@ -202,6 +216,40 @@ MpMiddlewareTest >> testInboundChannelReceiveObject [
 		responseId: #any.
 	inboundChannelA receiveObject: message.
 	self assert: total equals: 2.
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
+	| valueHolderA1 valueHolderA2 remoteReferenceA1 remoteReferenceA2 proxyB1 proxyB2 semaphore1 semaphore2 result1 result2 process1 process2 |
+	valueHolderA1 := self newValueHolder.
+	valueHolderA1 contents: 1.
+	remoteReferenceA1 := middlewareA export: valueHolderA1.
+	valueHolderA2 := self newValueHolder.
+	valueHolderA2 contents: 2.
+	remoteReferenceA2 := middlewareA export: valueHolderA2.
+	proxyB1 := middlewareB proxyTo: remoteReferenceA1.
+	semaphore1 := Semaphore new.
+	proxyB2 := middlewareB proxyTo: remoteReferenceA2.
+	semaphore2 := Semaphore new.
+	process1 := CcService do: [ 
+		result1 := proxyB1 contents.
+		semaphore1 signal.
+	 ].
+	process2 := CcService do: [ 
+		result2 := proxyB2 contents.
+		semaphore2 signal.
+	 ].
+	{process1. process2} do: [ : each |
+		each
+			priority: 20;
+			start
+
+	].
+	self assertSemaphore: semaphore1 signaledWithinMilliseconds: 500.
+	self assertSemaphore: semaphore2 signaledWithinMilliseconds: 500.
+	self assert: result1 equals: 1.
+	self assert: result2 equals: 2.
+	
 ]
 
 { #category : #tests }
@@ -299,14 +347,14 @@ MpMiddlewareTest >> testRemoteMessageSendFailure [
 
 { #category : #tests }
 MpMiddlewareTest >> testResultPassByCopy [
-	| valueHolder proxy remoteReference |
-	valueHolder := self newValueHolder.
-	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyTo: remoteReference.
+	| valueHolderA proxyB remoteReferenceA |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	proxyB := middlewareB proxyTo: remoteReferenceA.
 	self passByCopyObjects do: [ : arg |
-		valueHolder contents: arg.
-		self denyIsProxy: proxy contents. 
-		self assert: proxy contents equals: arg]
+		valueHolderA contents: arg.
+		self denyIsProxy: proxyB contents. 
+		self assert: proxyB contents equals: arg]
 
 ]
 

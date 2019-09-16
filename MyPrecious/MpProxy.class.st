@@ -47,9 +47,25 @@ MpProxy >> initialize [
 	isDebugging := false.
 ]
 
+{ #category : #printing }
+MpProxy >> longPrintOn: aStream limitedTo: sizeLimit indent: indent [
+	| message |
+	isDebugging ifTrue: [ ^'Proxy on Remote Object' ].
+	message := Message selector: #longPrintOn:limitedTo:indent: arguments: {aStream. sizeLimit. indent}.
+	^ self doesNotUnderstand: message		
+]
+
 { #category : #marshalling }
 MpProxy >> marshalWith: marshaller [
 	^marshaller marshalRemoteReference: remoteReference
+]
+
+{ #category : #printing }
+MpProxy >> printStringLimitedTo: limit [
+	| message |
+	isDebugging ifTrue: [^'Proxy on Remote Object']. "Make it possible to debug + avoid infinite debuggers"
+	message := Message selector: #printStringLimitedTo: argument: limit.
+	^ self doesNotUnderstand: message	
 ]
 
 { #category : #accessing }

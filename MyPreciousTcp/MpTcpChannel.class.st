@@ -13,6 +13,11 @@ MpTcpChannel >> byteCountArraySize [
 ]
 
 { #category : #communicating }
+MpTcpChannel >> flush [
+	self socketStream flush
+]
+
+{ #category : #communicating }
 MpTcpChannel >> next: numberOfBytes [
 	^self socketStream next: numberOfBytes
 ]
@@ -36,7 +41,7 @@ MpTcpChannel >> receptionStep [
 	"Upon timeout wait a bit and continue"
 	[ super receptionStep ] 
 		on: ConnectionTimedOut 
-		do: [ : ex | 100 milliSeconds wait]
+		do: [ : ex | ]
 ]
 
 { #category : #communicating }
@@ -47,7 +52,9 @@ MpTcpChannel >> sendBytes: bytes [
 	self
 		nextPutAll: bytesCountSizeArray;
 		nextPutAll: bytesCountArray;
-		nextPutAll: bytes
+		nextPutAll: bytes;
+		flush.
+
 ]
 
 { #category : #accessing }
