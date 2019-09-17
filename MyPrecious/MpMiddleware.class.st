@@ -45,6 +45,16 @@ MpMiddleware >> initialize [
 	self waitForResultTimeoutDuration: self defaultWaitForResultTimeoutDuration
 ]
 
+{ #category : #activity }
+MpMiddleware >> isStarted [
+	^self transporter isStarted
+]
+
+{ #category : #activity }
+MpMiddleware >> isStopped [
+	^self transporter isStopped
+]
+
 { #category : #accessing }
 MpMiddleware >> marshaller [
 	^ marshaller

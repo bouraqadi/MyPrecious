@@ -82,30 +82,36 @@ MpMiddlewareTest >> passByReferenceObjects [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> runCaseManaged [
+	self runCase
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> setUp [
 	super setUp.
 	middlewareA := self newMiddleware.
 	middlewareB := self newMiddleware.
 	middlewareC := self newMiddleware.
 	self allMiddleware do: #start.
+	
 ]
 
 { #category : #tests }
 MpMiddlewareTest >> tearDown [
 	super tearDown.
-	self allMiddleware do: [ : each | each stop]
+	self allMiddleware do: #stop.
 ]
 
 { #category : #tests }
 MpMiddlewareTest >> testArgPassByCopy [
-	| valueHolder proxy remoteReference |
-	valueHolder := self newValueHolder.
-	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyTo: remoteReference.
+	| valueHolderA remoteReferenceA proxyB |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	proxyB := middlewareB proxyTo: remoteReferenceA.
 	self passByCopyObjects do: [ : arg |
-		proxy contents: arg.
-		self denyIsProxy: valueHolder contents. 
-		self assert: valueHolder contents equals: arg]
+		proxyB contents: arg.
+		self denyIsProxy: valueHolderA contents. 
+		self assert: valueHolderA contents equals: arg]
 	
 
 ]
@@ -181,6 +187,40 @@ MpMiddlewareTest >> testExportedObjectReference [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
+	| valueHolderA1 valueHolderA2 remoteReferenceA1 remoteReferenceA2 proxyB1 proxyB2 semaphore1 semaphore2 result1 result2 process1 process2 |
+	valueHolderA1 := self newValueHolder.
+	valueHolderA1 contents: 1.
+	remoteReferenceA1 := middlewareA export: valueHolderA1.
+	valueHolderA2 := self newValueHolder.
+	valueHolderA2 contents: 2.
+	remoteReferenceA2 := middlewareA export: valueHolderA2.
+	proxyB1 := middlewareB proxyTo: remoteReferenceA1.
+	semaphore1 := Semaphore new.
+	proxyB2 := middlewareB proxyTo: remoteReferenceA2.
+	semaphore2 := Semaphore new.
+	process1 := CcService do: [ 
+		result1 := proxyB1 contents.
+		semaphore1 signal.
+	 ].
+	process2 := CcService do: [ 
+		result2 := proxyB2 contents.
+		semaphore2 signal.
+	 ].
+	{process1. process2} do: [ : each |
+		each
+			priority: 20;
+			start
+
+	].
+	self assertSemaphore: semaphore1 signaledWithinMilliseconds: 500.
+	self assertSemaphore: semaphore2 signaledWithinMilliseconds: 500.
+	self assert: result1 equals: 1.
+	self assert: result2 equals: 2.
+	
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> testProxyCreatedOnDemand [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
@@ -246,6 +286,49 @@ MpMiddlewareTest >> testProxyYourself [
 	remoteReference := middlewareA export: self newValueHolder.
 	proxy := middlewareB proxyTo: remoteReference.
 	self assert: proxy yourself == proxy
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageBasicReceiveAndPerform [
+	| valueHolderA remoteReferenceA message |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	message := MpRemoteMessage new
+		selector: #contents:;
+		arguments: #(2);
+		receiver: remoteReferenceA;
+		targetAddress: middlewareA address;
+		senderAddress: middlewareB address;
+		responseId: #anyID.
+	middlewareA transporter receiveObject: message.
+	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
+	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageBasicSendAndPerform [
+	| valueHolderA remoteReferenceA message proxyB |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	proxyB := middlewareB proxyTo: remoteReferenceA.
+	message := MpRemoteMessage new
+		selector: #contents:;
+		arguments: #(2);
+		receiver: proxyB;
+		targetAddress: middlewareA address;
+		senderAddress: middlewareB address;
+		responseId: #anyID.
+	middlewareB transporter sendObject: message to: middlewareA address.
+	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
+	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageRaisesException [
+	| remoteReference proxy |
+	remoteReference := middlewareA export: Object new.
+	proxy := middlewareB proxyTo: remoteReference.
+	self should: [proxy foo] raise: MpRemoteException
 ]
 
 { #category : #tests }

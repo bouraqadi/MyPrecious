@@ -23,8 +23,8 @@ MpRemoteMessage >> arguments: anObject [
 ]
 
 { #category : #communicating }
-MpRemoteMessage >> deliverByTransporter: channel [
-	^channel deliverMessage: self
+MpRemoteMessage >> deliverByTransporter: transporter [
+	^transporter deliverMessage: self
 ]
 
 { #category : #marshalling }

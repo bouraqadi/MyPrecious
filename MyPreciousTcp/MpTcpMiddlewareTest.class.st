@@ -1,8 +1,6 @@
 Class {
 	#name : #MpTcpMiddlewareTest,
-	#superclass : #MpMiddlewareTestOLD,
-	#traits : 'MpTMiddlewareDebugSupportOLD',
-	#classTraits : 'MpTMiddlewareDebugSupportOLD classTrait',
+	#superclass : #MpMiddlewareTest,
 	#category : #MyPreciousTcp
 }
 
@@ -12,10 +10,8 @@ MpTcpMiddlewareTest >> middlewareClass [
 ]
 
 { #category : #tests }
-MpTcpMiddlewareTest >> setUp [
-	super setUp.
-	self allMiddleware do: [ : each |
-		each 
-			port: NeTcpUsedPortsTracker freePortAtRandom;
-			start ]
+MpTcpMiddlewareTest >> newMiddleware [ 
+	^super newMiddleware
+		port: NeTcpUsedPortsTracker freePortAtRandom;
+		yourself
 ]

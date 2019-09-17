@@ -2,7 +2,6 @@ Class {
 	#name : #MpTransporterForTest,
 	#superclass : #MpTransporter,
 	#instVars : [
-		'sendQueue',
 		'receiveQueue'
 	],
 	#category : #'MyPrecious-Tests'

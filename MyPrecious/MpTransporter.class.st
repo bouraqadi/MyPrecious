@@ -16,14 +16,13 @@ MpTransporter >> address [
 
 { #category : #receiving }
 MpTransporter >> deliverMessage: remoteMessage [
-	| result response |
-	[ 
-		result := remoteMessage send.
-		response := self normalResponseClass
+	| response |
+	response := [ 
+		self normalResponseClass
 			id: remoteMessage responseId
-			result: result 
+			result: remoteMessage send 
 	] on: Exception do: [ :exception | 
-		response := self exceptionResponseClass
+		self exceptionResponseClass
 				id: remoteMessage responseId
 				exception: exception 
 	].

@@ -8,8 +8,8 @@ Class {
 }
 
 { #category : #communicating }
-MpRemoteResponse >> deliverByTransporter: aChannel [
-	^aChannel deliverResponse: self 
+MpRemoteResponse >> deliverByTransporter: transporter [
+	^transporter deliverResponse: self 
 ]
 
 { #category : #accessing }
