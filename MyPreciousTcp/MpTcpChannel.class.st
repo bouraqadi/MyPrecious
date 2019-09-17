@@ -1,6 +1,6 @@
 Class {
 	#name : #MpTcpChannel,
-	#superclass : #MpChannel,
+	#superclass : #MpChannelOLD,
 	#instVars : [
 		'socketStream'
 	],
@@ -18,6 +18,15 @@ MpTcpChannel >> flush [
 ]
 
 { #category : #communicating }
+MpTcpChannel >> incomingBytes [
+	| bytesCountSize bytesCount |
+	bytesCountSize := (self next: self byteCountArraySize) asInteger.
+	bytesCount := (self next: bytesCountSize) asInteger.
+	^self next: bytesCount.
+
+]
+
+{ #category : #communicating }
 MpTcpChannel >> next: numberOfBytes [
 	^self socketStream next: numberOfBytes
 ]
@@ -25,15 +34,6 @@ MpTcpChannel >> next: numberOfBytes [
 { #category : #communicating }
 MpTcpChannel >> nextPutAll: bytes [
 	^self socketStream nextPutAll: bytes
-]
-
-{ #category : #communicating }
-MpTcpChannel >> receiveBytes [
-	| bytesCountSize bytesCount |
-	bytesCountSize := (self next: self byteCountArraySize) asInteger.
-	bytesCount := (self next: bytesCountSize) asInteger.
-	^self next: bytesCount.
-
 ]
 
 { #category : #communicating }

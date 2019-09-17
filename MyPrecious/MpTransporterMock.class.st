@@ -1,5 +1,5 @@
 Class {
-	#name : #MpChannelMock,
+	#name : #MpTransporterMock,
 	#superclass : #Object,
 	#instVars : [
 		'messageAnswersDict'
@@ -8,20 +8,20 @@ Class {
 }
 
 { #category : #initialization }
-MpChannelMock >> initialize [
+MpTransporterMock >> initialize [
 	super initialize.
 	messageAnswersDict := Dictionary new
 ]
 
 { #category : #initialization }
-MpChannelMock >> selector: selector answer: answer [ 
+MpTransporterMock >> selector: selector answer: answer [ 
 	messageAnswersDict
 		at: selector
 		put: answer
 ]
 
 { #category : #communicating }
-MpChannelMock >> sendMessageSynchronously: aMessage to: receiver [
+MpTransporterMock >> sendMessageSynchronously: aMessage to: receiver [
 	| response selector |
 	selector := aMessage selector.
 	response := messageAnswersDict 

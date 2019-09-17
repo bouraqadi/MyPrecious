@@ -4,9 +4,9 @@ Class {
 	#instVars : [
 		'marshaller',
 		'referenceConverter',
-		'channelFactory',
 		'address',
-		'waitForResultTimeoutDuration'
+		'waitForResultTimeoutDuration',
+		'transporter'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -14,21 +14,6 @@ Class {
 { #category : #accessing }
 MpMiddleware >> address [
 	^address
-]
-
-{ #category : #initialization }
-MpMiddleware >> channelClass [
-	self subclassResponsibility
-]
-
-{ #category : #accessing }
-MpMiddleware >> channelFactory [
-	^ channelFactory
-]
-
-{ #category : #initialization }
-MpMiddleware >> channelFactoryClass [
-	^self subclassResponsibility
 ]
 
 { #category : #initialization }
@@ -46,22 +31,12 @@ MpMiddleware >> export: anObject id: aString [
 	^self referenceConverter export: anObject id: aString 
 ]
 
-{ #category : #communicating }
-MpMiddleware >> inboundChannelWith: anObject [
-	^self channelFactory inboundChannelWith: anObject
-]
-
-{ #category : #communicating }
-MpMiddleware >> inboundChannels [
-	^self channelFactory inboundChannels
-]
-
 { #category : #initialization }
 MpMiddleware >> initialize [
 	super initialize.
 	referenceConverter := self referenceConverterClass middleware: self.
 	marshaller := self marshallerClass middleware: self.
-	channelFactory := self channelFactoryClass middleware: self.
+	transporter := self transporterClass middleware: self.
 	self waitForResultTimeoutDuration: self defaultWaitForResultTimeoutDuration
 ]
 
@@ -78,16 +53,6 @@ MpMiddleware >> marshallerClass [
 { #category : #exporting }
 MpMiddleware >> objectAt: remoteReference [
 	^self referenceConverter objectAt: remoteReference
-]
-
-{ #category : #communicating }
-MpMiddleware >> outboundChannelTo: remoteReference [
-	^self channelFactory outboundChannelTo: remoteReference
-]
-
-{ #category : #communicating }
-MpMiddleware >> outboundChannelsDict [
-	^self channelFactory outboundChannelsDict
 ]
 
 { #category : #initialization }
@@ -120,7 +85,27 @@ MpMiddleware >> remoteReferenceFor: anObject [
 	^self referenceConverter remoteReferenceFor: anObject
 ]
 
-{ #category : #communicating }
+{ #category : #activity }
+MpMiddleware >> start [
+	self transporter start
+]
+
+{ #category : #activity }
+MpMiddleware >> stop [
+	self transporter stop
+]
+
+{ #category : #accessing }
+MpMiddleware >> transporter [
+	^transporter
+]
+
+{ #category : #initialization }
+MpMiddleware >> transporterClass [
+	^MpTransporter
+]
+
+{ #category : #accessing }
 MpMiddleware >> waitForResultTimeoutDuration [
 	^waitForResultTimeoutDuration
 ]

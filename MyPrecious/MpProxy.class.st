@@ -2,24 +2,18 @@ Class {
 	#name : #MpProxy,
 	#superclass : #ProtoObject,
 	#instVars : [
-		'channel',
 		'remoteReference',
-		'isDebugging'
+		'isDebugging',
+		'transporter'
 	],
 	#category : #'MyPrecious-Kernel'
 }
 
 { #category : #'instance creation' }
-MpProxy class >> channel: aChannel remoteReference: aRemoteReference [
+MpProxy class >> transporter: aTransporter remoteReference: aRemoteReference [
 	^ self new
-		channel: aChannel remoteReference: aRemoteReference;
+		transporter: aTransporter remoteReference: aRemoteReference;
 		yourself
-]
-
-{ #category : #'initialize-release' }
-MpProxy >> channel: aChannel remoteReference: aRemoteReference [
-	remoteReference := aRemoteReference. 
-	channel := aChannel.
 ]
 
 { #category : #'class membership' }
@@ -33,7 +27,7 @@ MpProxy >> class [
 { #category : #'reflective operations' }
 MpProxy >> doesNotUnderstand: aMessage [
 	| result |
-	result := [channel sendMessageSynchronously: aMessage to: self] 
+	result := [transporter sendMessageSynchronously: aMessage to: self] 
 		on: Error do: [: ex | 
 			isDebugging := true.
 			ex pass].
@@ -66,6 +60,12 @@ MpProxy >> printStringLimitedTo: limit [
 	isDebugging ifTrue: [^'Proxy on Remote Object']. "Make it possible to debug + avoid infinite debuggers"
 	message := Message selector: #printStringLimitedTo: argument: limit.
 	^ self doesNotUnderstand: message	
+]
+
+{ #category : #'initialize-release' }
+MpProxy >> transporter: aTransporter remoteReference: aRemoteReference [
+	remoteReference := aRemoteReference. 
+	transporter := aTransporter.
 ]
 
 { #category : #accessing }

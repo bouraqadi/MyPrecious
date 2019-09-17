@@ -2,8 +2,8 @@ Class {
 	#name : #MpProxyTest,
 	#superclass : #TestCase,
 	#instVars : [
-		'channel',
-		'proxy'
+		'proxy',
+		'transporter'
 	],
 	#category : #'MyPrecious-Tests'
 }
@@ -16,13 +16,13 @@ MpProxyTest >> proxyClass [
 { #category : #tests }
 MpProxyTest >> setUp [
 	super setUp.
-	channel := MpChannelMock new.
-	proxy := self proxyClass channel: channel remoteReference: nil
+	transporter := MpTransporterMock new.
+	proxy := self proxyClass transporter: transporter remoteReference: nil
 ]
 
 { #category : #tests }
 MpProxyTest >> testMessageWithExceptionResponse [
-	channel 
+	transporter 
 		selector: #class answer: Object;
 		selector: #foo answer: [ Halt signal ];
 		selector: #bar answer: [ZeroDivide signal];
@@ -39,7 +39,7 @@ MpProxyTest >> testMessageWithExceptionResponse [
 
 { #category : #tests }
 MpProxyTest >> testMessageWithNormalResponse [
-	channel 
+	transporter 
 		selector: #class answer: Object;
 		selector: #foo answer: 123;
 		selector: #bar answer: true.
@@ -52,7 +52,7 @@ MpProxyTest >> testMessageWithNormalResponse [
 
 { #category : #tests }
 MpProxyTest >> testUnknownMessage [
-	channel 
+	transporter 
 		selector: #class answer: Object;
 		selector: #bar answer: 42.
 	self assert: proxy class == Object.

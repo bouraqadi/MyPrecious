@@ -1,11 +1,11 @@
 Class {
-	#name : #MpChannelFactoryForTest,
-	#superclass : #MpChannelFactory,
+	#name : #MpChannelFactoryForTestOLD,
+	#superclass : #MpChannelFactoryOLD,
 	#category : #'MyPrecious-Tests'
 }
 
 { #category : #communicating }
-MpChannelFactoryForTest >> newInboundChannelWith: anObject [
+MpChannelFactoryForTestOLD >> newInboundChannelWith: anObject [
 	^(super newInboundChannelWith: anObject)
 		sendQueue: SharedQueue new;
 		receiveQueue: SharedQueue new;
@@ -13,10 +13,10 @@ MpChannelFactoryForTest >> newInboundChannelWith: anObject [
 ]
 
 { #category : #communicating }
-MpChannelFactoryForTest >> newOutboundChannelTo: remoteReference [
+MpChannelFactoryForTestOLD >> newOutboundChannelTo: remoteReference [
 	| otherMiddleware inboundChannel |
 	otherMiddleware := self registry at: remoteReference.
-	inboundChannel := otherMiddleware channelFactory inboundChannelWith: nil.
+	inboundChannel := otherMiddleware transporter inboundChannelWith: nil.
 	^(super newOutboundChannelTo: remoteReference)
 		sendQueue: inboundChannel receiveQueue;
 		receiveQueue: inboundChannel sendQueue;
@@ -24,6 +24,6 @@ MpChannelFactoryForTest >> newOutboundChannelTo: remoteReference [
 ]
 
 { #category : #communicating }
-MpChannelFactoryForTest >> registry [
+MpChannelFactoryForTestOLD >> registry [
 	^self middleware registry
 ]

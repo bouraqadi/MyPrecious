@@ -31,6 +31,11 @@ MpRemoteMessage >> arguments: anObject [
 	arguments := anObject
 ]
 
+{ #category : #communicating }
+MpRemoteMessage >> deliverByTransporter: channel [
+	^channel deliverMessage: self
+]
+
 { #category : #marshalling }
 MpRemoteMessage >> marshalWith: aMarshaller [
 	^aMarshaller marshalMessage: self
@@ -43,11 +48,6 @@ MpRemoteMessage >> printOn: aStream [
 	aStream
 		<< ' #';
 		<< self selector
-]
-
-{ #category : #communicating }
-MpRemoteMessage >> receivedByChannel: channel [
-	^channel receiveMessage: self
 ]
 
 { #category : #accessing }

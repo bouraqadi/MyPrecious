@@ -14,11 +14,6 @@ MpReferenceConverter >> address [
 	^self middleware address
 ]
 
-{ #category : #accessing }
-MpReferenceConverter >> channelFactory [
-	^self middleware channelFactory.
-]
-
 { #category : #exporting }
 MpReferenceConverter >> export: anObject [
 	self remoteReferenceFor: anObject ifPresent: [ : existingReference | ^existingReference ].
@@ -41,23 +36,12 @@ MpReferenceConverter >> initialize [
 	exportedObjectsDict := MpIdentityValueDictionary new.
 	proxiesDict := Dictionary new.
 	lock := Mutex new.
-]
 
-{ #category : #proxies }
-MpReferenceConverter >> newOutboundChannelTo: remoteReference [ 
-	^self channelFactory outboundChannelTo: remoteReference
 ]
 
 { #category : #proxies }
 MpReferenceConverter >> newProxyTo: remoteReference [
-	| channel |
-	channel := self outboundChannelTo: remoteReference.
-	^ self newProxyTo: remoteReference channel: channel
-]
-
-{ #category : #proxies }
-MpReferenceConverter >> newProxyTo: remoteReference channel: channel [
-	^ self proxyClass channel: channel remoteReference: remoteReference
+	^ self proxyClass transporter: self transporter remoteReference: remoteReference
 ]
 
 { #category : #exporting }
@@ -75,11 +59,6 @@ MpReferenceConverter >> objectAt: aRemoteReference [
 		exportedObjectsDict 
 			at: aRemoteReference 
 			ifAbsent: [ self proxyTo: aRemoteReference ]]
-]
-
-{ #category : #proxies }
-MpReferenceConverter >> outboundChannelTo: remoteReference [ 
-	^self channelFactory outboundChannelTo: remoteReference
 ]
 
 { #category : #proxies }
@@ -115,4 +94,9 @@ MpReferenceConverter >> remoteReferenceFor: anObject ifAbsent: aBLock [
 MpReferenceConverter >> remoteReferenceFor: anObject ifPresent: aBlock [
 	^lock critical: [
 		exportedObjectsDict keyAtValue: anObject ifPresent: aBlock]
+]
+
+{ #category : #accessing }
+MpReferenceConverter >> transporter [
+	^self middleware transporter.
 ]

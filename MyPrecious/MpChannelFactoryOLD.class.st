@@ -1,5 +1,5 @@
 Class {
-	#name : #MpChannelFactory,
+	#name : #MpChannelFactoryOLD,
 	#superclass : #MpMiddlewarePart,
 	#instVars : [
 		'inboundChannels',
@@ -9,35 +9,35 @@ Class {
 }
 
 { #category : #communicating }
-MpChannelFactory >> channelClass [
+MpChannelFactoryOLD >> channelClass [
 	^self middleware channelClass
 
 ]
 
 { #category : #communicating }
-MpChannelFactory >> inboundChannelWith: anObject [
+MpChannelFactoryOLD >> inboundChannelWith: anObject [
 	^self newStartedInboundChannelWith: anObject
 ]
 
 { #category : #accessing }
-MpChannelFactory >> inboundChannels [
+MpChannelFactoryOLD >> inboundChannels [
 	^inboundChannels
 ]
 
 { #category : #initialization }
-MpChannelFactory >> initialize [
+MpChannelFactoryOLD >> initialize [
 	super initialize.
 	inboundChannels := Set new.
 	outboundChannelsDict := Dictionary new.
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newChannel [
+MpChannelFactoryOLD >> newChannel [
 	^self channelClass middleware: self middleware
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newInboundChannelWith: anObject [
+MpChannelFactoryOLD >> newInboundChannelWith: anObject [
 	| newChannel |
 	newChannel := self newChannel.
 	inboundChannels add: newChannel.
@@ -46,7 +46,7 @@ self inform: 'New Inbound Channel. No GC!!!'.
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newOutboundChannelTo: remoteReference [
+MpChannelFactoryOLD >> newOutboundChannelTo: remoteReference [
 	| newChannel |
 	newChannel := self newChannel.
 	outboundChannelsDict at: remoteReference put: newChannel.
@@ -55,26 +55,26 @@ self inform: 'New Outbound Channel. No GC!!!'.
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newStartedInboundChannelWith: anObject [
+MpChannelFactoryOLD >> newStartedInboundChannelWith: anObject [
 	^(self newInboundChannelWith: anObject)
 		start;
 		yourself
 ]
 
 { #category : #communicating }
-MpChannelFactory >> newStartedOutboundChannelTo: remoteReference [
+MpChannelFactoryOLD >> newStartedOutboundChannelTo: remoteReference [
 	^(self newOutboundChannelTo: remoteReference)
 		start;
 		yourself
 ]
 
 { #category : #communicating }
-MpChannelFactory >> outboundChannelTo: remoteReference [
+MpChannelFactoryOLD >> outboundChannelTo: remoteReference [
 	outboundChannelsDict at: remoteReference ifPresent: [: channel | ^channel ].
 	^self newStartedOutboundChannelTo: remoteReference
 ]
 
 { #category : #accessing }
-MpChannelFactory >> outboundChannelsDict [
+MpChannelFactoryOLD >> outboundChannelsDict [
 	^outboundChannelsDict
 ]

@@ -1,8 +1,8 @@
 Class {
 	#name : #MpTcpMiddlewareTest,
-	#superclass : #MpMiddlewareTest,
-	#traits : 'MpTMiddlewareDebugSupport',
-	#classTraits : 'MpTMiddlewareDebugSupport classTrait',
+	#superclass : #MpMiddlewareTestOLD,
+	#traits : 'MpTMiddlewareDebugSupportOLD',
+	#classTraits : 'MpTMiddlewareDebugSupportOLD classTrait',
 	#category : #MyPreciousTcp
 }
 
@@ -18,10 +18,4 @@ MpTcpMiddlewareTest >> setUp [
 		each 
 			port: NeTcpUsedPortsTracker freePortAtRandom;
 			start ]
-]
-
-{ #category : #tests }
-MpTcpMiddlewareTest >> tearDown [
-	super tearDown.
-	self allMiddleware do: [ : each | each stop]
 ]

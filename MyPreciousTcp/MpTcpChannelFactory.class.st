@@ -1,6 +1,6 @@
 Class {
 	#name : #MpTcpChannelFactory,
-	#superclass : #MpChannelFactory,
+	#superclass : #MpChannelFactoryOLD,
 	#category : #MyPreciousTcp
 }
 

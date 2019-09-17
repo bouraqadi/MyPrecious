@@ -7,6 +7,11 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #communicating }
+MpRemoteResponse >> deliverByTransporter: aChannel [
+	^aChannel deliverResponse: self 
+]
+
 { #category : #accessing }
 MpRemoteResponse >> id [
 	^ id
@@ -15,11 +20,6 @@ MpRemoteResponse >> id [
 { #category : #accessing }
 MpRemoteResponse >> id: anObject [
 	id := anObject
-]
-
-{ #category : #communicating }
-MpRemoteResponse >> receivedByChannel: aChannel [
-	^aChannel receiveResponse: self 
 ]
 
 { #category : #acting }
