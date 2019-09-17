@@ -9,6 +9,11 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #accessing }
+MpTransporter >> address [
+	^self middleware address
+]
+
 { #category : #receiving }
 MpTransporter >> deliverMessage: remoteMessage [
 	| result response |
@@ -22,7 +27,7 @@ MpTransporter >> deliverMessage: remoteMessage [
 				id: remoteMessage responseId
 				exception: exception 
 	].
-	self sendObject: response
+	self sendObject: response to: remoteMessage senderAddress
 ]
 
 { #category : #receiving }
@@ -120,46 +125,53 @@ MpTransporter >> receiveObject: anObject [
 ]
 
 { #category : #sending }
-MpTransporter >> sendBytes: bytes [
+MpTransporter >> sendBytes: bytes to: address [
 	self subclassResponsibility
 
 ]
 
 { #category : #sending }
-MpTransporter >> sendMessageNoWait: aMessage to: receiver responseId: responseId [
-	| remoteMessage |
-	remoteMessage := MpRemoteMessage
-		selector: aMessage selector
-		arguments: aMessage arguments
-		receiver: receiver 
-		responseId: responseId.
-	self sendObject: remoteMessage
-]
-
-{ #category : #sending }
-MpTransporter >> sendMessageSynchronously: aMessage to: receiver [
-	| promise resultId resultBlock |
-	resultId := self newId.
+MpTransporter >> sendMessage: remoteMessage [
+	| promise responseId responseBlock |
+	responseId := self newId.
 	promise := self promiseClass
-		onFulfillDo: [ :answer | resultBlock := [ answer ] ]
-		onRejectDo: [ :exception | resultBlock := [ exception signal ] ].
-	promisesLock critical: [ self promisesDict at: resultId put: promise ].
-	[ self sendMessageNoWait: aMessage to: receiver responseId: resultId ]
-		on: Exception
-		do: [ :ex | self signalErrorSendingMessage: aMessage ].
+		onFulfillDo: [ :answer | responseBlock := [ answer ] ]
+		onRejectDo: [ :exception | responseBlock := [ exception signal ] ].
+	promisesLock critical: [ self promisesDict at: responseId put: promise ].
+	remoteMessage
+		senderAddress: self address; 
+		responseId: responseId.
+	self sendObject: remoteMessage to: remoteMessage targetAddress.
 	[ promise wait: self waitForResultTimeoutDuration ]
 		on: CcPromiseTimeout
 		do:
-			[ :ex | self signalTimeoutOfPromise: promise forResultOfMessage: aMessage ].
-	^ resultBlock value
+			[ :ex | self signalTimeoutOfPromise: promise forResultOfMessage: remoteMessage ].
+	^ responseBlock value
 ]
 
 { #category : #sending }
-MpTransporter >> sendObject: anObject [
+MpTransporter >> sendMessage: localMessage targetReference: remoteReference receiver: aProxy [
+	| remoteMessage |
+	[
+		remoteMessage := MpRemoteMessage new.
+		remoteMessage
+			selector: localMessage selector;
+			arguments: localMessage arguments;
+			targetAddress: remoteReference address;
+			receiver: self.
+		^self sendMessage: remoteMessage 
+	] 
+	on: Exception
+	do: [ :ex | self signalSendingMessage: remoteMessage raised: ex ].
+
+]
+
+{ #category : #sending }
+MpTransporter >> sendObject: anObject to: address [
 	| marshalledObject bytes |
 	marshalledObject := self marshal: anObject.
 	bytes := self serialize: marshalledObject.
-	self sendBytes: bytes
+	self sendBytes: bytes to: address
 ]
 
 { #category : #sending }
@@ -171,6 +183,14 @@ MpTransporter >> serialize: anObject [
 MpTransporter >> signalErrorSendingMessage: aMessage [
 	MpRemoteMessageSendError new
 		message: aMessage;
+		signal
+]
+
+{ #category : #sending }
+MpTransporter >> signalSendingMessage: aMessage raised: exception [
+	MpRemoteMessageSendError new
+		message: aMessage;
+		remoteException: exception;
 		signal
 ]
 

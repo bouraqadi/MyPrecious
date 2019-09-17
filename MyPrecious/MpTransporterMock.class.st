@@ -21,9 +21,9 @@ MpTransporterMock >> selector: selector answer: answer [
 ]
 
 { #category : #communicating }
-MpTransporterMock >> sendMessageSynchronously: aMessage to: receiver [
+MpTransporterMock >> sendMessage: localMessage targetReference: remoteReference receiver: aProxy [
 	| response selector |
-	selector := aMessage selector.
+	selector := localMessage selector.
 	response := messageAnswersDict 
 		at: selector 
 		ifAbsent: [MessageNotUnderstood signal: 'Proxy doesNotUnderstand: #', selector].

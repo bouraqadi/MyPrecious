@@ -74,11 +74,10 @@ MpMarshaller >> unmarshalMessage: message [
 	|unmarshalledArgs unmarshalledReceiver |
 	unmarshalledReceiver := self unmarshal: message receiver.
 	unmarshalledArgs := message arguments collect: [ : each | self unmarshal: each ].
-	^MpRemoteMessage 
-		selector: message selector
-		arguments: unmarshalledArgs
-		receiver: unmarshalledReceiver 
-		responseId: message responseId.
+	^message 
+		arguments: unmarshalledArgs;
+		receiver: unmarshalledReceiver; 
+		yourself.
 ]
 
 { #category : #marshalling }

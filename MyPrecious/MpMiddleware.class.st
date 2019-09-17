@@ -16,6 +16,11 @@ MpMiddleware >> address [
 	^address
 ]
 
+{ #category : #accessing }
+MpMiddleware >> address: anAddress [
+	address := anAddress 
+]
+
 { #category : #initialization }
 MpMiddleware >> defaultWaitForResultTimeoutDuration [
 	^500 milliSeconds 

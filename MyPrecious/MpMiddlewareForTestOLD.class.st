@@ -21,10 +21,5 @@ MpMiddlewareForTestOLD >> channelFactoryClass [
 
 { #category : #initialization }
 MpMiddlewareForTestOLD >> referenceConverterClass [
-	^MpReferenceConverterForTest
-]
-
-{ #category : #accessing }
-MpMiddlewareForTestOLD >> registry [
-	^ Registry ifNil: [Registry := WeakValueDictionary new ]
+	^MpReferenceConverterForTestOLD
 ]

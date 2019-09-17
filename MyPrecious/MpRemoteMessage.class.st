@@ -5,21 +5,12 @@ Class {
 		'selector',
 		'arguments',
 		'receiver',
-		'responseId'
+		'responseId',
+		'targetAddress',
+		'senderAddress'
 	],
 	#category : #'MyPrecious-Kernel'
 }
-
-{ #category : #'instance creation' }
-MpRemoteMessage class >> selector: selector arguments: args receiver: receiver responseId: responseId [
-	^self new
-		selector: selector; 
-		arguments: args; 
-		receiver: receiver;
-		responseId: responseId; 
-		yourself
-
-]
 
 { #category : #accessing }
 MpRemoteMessage >> arguments [
@@ -85,6 +76,26 @@ MpRemoteMessage >> send [
 	^self receiver
 		perform: selector 
 		withArguments: arguments
+]
+
+{ #category : #accessing }
+MpRemoteMessage >> senderAddress [
+	^ senderAddress
+]
+
+{ #category : #accessing }
+MpRemoteMessage >> senderAddress: anObject [
+	senderAddress := anObject
+]
+
+{ #category : #accessing }
+MpRemoteMessage >> targetAddress [
+	^ targetAddress
+]
+
+{ #category : #accessing }
+MpRemoteMessage >> targetAddress: anObject [
+	targetAddress := anObject
 ]
 
 { #category : #marshalling }

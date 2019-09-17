@@ -22,8 +22,3 @@ MpChannelFactoryForTestOLD >> newOutboundChannelTo: remoteReference [
 		receiveQueue: inboundChannel sendQueue;
 		yourself
 ]
-
-{ #category : #communicating }
-MpChannelFactoryForTestOLD >> registry [
-	^self middleware registry
-]

@@ -2,6 +2,7 @@ Class {
 	#name : #MpRemoteMessageSendError,
 	#superclass : #Error,
 	#instVars : [
+		'remoteException',
 		'message'
 	],
 	#category : #'MyPrecious-Kernel'
@@ -9,7 +10,13 @@ Class {
 
 { #category : #accessing }
 MpRemoteMessageSendError >> description [
-	^'Error sending remote message #', self message selector
+	^String streamContents: [ : str |
+		str 
+			<< 'Remote message #'; 
+			<< self message selector;
+			<< ' signaled ';
+			<< self remoteException description
+	 ]
 ]
 
 { #category : #accessing }
@@ -20,4 +27,14 @@ MpRemoteMessageSendError >> message [
 { #category : #accessing }
 MpRemoteMessageSendError >> message: anObject [
 	message := anObject
+]
+
+{ #category : #accessing }
+MpRemoteMessageSendError >> remoteException [
+	^ remoteException
+]
+
+{ #category : #accessing }
+MpRemoteMessageSendError >> remoteException: anObject [
+	remoteException := anObject
 ]

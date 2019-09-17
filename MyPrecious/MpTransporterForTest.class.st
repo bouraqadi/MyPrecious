@@ -36,16 +36,13 @@ MpTransporterForTest >> receiveQueue: anObject [
 ]
 
 { #category : #communicating }
-MpTransporterForTest >> sendBytes: bytes [
-	sendQueue nextPut: bytes
+MpTransporterForTest >> registry [
+	^self middleware registry
 ]
 
-{ #category : #accessing }
-MpTransporterForTest >> sendQueue [
-	^ sendQueue
-]
-
-{ #category : #accessing }
-MpTransporterForTest >> sendQueue: anObject [
-	sendQueue := anObject
+{ #category : #communicating }
+MpTransporterForTest >> sendBytes: bytes to: address [
+	| otherMiddleware |
+	otherMiddleware := self registry at: address.
+	otherMiddleware transporter receiveQueue nextPut: bytes
 ]

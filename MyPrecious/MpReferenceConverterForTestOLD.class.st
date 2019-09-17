@@ -1,11 +1,11 @@
 Class {
-	#name : #MpReferenceConverterForTest,
+	#name : #MpReferenceConverterForTestOLD,
 	#superclass : #MpReferenceConverter,
 	#category : #'MyPrecious-Tests'
 }
 
 { #category : #exporting }
-MpReferenceConverterForTest >> export: anObject id: id [
+MpReferenceConverterForTestOLD >> export: anObject id: id [
 	| reference |
 	reference := super export: anObject id: id.
 	self registry at: reference put: self middleware.
@@ -13,6 +13,6 @@ MpReferenceConverterForTest >> export: anObject id: id [
 ]
 
 { #category : #accessing }
-MpReferenceConverterForTest >> registry [
+MpReferenceConverterForTestOLD >> registry [
 	^self middleware registry
 ]
