@@ -30,6 +30,14 @@ MpReferenceConverter >> export: anObject id: id [
 	^reference
 ]
 
+{ #category : #exporting }
+MpReferenceConverter >> exportedObjectAt: aRemoteReference [
+	^lock critical: [ 
+		exportedObjectsDict
+			at: aRemoteReference
+			ifAbsent: [ MpUnknownObject signal ]]
+]
+
 { #category : #initialization }
 MpReferenceConverter >> initialize [
 	super initialize.
@@ -55,10 +63,9 @@ MpReferenceConverter >> newRemoteReferenceWithId: id [
 
 { #category : #exporting }
 MpReferenceConverter >> objectAt: aRemoteReference [
-	^lock critical: [
-		exportedObjectsDict 
-			at: aRemoteReference 
-			ifAbsent: [ self proxyTo: aRemoteReference ]]
+	aRemoteReference address = self address ifTrue:[ 
+		^ self exportedObjectAt: aRemoteReference ].
+	^ self proxyTo: aRemoteReference
 ]
 
 { #category : #proxies }
@@ -68,7 +75,7 @@ MpReferenceConverter >> proxyClass [
 
 { #category : #proxies }
 MpReferenceConverter >> proxyTo: remoteReference [ 
-	^lock critical: [
+	^lock critical: [ 
 		proxiesDict 
 			at: remoteReference 
 			ifAbsentPut: [ self newProxyTo: remoteReference]]

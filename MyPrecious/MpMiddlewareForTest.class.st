@@ -8,9 +8,9 @@ Class {
 }
 
 { #category : #accessing }
-MpMiddlewareForTest >> address: anAndress [
-	super address: anAndress.
-	self registry at: anAndress put: self
+MpMiddlewareForTest >> address: anAddress [
+	super address: anAddress.
+	self registry at: anAddress put: self
 ]
 
 { #category : #initialization }

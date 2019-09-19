@@ -107,7 +107,7 @@ MpMiddlewareTest >> testArgPassByCopy [
 	| valueHolderA remoteReferenceA proxyB |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
-	proxyB := middlewareB proxyTo: remoteReferenceA.
+	proxyB := middlewareB objectAt: remoteReferenceA.
 	self passByCopyObjects do: [ : arg |
 		proxyB contents: arg.
 		self denyIsProxy: valueHolderA contents. 
@@ -121,7 +121,7 @@ MpMiddlewareTest >> testArgPassByReference [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
 	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	self passByReferenceObjects do: [ : arg |
 		proxy contents: arg.
 		self assertIsProxy: valueHolder contents.
@@ -136,10 +136,10 @@ MpMiddlewareTest >> testArgProxyToObjectInThirdMiddleware [
 	| a refA proxyAInB c refC proxyCInB proxyCInA |
 	a := self newValueHolder.
 	refA := middlewareA export: a.
-	proxyAInB := middlewareB proxyTo: refA.
+	proxyAInB := middlewareB objectAt: refA.
 	c := self newValueHolder.
 	refC := middlewareC export: c.
-	proxyCInB := middlewareB proxyTo: refC.
+	proxyCInB := middlewareB objectAt: refC.
 	proxyAInB contents: proxyCInB.
 	proxyCInA := a contents.
 	self assertIsProxy: proxyCInA.
@@ -195,9 +195,9 @@ MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
 	valueHolderA2 := self newValueHolder.
 	valueHolderA2 contents: 2.
 	remoteReferenceA2 := middlewareA export: valueHolderA2.
-	proxyB1 := middlewareB proxyTo: remoteReferenceA1.
+	proxyB1 := middlewareB objectAt: remoteReferenceA1.
 	semaphore1 := Semaphore new.
-	proxyB2 := middlewareB proxyTo: remoteReferenceA2.
+	proxyB2 := middlewareB objectAt: remoteReferenceA2.
 	semaphore2 := Semaphore new.
 	process1 := CcService do: [ 
 		result1 := proxyB1 contents.
@@ -224,7 +224,7 @@ MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
 MpMiddlewareTest >> testProxyCreatedOnDemand [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	self assertIsProxy: proxy
 ]
 
@@ -232,8 +232,8 @@ MpMiddlewareTest >> testProxyCreatedOnDemand [
 MpMiddlewareTest >> testProxyCreatedOnlyOnce [
 	| remoteReference proxy1 proxy2 |
 	remoteReference := middlewareA export: self newValueHolder.
-	proxy1 := middlewareB proxyTo: remoteReference.
-	proxy2 := middlewareB proxyTo: remoteReference.
+	proxy1 := middlewareB objectAt: remoteReference.
+	proxy2 := middlewareB objectAt: remoteReference.
 	self assert: proxy1 == proxy2.
 	
 ]
@@ -243,7 +243,7 @@ MpMiddlewareTest >> testProxyCreatedWithGivenId [
 	| remoteReference proxy id |
 	id := #someUniqueID.
 	remoteReference :=  middlewareA export: self newValueHolder id: id.
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	self assertIsProxy: proxy
 ]
 
@@ -251,7 +251,7 @@ MpMiddlewareTest >> testProxyCreatedWithGivenId [
 MpMiddlewareTest >> testProxyOnBlock [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: [1+2].
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	self assert: proxy value equals: 3
 ]
 
@@ -259,13 +259,13 @@ MpMiddlewareTest >> testProxyOnBlock [
 MpMiddlewareTest >> testProxyOnClass [
 	| remoteReference classProxy instanceProxy otherRemoteRef otherClassProxy |
 	remoteReference := middlewareA export: Object.
-	classProxy := middlewareB proxyTo: remoteReference.
+	classProxy := middlewareB objectAt: remoteReference.
 	self assertIsProxy: classProxy.
 	instanceProxy := classProxy new.
 	self assertIsProxy: instanceProxy.
 	self assert: (instanceProxy isKindOf: classProxy).
 	otherRemoteRef := middlewareA export: Array.
-	otherClassProxy := middlewareB proxyTo: otherRemoteRef.
+	otherClassProxy := middlewareB objectAt: otherRemoteRef.
 	self deny: classProxy == otherClassProxy
 ]
 
@@ -273,10 +273,10 @@ MpMiddlewareTest >> testProxyOnClass [
 MpMiddlewareTest >> testProxyUnicity [
 	| remoteReferenceA proxyB remoteReferenceACopy |
 	remoteReferenceA := middlewareA export: Object new.
-	proxyB := middlewareB proxyTo: remoteReferenceA.
-	self assert: (middlewareB proxyTo: remoteReferenceA) == proxyB.
+	proxyB := middlewareB objectAt: remoteReferenceA.
+	self assert: (middlewareB objectAt: remoteReferenceA) == proxyB.
 	remoteReferenceACopy := remoteReferenceA deepCopy.
-	self assert: (middlewareB proxyTo: remoteReferenceACopy) == proxyB.
+	self assert: (middlewareB objectAt: remoteReferenceACopy) == proxyB.
 	
 ]
 
@@ -284,7 +284,7 @@ MpMiddlewareTest >> testProxyUnicity [
 MpMiddlewareTest >> testProxyYourself [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	self assert: proxy yourself == proxy
 ]
 
@@ -310,7 +310,7 @@ MpMiddlewareTest >> testRemoteMessageBasicSendAndPerform [
 	| valueHolderA remoteReferenceA message proxyB |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
-	proxyB := middlewareB proxyTo: remoteReferenceA.
+	proxyB := middlewareB objectAt: remoteReferenceA.
 	message := MpRemoteMessage new
 		selector: #contents:;
 		arguments: #(2);
@@ -327,7 +327,7 @@ MpMiddlewareTest >> testRemoteMessageBasicSendAndPerform [
 MpMiddlewareTest >> testRemoteMessageRaisesException [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: Object new.
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	self should: [proxy foo] raise: MpRemoteException
 ]
 
@@ -356,7 +356,7 @@ MpMiddlewareTest >> testResultPassByCopy [
 	| valueHolderA proxyB remoteReferenceA |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
-	proxyB := middlewareB proxyTo: remoteReferenceA.
+	proxyB := middlewareB objectAt: remoteReferenceA.
 	self passByCopyObjects do: [ : arg |
 		valueHolderA contents: arg.
 		self denyIsProxy: proxyB contents. 
@@ -369,7 +369,7 @@ MpMiddlewareTest >> testResultPassByReference [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
 	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	self passByReferenceObjects do: [ : arg |
 		valueHolder contents: arg.
 		self assertIsProxy: proxy contents.
@@ -383,10 +383,10 @@ MpMiddlewareTest >> testResultProxyToObjectInThirdMiddleware [
 	| a refA proxyAInB c refC proxyCInB proxyCInA |
 	a := self newValueHolder.
 	refA := middlewareA export: a.
-	proxyAInB := middlewareB proxyTo: refA.
+	proxyAInB := middlewareB objectAt: refA.
 	c := self newValueHolder.
 	refC := middlewareC export: c.
-	proxyCInA := middlewareA proxyTo: refC.
+	proxyCInA := middlewareA objectAt: refC.
 	a contents: proxyCInA.
 	proxyCInB := proxyAInB contents.
 	self assertIsProxy: proxyCInB.
@@ -403,7 +403,7 @@ MpMiddlewareTest >> testTimeoutRemoteMessage [
 	infiniteWaitSemaphore := Semaphore new.
 	doneSemaphore := Semaphore new.
 	remoteReference := middlewareA export: infiniteWaitSemaphore.
-	proxy := middlewareB proxyTo: remoteReference.
+	proxy := middlewareB objectAt: remoteReference.
 	isTimeout := false.
 	[
 		[proxy wait] on: MpRemoteMessageResultTimeout do: [: ex | isTimeout := true].
@@ -411,5 +411,16 @@ MpMiddlewareTest >> testTimeoutRemoteMessage [
 	 ] fork.
 	self assertSemaphore: doneSemaphore signaledWithinMilliseconds: 200.
 	self assert: isTimeout.
+
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testUnknownReference [
+	| remoteReference |
+	remoteReference := middlewareA referenceConverter newRemoteReferenceWithId: #any.
+	self should: [middlewareA objectAt: remoteReference ] raise: MpUnknownObject.
+	{middlewareB. middlewareC} do: [: each | 
+		self assertIsProxy: (each objectAt: remoteReference)
+		 ]
 
 ]

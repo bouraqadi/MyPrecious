@@ -75,11 +75,6 @@ MpMiddleware >> proxyClass [
 	^MpProxy
 ]
 
-{ #category : #proxies }
-MpMiddleware >> proxyTo: remoteReference [ 
-	^self referenceConverter proxyTo: remoteReference 
-]
-
 { #category : #accessing }
 MpMiddleware >> referenceConverter [
 	^ referenceConverter
