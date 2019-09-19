@@ -131,37 +131,36 @@ MpTransporter >> sendBytes: bytes to: address [
 
 { #category : #sending }
 MpTransporter >> sendMessage: remoteMessage [
-	| promise responseId responseBlock |
-	responseId := self newId.
+	| promise response |
 	promise := self promiseClass
-		onFulfillDo: [ :answer | responseBlock := [ answer ] ]
-		onRejectDo: [ :exception | responseBlock := [ exception signal ] ].
-	promisesLock critical: [ self promisesDict at: responseId put: promise ].
-	remoteMessage
-		senderAddress: self address; 
-		responseId: responseId.
-	self sendObject: remoteMessage to: remoteMessage targetAddress.
+		onFulfillDo: [ :normalResponse | response := normalResponse ]
+		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
+	promisesLock critical: [ 
+		self promisesDict 
+			at: remoteMessage responseId 
+			put: promise ].
+	[self sendObject: remoteMessage to: remoteMessage targetAddress] 
+		on: Exception
+		do: [ :ex | self signalSendingMessage: remoteMessage raised: ex ].
 	[ promise wait: self waitForResultTimeoutDuration ]
 		on: CcPromiseTimeout
 		do:
 			[ :ex | self signalTimeoutOfPromise: promise forResultOfMessage: remoteMessage ].
-	^ responseBlock value
+	^ response contents
 ]
 
 { #category : #sending }
 MpTransporter >> sendMessage: localMessage targetReference: remoteReference receiver: aProxy [
 	| remoteMessage |
-	[
-		remoteMessage := MpRemoteMessage new.
-		remoteMessage
-			selector: localMessage selector;
-			arguments: localMessage arguments;
-			targetAddress: remoteReference address;
-			receiver: aProxy.
-		^self sendMessage: remoteMessage 
-	] 
-	on: Exception
-	do: [ :ex | self signalSendingMessage: remoteMessage raised: ex ].
+	remoteMessage := MpRemoteMessage new.
+	remoteMessage
+		selector: localMessage selector;
+		arguments: localMessage arguments;
+		targetAddress: remoteReference address;
+		receiver: aProxy;
+		senderAddress: self address; 
+		responseId: self newId.
+	^self sendMessage: remoteMessage 
 
 ]
 
@@ -176,13 +175,6 @@ MpTransporter >> sendObject: anObject to: address [
 { #category : #sending }
 MpTransporter >> serialize: anObject [ 
 	^FLSerializer serializeToByteArray: anObject
-]
-
-{ #category : #sending }
-MpTransporter >> signalErrorSendingMessage: aMessage [
-	MpRemoteMessageSendError new
-		message: aMessage;
-		signal
 ]
 
 { #category : #sending }

@@ -16,6 +16,11 @@ MpExceptionRemoteResponse class >> id: id exception: exception [
 ]
 
 { #category : #accessing }
+MpExceptionRemoteResponse >> contents [
+	self exception signal
+]
+
+{ #category : #accessing }
 MpExceptionRemoteResponse >> exception [
 	^ exception
 ]
@@ -32,5 +37,5 @@ MpExceptionRemoteResponse >> marshalWith: marshaller [
 
 { #category : #acting }
 MpExceptionRemoteResponse >> trigger: aPromise [
-	aPromise rejectWith: self exception
+	aPromise rejectWith: self
 ]

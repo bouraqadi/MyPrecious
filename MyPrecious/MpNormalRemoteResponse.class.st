@@ -15,6 +15,11 @@ MpNormalRemoteResponse class >> id: id result: result [
 		yourself
 ]
 
+{ #category : #accessing }
+MpNormalRemoteResponse >> contents [
+	^self result
+]
+
 { #category : #marshalling }
 MpNormalRemoteResponse >> marshalWith: marshaller [
 	^marshaller marshalNormalResponse: self
@@ -32,7 +37,7 @@ MpNormalRemoteResponse >> result: anObject [
 
 { #category : #acting }
 MpNormalRemoteResponse >> trigger: aPromise [
-	aPromise fulfillWith: self result
+	aPromise fulfillWith: self
 ]
 
 { #category : #marshalling }

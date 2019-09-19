@@ -7,6 +7,11 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #accessing }
+MpRemoteResponse >> contents [
+	self subclassResponsibility
+]
+
 { #category : #communicating }
 MpRemoteResponse >> deliverByTransporter: transporter [
 	^transporter deliverResponse: self 

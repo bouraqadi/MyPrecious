@@ -347,7 +347,7 @@ MpMiddlewareTest >> testRemoteMessageSendToNilReference [
 	proxyA := middlewareA proxyClass 
 		transporter: middlewareA transporter 
 		remoteReference: nil.
-	self should: [proxyA foo] raise: MpRemoteMessageSendError.
+	self should: [proxyA foo] raise: Exception.
 
 ]
 
