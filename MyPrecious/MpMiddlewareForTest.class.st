@@ -2,6 +2,7 @@ Class {
 	#name : #MpMiddlewareForTest,
 	#superclass : #MpMiddleware,
 	#classVars : [
+		'AddressCounter',
 		'Registry'
 	],
 	#category : #'MyPrecious-Tests'
@@ -16,7 +17,16 @@ MpMiddlewareForTest >> address: anAddress [
 { #category : #initialization }
 MpMiddlewareForTest >> initialize [
 	super initialize.
-	self address: UUID new
+	self address: self newAddress
+]
+
+{ #category : #accessing }
+MpMiddlewareForTest >> newAddress [
+	| previousCount |
+	previousCount := AddressCounter ifNil: [AddressCounter := 0].
+	AddressCounter := previousCount + 1.
+	^String streamContents: [: str |
+		str << self className; print: AddressCounter]
 ]
 
 { #category : #accessing }

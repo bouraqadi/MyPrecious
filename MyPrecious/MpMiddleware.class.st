@@ -70,6 +70,15 @@ MpMiddleware >> objectAt: remoteReference [
 	^self referenceConverter objectAt: remoteReference
 ]
 
+{ #category : #printing }
+MpMiddleware >> printOn: aStream [
+	super printOn: aStream.
+	aStream
+		<< ' (';
+		print: self address;
+		<<$)
+]
+
 { #category : #initialization }
 MpMiddleware >> proxyClass [
 	^MpProxy

@@ -157,7 +157,7 @@ MpTransporter >> sendMessage: localMessage targetReference: remoteReference rece
 			selector: localMessage selector;
 			arguments: localMessage arguments;
 			targetAddress: remoteReference address;
-			receiver: self.
+			receiver: aProxy.
 		^self sendMessage: remoteMessage 
 	] 
 	on: Exception
