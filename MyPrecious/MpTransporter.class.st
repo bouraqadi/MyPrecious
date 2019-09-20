@@ -43,11 +43,6 @@ MpTransporter >> exceptionResponseClass [
 	^ MpExceptionRemoteResponse
 ]
 
-{ #category : #receiving }
-MpTransporter >> incomingBytes [
-	self subclassResponsibility
-]
-
 { #category : #initialization }
 MpTransporter >> initialize [
 	super initialize.
@@ -102,11 +97,6 @@ MpTransporter >> promiseClass [
 { #category : #accessing }
 MpTransporter >> promisesDict [
 	^ promisesDict
-]
-
-{ #category : #receiving }
-MpTransporter >> receiveBytes [
-	self receiveBytes: self incomingBytes
 ]
 
 { #category : #receiving }

@@ -1,39 +1,8 @@
 Class {
 	#name : #MpTcpMiddleware,
 	#superclass : #MpMiddleware,
-	#instVars : [
-		'server'
-	],
 	#category : #MyPreciousTcp
 }
-
-{ #category : #communicating }
-MpTcpMiddleware >> channelClass [
-	^MpTcpChannel
-]
-
-{ #category : #initialization }
-MpTcpMiddleware >> channelFactoryClass [
-	^MpTcpChannelFactory
-]
-
-{ #category : #initialization }
-MpTcpMiddleware >> initialize [
-	super initialize.
-	server := self serverClass new. 
-	server withCommunicationStreamDo: [ : stream | 
-			self inboundChannelWith: stream ].
-]
-
-{ #category : #testing }
-MpTcpMiddleware >> isStarted [
-	^self server isStarted
-]
-
-{ #category : #testing }
-MpTcpMiddleware >> isStopped [
-	^self server isStopped
-]
 
 { #category : #initialization }
 MpTcpMiddleware >> localHostAddress [
@@ -42,26 +11,11 @@ MpTcpMiddleware >> localHostAddress [
 
 { #category : #initialization }
 MpTcpMiddleware >> port: portNumber [
-	self server port: portNumber.
+	self transporter port: portNumber.
 	address := MpIpFullAddress ip: self localHostAddress port: portNumber 
 ]
 
-{ #category : #accessing }
-MpTcpMiddleware >> server [
-	^server
-]
-
 { #category : #initialization }
-MpTcpMiddleware >> serverClass [
-	^NeTcpServer 
-]
-
-{ #category : #activity }
-MpTcpMiddleware >> start [
-	^self server start
-]
-
-{ #category : #activity }
-MpTcpMiddleware >> stop [
-	^self server stop
+MpTcpMiddleware >> transporterClass [
+	^MpTcpTransporter
 ]

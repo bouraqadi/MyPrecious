@@ -7,11 +7,6 @@ Class {
 	#category : #'MyPrecious-Tests'
 }
 
-{ #category : #communicating }
-MpTransporterForTest >> incomingBytes [
-	^receiveQueue next
-]
-
 { #category : #initialization }
 MpTransporterForTest >> initialize [
 	super initialize.
@@ -22,6 +17,11 @@ MpTransporterForTest >> initialize [
 { #category : #initialization }
 MpTransporterForTest >> newReceptionService [
 	^CcService repeat: [ self receiveBytes ]
+]
+
+{ #category : #receiving }
+MpTransporterForTest >> receiveBytes [
+	self receiveBytes: receiveQueue next
 ]
 
 { #category : #accessing }
