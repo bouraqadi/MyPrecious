@@ -289,17 +289,50 @@ MpMiddlewareTest >> testProxyYourself [
 ]
 
 { #category : #tests }
-MpMiddlewareTest >> testRemoteAsynchronousMessage [
-	| valueHolderA remoteReferenceA |
-	valueHolderA := self newValueHolder.
-	remoteReferenceA := middlewareA export: valueHolderA.
-	middlewareB sendAsync: #contents: arguments: #(3) to: remoteReferenceA.
-	self waitUntil: [valueHolderA contents = 3] onTimeout: 300 milliSeconds do: [ self fail: 'Message not received' ]
+MpMiddlewareTest >> testRemoteMessageAsynchronousSend0Args [
+	| remoteReferenceA x blockA |
+	x := 0.
+	blockA := [ x := x + 1 ].
+	remoteReferenceA := middlewareA export: blockA.
+	middlewareB sendAsync: #value to: remoteReferenceA.
+	self waitUntil: [x = 1] onTimeout: 300 milliSeconds do: [ self fail: 'Message not received' ].
 	
 ]
 
 { #category : #tests }
-MpMiddlewareTest >> testRemoteMessageBasicReceiveAndPerform [
+MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilAddress [
+	self should: [
+		middlewareB sendAsync: #contents: arguments: #(3) to: MpRemoteReference new
+	] raise: MpCouldNotDeliverMessageError.
+	self should: [
+		middlewareB sendAsync: #size to: MpRemoteReference new
+	] raise: MpCouldNotDeliverMessageError.
+
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilReference [
+	self should: [
+		middlewareB sendAsync: #contents: arguments: #(3) to: nil
+	] raise: MpCouldNotDeliverMessageError.
+	self should: [
+		middlewareB sendAsync: #size to: nil
+	] raise: MpCouldNotDeliverMessageError.
+
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageAsynchronousSendWithArgs [
+	| valueHolderA remoteReferenceA |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	middlewareB sendAsync: #contents: arguments: #(3) to: remoteReferenceA.
+	self waitUntil: [valueHolderA contents = 3] onTimeout: 300 milliSeconds do: [ self fail: 'Message not received' ].
+	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageBasicReceive [
 	| valueHolderA remoteReferenceA message |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -315,7 +348,7 @@ MpMiddlewareTest >> testRemoteMessageBasicReceiveAndPerform [
 ]
 
 { #category : #tests }
-MpMiddlewareTest >> testRemoteMessageBasicSendAndPerform [
+MpMiddlewareTest >> testRemoteMessageBasicSend [
 	| valueHolderA remoteReferenceA message proxyB |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -323,10 +356,10 @@ MpMiddlewareTest >> testRemoteMessageBasicSendAndPerform [
 	message := MpSynchronousRemoteMessage new
 		selector: #contents:;
 		arguments: #(2);
-		receiver: proxyB;
+		receiver: remoteReferenceA;
 		senderAddress: middlewareB address;
 		responseId: #anyID.
-	middlewareB transporter sendObject: message to: middlewareA address.
+	middlewareB transporter sendMessage: message to: remoteReferenceA.
 	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
 	
 ]
@@ -336,27 +369,7 @@ MpMiddlewareTest >> testRemoteMessageRaisesException [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: Object new.
 	proxy := middlewareB objectAt: remoteReference.
-	self should: [proxy foo] raise: MpRemoteException
-]
-
-{ #category : #tests }
-MpMiddlewareTest >> testRemoteMessageSendToNilAddress [
-	| proxyA |
-	proxyA := middlewareA proxyClass 
-		transporter: middlewareA transporter 
-		remoteReference: MpRemoteReference new.
-	self should: [proxyA foo] raise: MpRemoteMessageSendError.
-
-]
-
-{ #category : #tests }
-MpMiddlewareTest >> testRemoteMessageSendToNilReference [
-	| proxyA |
-	proxyA := middlewareA proxyClass 
-		transporter: middlewareA transporter 
-		remoteReference: nil.
-	self should: [proxyA foo] raise: Exception.
-
+	self should: [proxy foo] raise: MpRemoteExceptionWrapper
 ]
 
 { #category : #tests }
@@ -367,6 +380,20 @@ MpMiddlewareTest >> testRemoteMessageSynchronousSend [
 	self assert: (middlewareB send: #size to: remoteReferenceA) equals: 3.
 	self assert: (middlewareB send: #at: arguments: #(2) to: remoteReferenceA) equals: 200.
 	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilAddress [
+	self should: [middlewareB send: #foo to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError.
+	self should: [middlewareB send: #at: arguments: #(1) to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError.
+
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilReference [
+	self should: [middlewareB send: #foo to: nil] raise: MpCouldNotDeliverMessageError.
+	self should: [middlewareB send: #at: arguments: #(1) to: nil] raise: MpCouldNotDeliverMessageError.
+
 ]
 
 { #category : #tests }

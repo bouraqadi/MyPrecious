@@ -43,7 +43,7 @@ MpMarshaller >> marshalRemoteReference: aRemoteReference [
 { #category : #marshalling }
 MpMarshaller >> marshallExceptionResponse: aMmExceptionResponse [ 
 	| marshalledException |
-	marshalledException := MpRemoteException on: aMmExceptionResponse exception.
+	marshalledException := MpRemoteExceptionWrapper on: aMmExceptionResponse exception.
 	^aMmExceptionResponse
 		exception: marshalledException;
 		yourself

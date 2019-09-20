@@ -40,7 +40,7 @@ MpTransporterForTest >> registry [
 ]
 
 { #category : #communicating }
-MpTransporterForTest >> sendBytes: bytes to: address [
+MpTransporterForTest >> sendBytes: bytes toAddress: address [
 	| otherMiddleware |
 	otherMiddleware := self registry at: address.
 	otherMiddleware transporter receiveQueue nextPut: bytes

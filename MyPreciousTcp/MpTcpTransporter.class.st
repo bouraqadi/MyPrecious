@@ -42,7 +42,7 @@ MpTcpTransporter >> receptionServicePriority: anInteger [
 ]
 
 { #category : #sending }
-MpTcpTransporter >> sendBytes: bytes to: address [
+MpTcpTransporter >> sendBytes: bytes toAddress: address [
 	| socketStream bytesCountArray bytesCountSizeArray |
 	socketStream := ZdcSocketStream openConnectionToHost: address ip port: address port.
 	bytesCountArray := bytes size asByteArray.

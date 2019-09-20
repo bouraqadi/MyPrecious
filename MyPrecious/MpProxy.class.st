@@ -27,8 +27,9 @@ MpProxy >> class [
 { #category : #'reflective operations' }
 MpProxy >> doesNotUnderstand: aMessage [
 	| result |
-	result := [transporter sendMessage: aMessage targetReference: remoteReference receiver: self] 
-		on: Error do: [: ex | 
+	result := [
+			transporter send: aMessage selector arguments: aMessage arguments to: remoteReference
+		] on: Error do: [: ex | 
 			isDebugging := true.
 			ex pass].
 	isDebugging := false.

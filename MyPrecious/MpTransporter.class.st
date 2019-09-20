@@ -41,7 +41,7 @@ MpTransporter >> deliverSynchronousMessage: remoteMessage [
 				id: remoteMessage responseId
 				exception: exception 
 	].
-	self sendObject: response to: remoteMessage senderAddress
+	self sendObject: response toAddress: remoteMessage senderAddress
 ]
 
 { #category : #receiving }
@@ -125,8 +125,22 @@ MpTransporter >> receptionServicePriority: anInteger [
 ]
 
 { #category : #sending }
+MpTransporter >> send: selector arguments: args to: targetRemoteReference [ 
+	|remoteMessage responseId|
+	responseId := self newId.
+	remoteMessage := MpSynchronousRemoteMessage new
+		selector: selector;
+		arguments: args;
+		receiver: targetRemoteReference;
+		senderAddress: self address;
+		responseId: responseId; 
+		yourself.
+	^self sendSynchronousMessage: remoteMessage to: targetRemoteReference
+]
+
+{ #category : #sending }
 MpTransporter >> send: selector to: remoteReference [ 
-	
+	^self send: selector arguments: #() to: remoteReference
 ]
 
 { #category : #sending }
@@ -137,54 +151,52 @@ MpTransporter >> sendAsync: selector arguments: args to: targetRemoteReference [
 		arguments: args;
 		receiver: targetRemoteReference;
 		yourself.
-	self sendObject: remoteMessage to: targetRemoteReference address
+	self sendMessage: remoteMessage to: targetRemoteReference
 ]
 
 { #category : #sending }
-MpTransporter >> sendBytes: bytes to: address [
+MpTransporter >> sendAsync: selector to: targetRemoteReference [ 
+	self sendAsync: selector arguments: #() to: targetRemoteReference 
+]
+
+{ #category : #sending }
+MpTransporter >> sendBytes: bytes toAddress: address [
 	self subclassResponsibility
 
 ]
 
 { #category : #sending }
-MpTransporter >> sendMessage: localMessage targetReference: remoteReference receiver: aProxy [
-	| remoteMessage |
-	remoteMessage := MpSynchronousRemoteMessage new.
-	remoteMessage
-		selector: localMessage selector;
-		arguments: localMessage arguments;
-		receiver: aProxy;
-		senderAddress: self address; 
-		responseId: self newId.
-	^self sendRemoteMessage: remoteMessage to: remoteReference address
-
+MpTransporter >> sendMessage: remoteMessage to: targetReference [
+	[
+		self sendObject: remoteMessage toAddress: targetReference address
+	] on: Error do: [ : ex | 
+		MpCouldNotDeliverMessageError new
+			message: remoteMessage;
+			originalException: ex;
+			signal
+	]
 ]
 
 { #category : #sending }
-MpTransporter >> sendObject: anObject to: address [
+MpTransporter >> sendObject: anObject toAddress: address [
 	| marshalledObject bytes |
 	marshalledObject := self marshal: anObject.
 	bytes := self serialize: marshalledObject.
-	self sendBytes: bytes to: address
+	self sendBytes: bytes toAddress: address
 ]
 
 { #category : #sending }
-MpTransporter >> sendRemoteMessage: remoteMessage to: targetAddress [
+MpTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	| promise response |
 	promise := self promiseClass
 		onFulfillDo: [ :normalResponse | response := normalResponse ]
 		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
-	promisesLock critical: [ 
-		self promisesDict 
-			at: remoteMessage responseId 
-			put: promise ].
-	[self sendObject: remoteMessage to: targetAddress] 
-		on: Exception
-		do: [ :ex | self signalSendingMessage: remoteMessage raised: ex ].
+	promisesLock
+		critical: [ self promisesDict at: remoteMessage responseId put: promise ].
+	self sendMessage: remoteMessage to: targetReference.
 	[ promise wait: self waitForResultTimeoutDuration ]
 		on: CcPromiseTimeout
-		do:
-			[ :ex | self signalTimeoutOfPromise: promise forResultOfMessage: remoteMessage ].
+		do: [ :ex | self signalTimeoutResponseOfMessage: remoteMessage ].
 	^ response contents
 ]
 
@@ -194,18 +206,9 @@ MpTransporter >> serialize: anObject [
 ]
 
 { #category : #sending }
-MpTransporter >> signalSendingMessage: aMessage raised: exception [
-	MpRemoteMessageSendError new
-		message: aMessage;
-		remoteException: exception;
-		signal
-]
-
-{ #category : #sending }
-MpTransporter >> signalTimeoutOfPromise: promise forResultOfMessage: aMessage [
+MpTransporter >> signalTimeoutResponseOfMessage: remoteMessage [
 	MpRemoteMessageResultTimeout new
-		resultPromise: promise;
-		message: aMessage;
+		message: remoteMessage;
 		signal
 ]
 
