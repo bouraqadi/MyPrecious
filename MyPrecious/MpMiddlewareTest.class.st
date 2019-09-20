@@ -359,7 +359,7 @@ MpMiddlewareTest >> testRemoteMessageBasicSend [
 		receiver: remoteReferenceA;
 		senderAddress: middlewareB address;
 		responseId: #anyID.
-	middlewareB transporter sendMessage: message to: remoteReferenceA.
+	middlewareB transporter basicSendMessage: message to: remoteReferenceA.
 	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
 	
 ]

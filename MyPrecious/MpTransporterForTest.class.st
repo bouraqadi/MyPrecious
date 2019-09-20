@@ -1,6 +1,6 @@
 Class {
 	#name : #MpTransporterForTest,
-	#superclass : #MpTransporter,
+	#superclass : #MpAsynchronousTransporter,
 	#instVars : [
 		'receiveQueue'
 	],
