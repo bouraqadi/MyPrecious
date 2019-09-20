@@ -22,6 +22,11 @@ MpMiddleware >> address: anAddress [
 ]
 
 { #category : #initialization }
+MpMiddleware >> defaultReceptionServicePriority [
+	^Processor userInterruptPriority 
+]
+
+{ #category : #initialization }
 MpMiddleware >> defaultWaitForResultTimeoutDuration [
 	^500 milliSeconds 
 ]
@@ -42,7 +47,8 @@ MpMiddleware >> initialize [
 	referenceConverter := self referenceConverterClass middleware: self.
 	marshaller := self marshallerClass middleware: self.
 	transporter := self transporterClass middleware: self.
-	self waitForResultTimeoutDuration: self defaultWaitForResultTimeoutDuration
+	self waitForResultTimeoutDuration: self defaultWaitForResultTimeoutDuration.
+	self receptionServicePriority: self defaultReceptionServicePriority.
 ]
 
 { #category : #activity }
@@ -82,6 +88,11 @@ MpMiddleware >> printOn: aStream [
 { #category : #initialization }
 MpMiddleware >> proxyClass [
 	^MpProxy
+]
+
+{ #category : #activity }
+MpMiddleware >> receptionServicePriority: anInteger [
+	self transporter receptionServicePriority: anInteger
 ]
 
 { #category : #accessing }

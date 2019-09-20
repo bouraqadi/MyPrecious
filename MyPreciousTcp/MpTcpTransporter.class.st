@@ -35,6 +35,12 @@ MpTcpTransporter >> receiveBytesFromStream: stream [
 
 ]
 
+{ #category : #initialization }
+MpTcpTransporter >> receptionServicePriority: anInteger [
+	super receptionServicePriority: anInteger.
+	receptionService communicationHandlingPriority: anInteger + 1.
+]
+
 { #category : #sending }
 MpTcpTransporter >> sendBytes: bytes to: address [
 	| socketStream bytesCountArray bytesCountSizeArray |

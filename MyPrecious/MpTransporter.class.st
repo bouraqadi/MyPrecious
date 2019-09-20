@@ -113,6 +113,11 @@ MpTransporter >> receiveObject: anObject [
 	unmarshalledObject deliverByTransporter: self
 ]
 
+{ #category : #initialization }
+MpTransporter >> receptionServicePriority: anInteger [
+	receptionService priority: anInteger
+]
+
 { #category : #sending }
 MpTransporter >> sendBytes: bytes to: address [
 	self subclassResponsibility
@@ -120,7 +125,30 @@ MpTransporter >> sendBytes: bytes to: address [
 ]
 
 { #category : #sending }
-MpTransporter >> sendMessage: remoteMessage [
+MpTransporter >> sendMessage: localMessage targetReference: remoteReference receiver: aProxy [
+	| remoteMessage |
+	remoteMessage := MpRemoteMessage new.
+	remoteMessage
+		selector: localMessage selector;
+		arguments: localMessage arguments;
+		targetAddress: remoteReference address;
+		receiver: aProxy;
+		senderAddress: self address; 
+		responseId: self newId.
+	^self sendRemoteMessage: remoteMessage 
+
+]
+
+{ #category : #sending }
+MpTransporter >> sendObject: anObject to: address [
+	| marshalledObject bytes |
+	marshalledObject := self marshal: anObject.
+	bytes := self serialize: marshalledObject.
+	self sendBytes: bytes to: address
+]
+
+{ #category : #sending }
+MpTransporter >> sendRemoteMessage: remoteMessage [
 	| promise response |
 	promise := self promiseClass
 		onFulfillDo: [ :normalResponse | response := normalResponse ]
@@ -137,29 +165,6 @@ MpTransporter >> sendMessage: remoteMessage [
 		do:
 			[ :ex | self signalTimeoutOfPromise: promise forResultOfMessage: remoteMessage ].
 	^ response contents
-]
-
-{ #category : #sending }
-MpTransporter >> sendMessage: localMessage targetReference: remoteReference receiver: aProxy [
-	| remoteMessage |
-	remoteMessage := MpRemoteMessage new.
-	remoteMessage
-		selector: localMessage selector;
-		arguments: localMessage arguments;
-		targetAddress: remoteReference address;
-		receiver: aProxy;
-		senderAddress: self address; 
-		responseId: self newId.
-	^self sendMessage: remoteMessage 
-
-]
-
-{ #category : #sending }
-MpTransporter >> sendObject: anObject to: address [
-	| marshalledObject bytes |
-	marshalledObject := self marshal: anObject.
-	bytes := self serialize: marshalledObject.
-	self sendBytes: bytes to: address
 ]
 
 { #category : #sending }
