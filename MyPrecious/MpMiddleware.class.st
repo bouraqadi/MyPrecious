@@ -116,6 +116,11 @@ MpMiddleware >> remoteReferenceFor: anObject [
 ]
 
 { #category : #messaging }
+MpMiddleware >> send: selector to: remoteReference [ 
+	^self transporter send: selector to: remoteReference.
+]
+
+{ #category : #messaging }
 MpMiddleware >> sendAsync: selector arguments: args to: targetRemoteReference [
 	self transporter 
 		sendAsync: selector 

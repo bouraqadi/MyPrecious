@@ -125,6 +125,11 @@ MpTransporter >> receptionServicePriority: anInteger [
 ]
 
 { #category : #sending }
+MpTransporter >> send: selector to: remoteReference [ 
+	
+]
+
+{ #category : #sending }
 MpTransporter >> sendAsync: selector arguments: args to: targetRemoteReference [
 	|remoteMessage|
 	remoteMessage := MpAsynchronousRemoteMessage new
@@ -144,15 +149,14 @@ MpTransporter >> sendBytes: bytes to: address [
 { #category : #sending }
 MpTransporter >> sendMessage: localMessage targetReference: remoteReference receiver: aProxy [
 	| remoteMessage |
-	remoteMessage := MpRemoteMessage new.
+	remoteMessage := MpSynchronousRemoteMessage new.
 	remoteMessage
 		selector: localMessage selector;
 		arguments: localMessage arguments;
-		targetAddress: remoteReference address;
 		receiver: aProxy;
 		senderAddress: self address; 
 		responseId: self newId.
-	^self sendRemoteMessage: remoteMessage 
+	^self sendRemoteMessage: remoteMessage to: remoteReference address
 
 ]
 
@@ -165,7 +169,7 @@ MpTransporter >> sendObject: anObject to: address [
 ]
 
 { #category : #sending }
-MpTransporter >> sendRemoteMessage: remoteMessage [
+MpTransporter >> sendRemoteMessage: remoteMessage to: targetAddress [
 	| promise response |
 	promise := self promiseClass
 		onFulfillDo: [ :normalResponse | response := normalResponse ]
@@ -174,7 +178,7 @@ MpTransporter >> sendRemoteMessage: remoteMessage [
 		self promisesDict 
 			at: remoteMessage responseId 
 			put: promise ].
-	[self sendObject: remoteMessage to: remoteMessage targetAddress] 
+	[self sendObject: remoteMessage to: targetAddress] 
 		on: Exception
 		do: [ :ex | self signalSendingMessage: remoteMessage raised: ex ].
 	[ promise wait: self waitForResultTimeoutDuration ]

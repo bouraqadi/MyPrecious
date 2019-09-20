@@ -307,7 +307,6 @@ MpMiddlewareTest >> testRemoteMessageBasicReceiveAndPerform [
 		selector: #contents:;
 		arguments: #(2);
 		receiver: remoteReferenceA;
-		targetAddress: middlewareA address;
 		senderAddress: middlewareB address;
 		responseId: #anyID.
 	middlewareA transporter receiveObject: message.
@@ -321,11 +320,10 @@ MpMiddlewareTest >> testRemoteMessageBasicSendAndPerform [
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
 	proxyB := middlewareB objectAt: remoteReferenceA.
-	message := MpRemoteMessage new
+	message := MpSynchronousRemoteMessage new
 		selector: #contents:;
 		arguments: #(2);
 		receiver: proxyB;
-		targetAddress: middlewareA address;
 		senderAddress: middlewareB address;
 		responseId: #anyID.
 	middlewareB transporter sendObject: message to: middlewareA address.
@@ -359,6 +357,16 @@ MpMiddlewareTest >> testRemoteMessageSendToNilReference [
 		remoteReference: nil.
 	self should: [proxyA foo] raise: Exception.
 
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testRemoteMessageSynchronousSend [
+	| arrayA remoteReferenceA|
+	arrayA := #(100 200 300).
+	remoteReferenceA := middlewareA export: arrayA.
+	self assert: (middlewareB send: #size to: remoteReferenceA) equals: 3.
+	self assert: (middlewareB send: #at: arguments: #(2) to: remoteReferenceA) equals: 200.
+	
 ]
 
 { #category : #tests }
