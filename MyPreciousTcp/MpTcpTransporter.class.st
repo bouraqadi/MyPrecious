@@ -26,19 +26,16 @@ MpTcpTransporter >> port: integer [
 { #category : #receiving }
 MpTcpTransporter >> receiveBytesFromStream: stream [
 	| bytesCountSize bytesCount |
-	[
-		bytesCountSize := (stream next: self byteCountArraySize) asInteger.
-		bytesCount := (stream next: bytesCountSize) asInteger.
-		self receiveBytes: (stream next: bytesCount)
-	] ensure: [ 
-		stream close ]
+	bytesCountSize := (stream next: self byteCountArraySize) asInteger.
+	bytesCount := (stream next: bytesCountSize) asInteger.
+	self receiveBytes: (stream next: bytesCount)
 
 ]
 
 { #category : #initialization }
 MpTcpTransporter >> receptionServicePriority: anInteger [
 	super receptionServicePriority: anInteger.
-	receptionService communicationHandlingPriority: anInteger + 1.
+	receptionService communicationHandlingPriority: anInteger.
 ]
 
 { #category : #sending }
@@ -47,12 +44,11 @@ MpTcpTransporter >> sendBytes: bytes toAddress: address [
 	socketStream := ZdcSocketStream openConnectionToHost: address ip port: address port.
 	bytesCountArray := bytes size asByteArray.
 	bytesCountSizeArray := bytesCountArray size asByteArrayOfSize: self byteCountArraySize.
-	[socketStream
+	socketStream
 		nextPutAll: bytesCountSizeArray;
 		nextPutAll: bytesCountArray;
-		nextPutAll: bytes
-	] ensure: [socketStream close].
-	
+		nextPutAll: bytes;
+		flush
 ]
 
 { #category : #initialization }
