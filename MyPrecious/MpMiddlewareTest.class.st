@@ -289,11 +289,21 @@ MpMiddlewareTest >> testProxyYourself [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> testRemoteAsynchronousMessage [
+	| valueHolderA remoteReferenceA |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	middlewareB sendAsync: #contents: arguments: #(3) to: remoteReferenceA.
+	self waitUntil: [valueHolderA contents = 3] onTimeout: 300 milliSeconds do: [ self fail: 'Message not received' ]
+	
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> testRemoteMessageBasicReceiveAndPerform [
 	| valueHolderA remoteReferenceA message |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
-	message := MpRemoteMessage new
+	message := MpSynchronousRemoteMessage new
 		selector: #contents:;
 		arguments: #(2);
 		receiver: remoteReferenceA;
@@ -301,7 +311,7 @@ MpMiddlewareTest >> testRemoteMessageBasicReceiveAndPerform [
 		senderAddress: middlewareB address;
 		responseId: #anyID.
 	middlewareA transporter receiveObject: message.
-	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
+	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Message reception failed' ]
 	
 ]
 

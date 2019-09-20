@@ -20,6 +20,11 @@ MpRemoteReference >> address: anAddress [
 	^address := anAddress
 ]
 
+{ #category : #marshalling }
+MpRemoteReference >> marshalWith: marshaller [
+	^marshaller marshalRemoteReference: self
+]
+
 { #category : #accessing }
 MpRemoteReference >> objectId [
 	^ objectId

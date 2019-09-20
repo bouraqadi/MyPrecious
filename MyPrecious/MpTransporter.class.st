@@ -15,7 +15,22 @@ MpTransporter >> address [
 ]
 
 { #category : #receiving }
-MpTransporter >> deliverMessage: remoteMessage [
+MpTransporter >> deliverAsynchronousMessage: remoteMessage [
+	remoteMessage send 
+
+]
+
+{ #category : #receiving }
+MpTransporter >> deliverResponse: remoteResponse [
+	| promise |
+	promise := promisesLock critical: [
+		promisesDict at: remoteResponse id ifAbsent: [^self]].
+	remoteResponse trigger: promise
+
+]
+
+{ #category : #receiving }
+MpTransporter >> deliverSynchronousMessage: remoteMessage [
 	| response |
 	response := [ 
 		self normalResponseClass
@@ -27,15 +42,6 @@ MpTransporter >> deliverMessage: remoteMessage [
 				exception: exception 
 	].
 	self sendObject: response to: remoteMessage senderAddress
-]
-
-{ #category : #receiving }
-MpTransporter >> deliverResponse: remoteResponse [
-	| promise |
-	promise := promisesLock critical: [
-		promisesDict at: remoteResponse id ifAbsent: [^self]].
-	remoteResponse trigger: promise
-
 ]
 
 { #category : #receiving }
@@ -116,6 +122,17 @@ MpTransporter >> receiveObject: anObject [
 { #category : #initialization }
 MpTransporter >> receptionServicePriority: anInteger [
 	receptionService priority: anInteger
+]
+
+{ #category : #sending }
+MpTransporter >> sendAsync: selector arguments: args to: targetRemoteReference [
+	|remoteMessage|
+	remoteMessage := MpAsynchronousRemoteMessage new
+		selector: selector;
+		arguments: args;
+		receiver: targetRemoteReference;
+		yourself.
+	self sendObject: remoteMessage to: targetRemoteReference address
 ]
 
 { #category : #sending }

@@ -10,17 +10,6 @@ MpMarshaller >> marshal: anObject [
 ]
 
 { #category : #marshalling }
-MpMarshaller >> marshalMessage: message [ 
-	|marshalledArgs marshalledReceiver |
-	marshalledReceiver := self marshal: message receiver.
-	marshalledArgs := message arguments collect: [ : each | self marshal: each ].
-	^message 
-		arguments: marshalledArgs;
-		receiver: marshalledReceiver; 
-		yourself.
-]
-
-{ #category : #marshalling }
 MpMarshaller >> marshalNormalResponse: response [ 
 	| marshalledResult |
 	marshalledResult := self marshal: response result.
@@ -33,6 +22,17 @@ MpMarshaller >> marshalNormalResponse: response [
 MpMarshaller >> marshalObject: anObject [ 
 	anObject isPassByCopy ifTrue: [ ^anObject ].
 	^self remoteReferenceFor: anObject
+]
+
+{ #category : #marshalling }
+MpMarshaller >> marshalRemoteMessage: message [ 
+	|marshalledArgs marshalledReceiver |
+	marshalledReceiver := self marshal: message receiver.
+	marshalledArgs := message arguments collect: [ : each | self marshal: each ].
+	^message 
+		arguments: marshalledArgs;
+		receiver: marshalledReceiver; 
+		yourself.
 ]
 
 { #category : #marshalling }
@@ -70,17 +70,6 @@ MpMarshaller >> unmarshal: anObject [
 ]
 
 { #category : #marshalling }
-MpMarshaller >> unmarshalMessage: message [ 
-	|unmarshalledArgs unmarshalledReceiver |
-	unmarshalledReceiver := self unmarshal: message receiver.
-	unmarshalledArgs := message arguments collect: [ : each | self unmarshal: each ].
-	^message 
-		arguments: unmarshalledArgs;
-		receiver: unmarshalledReceiver; 
-		yourself.
-]
-
-{ #category : #marshalling }
 MpMarshaller >> unmarshalNormalResponse: response [ 
 	| unmarshalledResult |
 	unmarshalledResult := self unmarshal: response result.
@@ -92,6 +81,17 @@ MpMarshaller >> unmarshalNormalResponse: response [
 { #category : #marshalling }
 MpMarshaller >> unmarshalObject: anObject [ 
 	^anObject
+]
+
+{ #category : #marshalling }
+MpMarshaller >> unmarshalRemoteMessage: message [ 
+	|unmarshalledArgs unmarshalledReceiver |
+	unmarshalledReceiver := self unmarshal: message receiver.
+	unmarshalledArgs := message arguments collect: [ : each | self unmarshal: each ].
+	^message 
+		arguments: unmarshalledArgs;
+		receiver: unmarshalledReceiver; 
+		yourself.
 ]
 
 { #category : #marshalling }

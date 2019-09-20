@@ -4,10 +4,7 @@ Class {
 	#instVars : [
 		'selector',
 		'arguments',
-		'receiver',
-		'responseId',
-		'targetAddress',
-		'senderAddress'
+		'receiver'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -22,14 +19,9 @@ MpRemoteMessage >> arguments: anObject [
 	arguments := anObject
 ]
 
-{ #category : #communicating }
-MpRemoteMessage >> deliverByTransporter: transporter [
-	^transporter deliverMessage: self
-]
-
 { #category : #marshalling }
 MpRemoteMessage >> marshalWith: aMarshaller [
-	^aMarshaller marshalMessage: self
+	^aMarshaller marshalRemoteMessage: self
 ]
 
 { #category : #printing }
@@ -52,16 +44,6 @@ MpRemoteMessage >> receiver: anObject [
 ]
 
 { #category : #accessing }
-MpRemoteMessage >> responseId [
-	^ responseId
-]
-
-{ #category : #accessing }
-MpRemoteMessage >> responseId: anObject [
-	responseId := anObject
-]
-
-{ #category : #accessing }
 MpRemoteMessage >> selector [
 	^ selector
 ]
@@ -78,27 +60,7 @@ MpRemoteMessage >> send [
 		withArguments: arguments
 ]
 
-{ #category : #accessing }
-MpRemoteMessage >> senderAddress [
-	^ senderAddress
-]
-
-{ #category : #accessing }
-MpRemoteMessage >> senderAddress: anObject [
-	senderAddress := anObject
-]
-
-{ #category : #accessing }
-MpRemoteMessage >> targetAddress [
-	^ targetAddress
-]
-
-{ #category : #accessing }
-MpRemoteMessage >> targetAddress: anObject [
-	targetAddress := anObject
-]
-
 { #category : #marshalling }
 MpRemoteMessage >> unmarshalWith: aMarshaller [
-	^aMarshaller unmarshalMessage: self
+	^aMarshaller unmarshalRemoteMessage: self
 ]
