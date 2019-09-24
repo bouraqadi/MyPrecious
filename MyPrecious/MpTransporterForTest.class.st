@@ -39,6 +39,11 @@ MpTransporterForTest >> registry [
 	^self middleware registry
 ]
 
+{ #category : #sending }
+MpTransporterForTest >> sendAsynchronousMessage: aMpAsynchronousRemoteMessage to: aMpRemoteReference [ 
+	self shouldBeImplemented.
+]
+
 { #category : #communicating }
 MpTransporterForTest >> sendBytes: bytes toAddress: address [
 	| otherMiddleware |
