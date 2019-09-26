@@ -14,14 +14,9 @@ MpTransporterForTest >> initialize [
 	
 ]
 
-{ #category : #initialization }
-MpTransporterForTest >> newReceptionService [
-	^CcService repeat: [ self receiveBytes ]
-]
-
 { #category : #receiving }
-MpTransporterForTest >> receiveBytes [
-	self receiveBytes: receiveQueue next
+MpTransporterForTest >> readBytes [
+	^receiveQueue next
 ]
 
 { #category : #accessing }
@@ -29,24 +24,15 @@ MpTransporterForTest >> receiveQueue [
 	^ receiveQueue
 ]
 
-{ #category : #accessing }
-MpTransporterForTest >> receiveQueue: anObject [
-	receiveQueue := anObject
-]
-
-{ #category : #communicating }
+{ #category : #sending }
 MpTransporterForTest >> registry [
 	^self middleware registry
 ]
 
 { #category : #sending }
-MpTransporterForTest >> sendAsynchronousMessage: aMpAsynchronousRemoteMessage to: aMpRemoteReference [ 
-	self shouldBeImplemented.
-]
-
-{ #category : #communicating }
 MpTransporterForTest >> sendBytes: bytes toAddress: address [
-	| otherMiddleware |
-	otherMiddleware := self registry at: address.
-	otherMiddleware transporter receiveQueue nextPut: bytes
+	| targetTransporter |
+	targetTransporter := self registry at: address.
+	targetTransporter receiveQueue nextPut: bytes
+
 ]

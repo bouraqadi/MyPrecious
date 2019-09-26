@@ -11,7 +11,7 @@ Class {
 { #category : #accessing }
 MpMiddlewareForTest >> address: anAddress [
 	super address: anAddress.
-	self registry at: anAddress put: self
+	self registry at: anAddress put: self transporter
 ]
 
 { #category : #initialization }

@@ -5,20 +5,8 @@ Class {
 		'promisesDict',
 		'promisesLock'
 	],
-	#category : #MyPrecious
+	#category : #'MyPrecious-Kernel'
 }
-
-{ #category : #sending }
-MpAsynchronousTransporter >> basicSendMessage: remoteMessage to: targetReference [
-	[
-		self sendObject: remoteMessage toAddress: targetReference address
-	] on: Error do: [ : ex | 
-		MpCouldNotDeliverMessageError new
-			message: remoteMessage;
-			originalException: ex;
-			signal
-	]
-]
 
 { #category : #receiving }
 MpAsynchronousTransporter >> deliverAsynchronousMessage: remoteMessage [
@@ -58,14 +46,24 @@ MpAsynchronousTransporter >> initialize [
 
 ]
 
+{ #category : #initialization }
+MpAsynchronousTransporter >> newReceptionService [
+	^CcService repeat: [ self receiveBytes ]
+]
+
 { #category : #sending }
 MpAsynchronousTransporter >> promiseClass [
 	^ CcPromise
 ]
 
-{ #category : #accessing }
-MpAsynchronousTransporter >> promisesDict [
-	^ promisesDict
+{ #category : #receiving }
+MpAsynchronousTransporter >> readBytes [
+	self subclassResponsibility
+]
+
+{ #category : #receiving }
+MpAsynchronousTransporter >> receiveBytes [
+	self receiveBytes: self readBytes
 ]
 
 { #category : #receiving }
@@ -80,6 +78,18 @@ MpAsynchronousTransporter >> receiveObject: anObject [
 	| unmarshalledObject |
 	unmarshalledObject := self unmarshal: anObject.
 	unmarshalledObject deliverByTransporter: self
+]
+
+{ #category : #sending }
+MpAsynchronousTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
+	[
+		self sendObject: remoteMessage toAddress: targetRemoteReference address
+	] on: Error do: [ : ex | 
+		MpCouldNotDeliverMessageError new
+			message: remoteMessage;
+			originalException: ex;
+			signal
+	]
 ]
 
 { #category : #sending }
@@ -103,8 +113,8 @@ MpAsynchronousTransporter >> sendSynchronousMessage: remoteMessage to: targetRef
 		onFulfillDo: [ :normalResponse | response := normalResponse ]
 		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
 	promisesLock
-		critical: [ self promisesDict at: remoteMessage responseId put: promise ].
-	self basicSendMessage: remoteMessage to: targetReference.
+		critical: [ promisesDict at: remoteMessage responseId put: promise ].
+	self sendAsynchronousMessage: remoteMessage to: targetReference.
 	[ promise wait: self waitForResultTimeoutDuration ]
 		on: CcPromiseTimeout
 		do: [ :ex | self signalTimeoutResponseOfMessage: remoteMessage ].
