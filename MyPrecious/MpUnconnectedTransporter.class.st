@@ -1,6 +1,8 @@
 Class {
 	#name : #MpUnconnectedTransporter,
 	#superclass : #MpTransporter,
+	#traits : 'MpTPostMan',
+	#classTraits : 'MpTPostMan classTrait',
 	#instVars : [
 		'promisesDict',
 		'promisesLock'
@@ -20,15 +22,7 @@ MpUnconnectedTransporter >> deliverResponse: remoteResponse [
 { #category : #receiving }
 MpUnconnectedTransporter >> deliverSynchronousMessage: remoteMessage [
 	| response |
-	response := [ 
-		self normalResponseClass
-			id: remoteMessage responseId
-			result: remoteMessage send 
-	] on: Exception do: [ :exception | 
-		self exceptionResponseClass
-				id: remoteMessage responseId
-				exception: exception 
-	].
+	response := self basicDeliverSynchronousMessage: remoteMessage.
 	self sendObject: response toAddress: remoteMessage senderAddress
 ]
 
@@ -69,7 +63,7 @@ MpUnconnectedTransporter >> receiveBytes: bytes [
 
 { #category : #receiving }
 MpUnconnectedTransporter >> receiveObject: anObject [
-	anObject deliverByTransporter: self
+	anObject deliverBy: self
 ]
 
 { #category : #sending }

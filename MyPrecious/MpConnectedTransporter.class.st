@@ -6,46 +6,42 @@ Class {
 
 { #category : #sending }
 MpConnectedTransporter >> connectTo: targetRemoteReference [
+	^self newConnection
+		connectTo: targetRemoteReference;
+		yourself
+		
+]
+
+{ #category : #sending }
+MpConnectedTransporter >> connectionClass [
 	self subclassResponsibility
 ]
 
-{ #category : #receiving }
-MpConnectedTransporter >> receiveBytesVia: connection [
-	self subclassResponsibility
+{ #category : #sending }
+MpConnectedTransporter >> newConnection [
+	^self connectionClass new
+		transporter: self;
+		yourself
 ]
 
 { #category : #receiving }
-MpConnectedTransporter >> receiveObjectVia: connection [
-	| bytes |
-	bytes := self receiveBytesVia: connection.
-	^self materializeAndUnmarshal: bytes.
-	
+MpConnectedTransporter >> receiveVia: connection [
+	connection deliverReceivedObject.
+
 ]
 
 { #category : #sending }
 MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	| connection |
 	connection := self connectTo: targetRemoteReference.
-	self sendObject: remoteMessage via: connection
-]
-
-{ #category : #sending }
-MpConnectedTransporter >> sendBytes: bytes via: connection [
-	self subclassResponsibility
-]
-
-{ #category : #sending }
-MpConnectedTransporter >> sendObject: anObject via: connection [
-	| bytes |
-	bytes := self marshalAndSerialize: anObject.
-	self sendBytes: bytes via: connection
+	connection sendObject: remoteMessage
 ]
 
 { #category : #sending }
 MpConnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
 	| connection response |
 	connection := self connectTo: targetRemoteReference.
-	self sendObject: remoteMessage via: connection.
-	response := self receiveObjectVia: connection.
+	connection sendObject: remoteMessage.
+	response := connection receiveObject.
 	^response contents
 ]

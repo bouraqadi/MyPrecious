@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #communicating }
-MpSynchronousRemoteMessage >> deliverByTransporter: transporter [
+MpSynchronousRemoteMessage >> deliverBy: transporter [
 	transporter deliverSynchronousMessage: self
 ]
 

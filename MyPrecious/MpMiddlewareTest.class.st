@@ -332,39 +332,6 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSendWithArgs [
 ]
 
 { #category : #tests }
-MpMiddlewareTest >> testRemoteMessageBasicReceive [
-	| valueHolderA remoteReferenceA message |
-	valueHolderA := self newValueHolder.
-	remoteReferenceA := middlewareA export: valueHolderA.
-	message := MpSynchronousRemoteMessage new
-		selector: #contents:;
-		arguments: #(2);
-		receiver: remoteReferenceA;
-		senderAddress: middlewareB address;
-		responseId: #anyID.
-	middlewareA transporter receiveObject: message.
-	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Message reception failed' ]
-	
-]
-
-{ #category : #tests }
-MpMiddlewareTest >> testRemoteMessageBasicSend [
-	| valueHolderA remoteReferenceA message proxyB |
-	valueHolderA := self newValueHolder.
-	remoteReferenceA := middlewareA export: valueHolderA.
-	proxyB := middlewareB objectAt: remoteReferenceA.
-	message := MpSynchronousRemoteMessage new
-		selector: #contents:;
-		arguments: #(2);
-		receiver: remoteReferenceA;
-		senderAddress: middlewareB address;
-		responseId: #anyID.
-	middlewareB transporter sendObject: message toAddress: remoteReferenceA address.
-	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
-	
-]
-
-{ #category : #tests }
 MpMiddlewareTest >> testRemoteMessageRaisesException [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: Object new.

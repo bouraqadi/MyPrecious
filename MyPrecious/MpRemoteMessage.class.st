@@ -19,6 +19,11 @@ MpRemoteMessage >> arguments: anObject [
 	arguments := anObject
 ]
 
+{ #category : #communicating }
+MpRemoteMessage >> deliverBy: transporter [
+	self subclassResponsibility
+]
+
 { #category : #marshalling }
 MpRemoteMessage >> marshalWith: aMarshaller [
 	^aMarshaller marshalRemoteMessage: self

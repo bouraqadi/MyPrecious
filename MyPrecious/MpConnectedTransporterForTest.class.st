@@ -1,17 +1,45 @@
 Class {
 	#name : #MpConnectedTransporterForTest,
 	#superclass : #MpConnectedTransporter,
+	#instVars : [
+		'connectionQueue'
+	],
 	#category : #'MyPrecious-Tests'
 }
 
+{ #category : #receiving }
+MpConnectedTransporterForTest >> acceptConnections [
+	| receptionQueue connection |
+	receptionQueue := connectionQueue next.
+	connection := self newConnection.
+	connection communicationQueue: receptionQueue.
+	[ self receiveBytesVia: connection ] fork
+]
+
 { #category : #sending }
-MpConnectedTransporterForTest >> connectTo: targetRemoteReference [
-	| targetTransporter sharedQueue |
-	targetTransporter := self registry at: targetRemoteReference address.
-	sharedQueue := SharedQueue new.
-	targetTransporter receiveVia: sharedQueue.
-	^sharedQueue
-	
+MpConnectedTransporterForTest >> connectionClass [
+	^MpConnectionForTest
+]
+
+{ #category : #accessing }
+MpConnectedTransporterForTest >> connectionQueue [
+	^ connectionQueue
+]
+
+{ #category : #initialization }
+MpConnectedTransporterForTest >> initialize [
+	super initialize.
+	connectionQueue := SharedQueue new
+]
+
+{ #category : #initialization }
+MpConnectedTransporterForTest >> newReceptionService [
+	^CcService repeat: [ self acceptConnections ]
+]
+
+{ #category : #receiving }
+MpConnectedTransporterForTest >> receiveBytesVia: connection [
+	connection deliverReceivedObject
 ]
 
 { #category : #sending }
@@ -20,7 +48,6 @@ MpConnectedTransporterForTest >> registry [
 ]
 
 { #category : #sending }
-MpConnectedTransporterForTest >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
-	| sharedQueue |
-	sharedQueue 
+MpConnectedTransporterForTest >> sendBytes: bytes via: sharedQueue [
+	sharedQueue nextPut: bytes
 ]

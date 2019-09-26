@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #communicating }
-MpAsynchronousRemoteMessage >> deliverByTransporter: transporter [
+MpAsynchronousRemoteMessage >> deliverBy: transporter [
 	transporter deliverAsynchronousMessage: self
 ]

@@ -12,31 +12,6 @@ MpTransporter >> address [
 	^self middleware address
 ]
 
-{ #category : #receiving }
-MpTransporter >> deliverAsynchronousMessage: remoteMessage [
-	remoteMessage send 
-
-]
-
-{ #category : #receiving }
-MpTransporter >> deliverSynchronousMessage: remoteMessage [
-	^[ 
-		self normalResponseClass
-			id: remoteMessage responseId
-			result: remoteMessage send 
-	] on: Exception do: [ :exception | 
-		self exceptionResponseClass
-				id: remoteMessage responseId
-				exception: exception 
-	].
-
-]
-
-{ #category : #receiving }
-MpTransporter >> exceptionResponseClass [
-	^ MpExceptionRemoteResponse
-]
-
 { #category : #initialization }
 MpTransporter >> initialize [
 	super initialize.
@@ -88,11 +63,6 @@ MpTransporter >> materializeFrom: bytes [
 { #category : #initialization }
 MpTransporter >> newReceptionService [
 	self subclassResponsibility
-]
-
-{ #category : #receiving }
-MpTransporter >> normalResponseClass [
-	^ MpNormalRemoteResponse
 ]
 
 { #category : #initialization }

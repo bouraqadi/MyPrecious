@@ -13,7 +13,7 @@ MpRemoteResponse >> contents [
 ]
 
 { #category : #communicating }
-MpRemoteResponse >> deliverByTransporter: transporter [
+MpRemoteResponse >> deliverBy: transporter [
 	^transporter deliverResponse: self 
 ]
 
