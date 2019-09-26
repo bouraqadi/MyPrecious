@@ -17,5 +17,5 @@ MpTcpMiddleware >> port: portNumber [
 
 { #category : #initialization }
 MpTcpMiddleware >> transporterClass [
-	^MpTcpTransporterNG
+	^MpTcpTransporter
 ]

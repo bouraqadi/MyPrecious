@@ -4,11 +4,6 @@ Class {
 	#category : #MyPreciousTcp
 }
 
-{ #category : #accessing }
-MpTcpTransporterNG >> byteCountArraySize [
-	^4
-]
-
 { #category : #initialization }
 MpTcpTransporterNG >> newReceptionService [
 	^self serverClass new
@@ -32,17 +27,6 @@ MpTcpTransporterNG >> receiveMessageFromStream: stream [
 	
 ]
 
-{ #category : #receiving }
-MpTcpTransporterNG >> receiveObjectFromStream: stream [
-	| bytesCountSize bytesCount bytes receivedObject |
-	bytesCountSize := (stream next: self byteCountArraySize) asInteger.
-	bytesCount := (stream next: bytesCountSize) asInteger.
-	bytes := stream next: bytesCount.
-	receivedObject := self materializeFrom: bytes.
-	^self unmarshal: receivedObject.
-
-]
-
 { #category : #initialization }
 MpTcpTransporterNG >> receptionServicePriority: anInteger [
 	super receptionServicePriority: anInteger.
@@ -55,21 +39,6 @@ MpTcpTransporterNG >> sendBytes: bytes toAddress: address [
 	socketStream := ZdcSocketStream openConnectionToHost: address ip port: address port.
 	bytesCountArray := bytes size asByteArray.
 	bytesCountSizeArray := bytesCountArray size asByteArrayOfSize: self byteCountArraySize.
-	socketStream
-		nextPutAll: bytesCountSizeArray;
-		nextPutAll: bytesCountArray;
-		nextPutAll: bytes;
-		flush
-]
-
-{ #category : #sending }
-MpTcpTransporterNG >> sendObject: remoteMessage viaStream: socketStream [
-	| bytesCountArray bytes bytesCountSizeArray marshalledObject |
-	marshalledObject := self marshal: remoteMessage.
-	bytes := self serialize: marshalledObject.
-	bytesCountArray := bytes size asByteArray.
-	bytesCountSizeArray := bytesCountArray size
-		asByteArrayOfSize: self byteCountArraySize.
 	socketStream
 		nextPutAll: bytesCountSizeArray;
 		nextPutAll: bytesCountArray;

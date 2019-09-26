@@ -1,6 +1,6 @@
 Class {
-	#name : #MpTransporterForTest,
-	#superclass : #MpAsynchronousTransporter,
+	#name : #MpUnconnectedTransporterForTest,
+	#superclass : #MpUnconnectedTransporter,
 	#instVars : [
 		'receiveQueue'
 	],
@@ -8,29 +8,29 @@ Class {
 }
 
 { #category : #initialization }
-MpTransporterForTest >> initialize [
+MpUnconnectedTransporterForTest >> initialize [
 	super initialize.
 	receiveQueue := SharedQueue new.
 	
 ]
 
 { #category : #receiving }
-MpTransporterForTest >> readBytes [
+MpUnconnectedTransporterForTest >> readBytes [
 	^receiveQueue next
 ]
 
 { #category : #accessing }
-MpTransporterForTest >> receiveQueue [
+MpUnconnectedTransporterForTest >> receiveQueue [
 	^ receiveQueue
 ]
 
 { #category : #sending }
-MpTransporterForTest >> registry [
+MpUnconnectedTransporterForTest >> registry [
 	^self middleware registry
 ]
 
 { #category : #sending }
-MpTransporterForTest >> sendBytes: bytes toAddress: address [
+MpUnconnectedTransporterForTest >> sendBytes: bytes toAddress: address [
 	| targetTransporter |
 	targetTransporter := self registry at: address.
 	targetTransporter receiveQueue nextPut: bytes

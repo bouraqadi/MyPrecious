@@ -33,8 +33,3 @@ MpMiddlewareForTest >> newAddress [
 MpMiddlewareForTest >> registry [
 	^ Registry ifNil: [Registry := WeakValueDictionary new ]
 ]
-
-{ #category : #initialization }
-MpMiddlewareForTest >> transporterClass [
-	^MpTransporterForTest 
-]

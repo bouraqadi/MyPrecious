@@ -1,5 +1,5 @@
 Class {
-	#name : #MpAsynchronousTransporter,
+	#name : #MpUnconnectedTransporter,
 	#superclass : #MpTransporter,
 	#instVars : [
 		'promisesDict',
@@ -9,13 +9,7 @@ Class {
 }
 
 { #category : #receiving }
-MpAsynchronousTransporter >> deliverAsynchronousMessage: remoteMessage [
-	remoteMessage send 
-
-]
-
-{ #category : #receiving }
-MpAsynchronousTransporter >> deliverResponse: remoteResponse [
+MpUnconnectedTransporter >> deliverResponse: remoteResponse [
 	| promise |
 	promise := promisesLock critical: [
 		promisesDict at: remoteResponse id ifAbsent: [^self]].
@@ -24,7 +18,7 @@ MpAsynchronousTransporter >> deliverResponse: remoteResponse [
 ]
 
 { #category : #receiving }
-MpAsynchronousTransporter >> deliverSynchronousMessage: remoteMessage [
+MpUnconnectedTransporter >> deliverSynchronousMessage: remoteMessage [
 	| response |
 	response := [ 
 		self normalResponseClass
@@ -39,7 +33,7 @@ MpAsynchronousTransporter >> deliverSynchronousMessage: remoteMessage [
 ]
 
 { #category : #initialization }
-MpAsynchronousTransporter >> initialize [
+MpUnconnectedTransporter >> initialize [
 	super initialize.
 	promisesDict := WeakValueDictionary new.
 	promisesLock := Mutex new.
@@ -47,41 +41,39 @@ MpAsynchronousTransporter >> initialize [
 ]
 
 { #category : #initialization }
-MpAsynchronousTransporter >> newReceptionService [
+MpUnconnectedTransporter >> newReceptionService [
 	^CcService repeat: [ self receiveBytes ]
 ]
 
 { #category : #sending }
-MpAsynchronousTransporter >> promiseClass [
+MpUnconnectedTransporter >> promiseClass [
 	^ CcPromise
 ]
 
 { #category : #receiving }
-MpAsynchronousTransporter >> readBytes [
+MpUnconnectedTransporter >> readBytes [
 	self subclassResponsibility
 ]
 
 { #category : #receiving }
-MpAsynchronousTransporter >> receiveBytes [
+MpUnconnectedTransporter >> receiveBytes [
 	self receiveBytes: self readBytes
 ]
 
 { #category : #receiving }
-MpAsynchronousTransporter >> receiveBytes: bytes [
-	| receivedObject  |
-	receivedObject := self materializeFrom: bytes.
-	self receiveObject: receivedObject
+MpUnconnectedTransporter >> receiveBytes: bytes [
+	| unmarshalledObject  |
+	unmarshalledObject := self materializeAndUnmarshal: bytes.
+	self receiveObject: unmarshalledObject
 ]
 
 { #category : #receiving }
-MpAsynchronousTransporter >> receiveObject: anObject [
-	| unmarshalledObject |
-	unmarshalledObject := self unmarshal: anObject.
-	unmarshalledObject deliverByTransporter: self
+MpUnconnectedTransporter >> receiveObject: anObject [
+	anObject deliverByTransporter: self
 ]
 
 { #category : #sending }
-MpAsynchronousTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
+MpUnconnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	[
 		self sendObject: remoteMessage toAddress: targetRemoteReference address
 	] on: Error do: [ : ex | 
@@ -93,21 +85,20 @@ MpAsynchronousTransporter >> sendAsynchronousMessage: remoteMessage to: targetRe
 ]
 
 { #category : #sending }
-MpAsynchronousTransporter >> sendBytes: bytes toAddress: address [
+MpUnconnectedTransporter >> sendBytes: bytes toAddress: address [
 	self subclassResponsibility
 
 ]
 
 { #category : #sending }
-MpAsynchronousTransporter >> sendObject: anObject toAddress: address [
-	| marshalledObject bytes |
-	marshalledObject := self marshal: anObject.
-	bytes := self serialize: marshalledObject.
+MpUnconnectedTransporter >> sendObject: anObject toAddress: address [
+	| bytes |
+	bytes := self marshalAndSerialize: anObject.
 	self sendBytes: bytes toAddress: address
 ]
 
 { #category : #sending }
-MpAsynchronousTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
+MpUnconnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	| promise response |
 	promise := self promiseClass
 		onFulfillDo: [ :normalResponse | response := normalResponse ]

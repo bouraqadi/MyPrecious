@@ -9,15 +9,6 @@ MpTcpTransporterOLD >> byteCountArraySize [
 	^4
 ]
 
-{ #category : #receiving }
-MpTcpTransporterOLD >> receiveBytesFromStream: stream [
-	| bytesCountSize bytesCount |
-	bytesCountSize := (stream next: self byteCountArraySize) asInteger.
-	bytesCount := (stream next: bytesCountSize) asInteger.
-	self receiveBytes: (stream next: bytesCount)
-
-]
-
 { #category : #initialization }
 MpTcpTransporterOLD >> receptionServicePriority: anInteger [
 	super receptionServicePriority: anInteger.

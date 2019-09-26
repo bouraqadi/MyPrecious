@@ -11,6 +11,11 @@ Class {
 	#category : #'MyPrecious-Tests'
 }
 
+{ #category : #testing }
+MpMiddlewareTest class >> isAbstract [
+	^self == MpMiddlewareTest
+]
+
 { #category : #tests }
 MpMiddlewareTest >> allMiddleware [
 	^{ middlewareA . middlewareB . middlewareC }
@@ -51,11 +56,6 @@ MpMiddlewareTest >> is: anObject instanceOf: aClass [
 { #category : #tests }
 MpMiddlewareTest >> isProxy: anObject [
 	^self is: anObject instanceOf: MpProxy
-]
-
-{ #category : #tests }
-MpMiddlewareTest >> middlewareClass [
-	^ MpMiddlewareForTest
 ]
 
 { #category : #tests }

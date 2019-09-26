@@ -13,6 +13,26 @@ MpTransporter >> address [
 ]
 
 { #category : #receiving }
+MpTransporter >> deliverAsynchronousMessage: remoteMessage [
+	remoteMessage send 
+
+]
+
+{ #category : #receiving }
+MpTransporter >> deliverSynchronousMessage: remoteMessage [
+	^[ 
+		self normalResponseClass
+			id: remoteMessage responseId
+			result: remoteMessage send 
+	] on: Exception do: [ :exception | 
+		self exceptionResponseClass
+				id: remoteMessage responseId
+				exception: exception 
+	].
+
+]
+
+{ #category : #receiving }
 MpTransporter >> exceptionResponseClass [
 	^ MpExceptionRemoteResponse
 ]
@@ -41,9 +61,23 @@ MpTransporter >> marshal: anObject [
 
 ]
 
+{ #category : #sending }
+MpTransporter >> marshalAndSerialize: anObject [
+	| marshalledObject |
+	marshalledObject := self marshal: anObject.
+	^ self serialize: marshalledObject
+]
+
 { #category : #accessing }
 MpTransporter >> marshaller [
 	^self middleware marshaller
+]
+
+{ #category : #receiving }
+MpTransporter >> materializeAndUnmarshal: bytes [
+	| object |
+	object := self materializeFrom: bytes.
+	^self unmarshal: object
 ]
 
 { #category : #receiving }
