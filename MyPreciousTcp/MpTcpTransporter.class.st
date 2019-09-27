@@ -86,7 +86,7 @@ MpTcpTransporter >> serverClass [
 { #category : #sending }
 MpTcpTransporter >> setSocketStreamTimeout: socketStream [
 	| timeoutSeconds |
-	timeoutSeconds := self waitForResultTimeoutDuration asSeconds.
+	timeoutSeconds := self receptionTimeoutDuration asSeconds.
 	timeoutSeconds = 0 ifTrue: [ timeoutSeconds := 1 ].
 	socketStream timeout: timeoutSeconds
 ]

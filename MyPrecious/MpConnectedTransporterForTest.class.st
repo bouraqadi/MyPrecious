@@ -9,10 +9,11 @@ Class {
 
 { #category : #receiving }
 MpConnectedTransporterForTest >> acceptConnections [
-	| receptionQueue connection |
-	receptionQueue := connectionQueue next.
+	| connection |
 	connection := self newConnection.
-	connection communicationQueue: receptionQueue.
+	connection 
+		receiveQueue: connectionQueue next;
+		sendQueue: connectionQueue next.
 	[ self receiveBytesVia: connection ] fork
 ]
 
@@ -35,11 +36,6 @@ MpConnectedTransporterForTest >> initialize [
 { #category : #initialization }
 MpConnectedTransporterForTest >> newReceptionService [
 	^CcService repeat: [ self acceptConnections ]
-]
-
-{ #category : #receiving }
-MpConnectedTransporterForTest >> receiveBytesVia: connection [
-	connection deliverReceivedObject
 ]
 
 { #category : #sending }

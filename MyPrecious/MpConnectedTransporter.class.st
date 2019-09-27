@@ -25,23 +25,28 @@ MpConnectedTransporter >> newConnection [
 ]
 
 { #category : #receiving }
-MpConnectedTransporter >> receiveVia: connection [
-	connection deliverReceivedObject.
-
+MpConnectedTransporter >> receiveBytesVia: connection [
+	connection deliverReceivedObject
 ]
 
 { #category : #sending }
 MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	| connection |
-	connection := self connectTo: targetRemoteReference.
-	connection sendObject: remoteMessage
+	[
+		connection := self connectTo: targetRemoteReference.
+		connection sendObject: remoteMessage.
+		^connection
+	] 
+		on: Error
+		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
 { #category : #sending }
 MpConnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
 	| connection response |
-	connection := self connectTo: targetRemoteReference.
-	connection sendObject: remoteMessage.
-	response := connection receiveObject.
+	connection := self sendAsynchronousMessage: remoteMessage to: targetRemoteReference.
+	[response := connection receiveObject] 
+		on: MpTimeout 
+		do: [self signalTimeoutResponseOfMessage: remoteMessage].
 	^response contents
 ]

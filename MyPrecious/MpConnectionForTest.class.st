@@ -4,34 +4,38 @@ Class {
 	#traits : 'CcTWaitPolling',
 	#classTraits : 'CcTWaitPolling classTrait',
 	#instVars : [
-		'communicationQueue'
+		'receiveQueue',
+		'sendQueue'
 	],
 	#category : #'MyPrecious-Tests'
 }
-
-{ #category : #accessing }
-MpConnectionForTest >> communicationQueue [
-	^ communicationQueue
-]
-
-{ #category : #accessing }
-MpConnectionForTest >> communicationQueue: anObject [
-	communicationQueue := anObject
-]
 
 { #category : #connecting }
 MpConnectionForTest >> connectTo: targetRemoteReference [
 	| targetTransporter |
 	targetTransporter := self registry at: targetRemoteReference address.
-	communicationQueue := SharedQueue new.
-	targetTransporter connectionQueue nextPut: communicationQueue.
+	sendQueue := SharedQueue new.
+	receiveQueue := SharedQueue new.
+	targetTransporter connectionQueue
+		nextPut: sendQueue; 
+		nextPut: receiveQueue.
 
 ]
 
 { #category : #receiving }
-MpConnectionForTest >> receiveBytes [
-	self waitWhile: [communicationQueue peek isNil] timeout: 100 milliSeconds.
-	^communicationQueue next
+MpConnectionForTest >> receiveBytesTimeout: timeoutDuration [
+	self waitWhile: [receiveQueue peek isNil] onTimeout: timeoutDuration do: [MpTimeout signal].
+	^receiveQueue next
+]
+
+{ #category : #accessing }
+MpConnectionForTest >> receiveQueue [
+	^ receiveQueue
+]
+
+{ #category : #accessing }
+MpConnectionForTest >> receiveQueue: anObject [
+	receiveQueue := anObject
 ]
 
 { #category : #connecting }
@@ -41,5 +45,15 @@ MpConnectionForTest >> registry [
 
 { #category : #sending }
 MpConnectionForTest >> sendBytes: bytes [
-	communicationQueue nextPut: bytes
+	sendQueue nextPut: bytes
+]
+
+{ #category : #accessing }
+MpConnectionForTest >> sendQueue [
+	^ sendQueue
+]
+
+{ #category : #accessing }
+MpConnectionForTest >> sendQueue: anObject [
+	sendQueue := anObject
 ]

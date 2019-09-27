@@ -71,6 +71,11 @@ MpTransporter >> receptionServicePriority: anInteger [
 ]
 
 { #category : #sending }
+MpTransporter >> receptionTimeoutDuration [
+	^self middleware receptionTimeoutDuration
+]
+
+{ #category : #sending }
 MpTransporter >> send: selector arguments: args to: targetRemoteReference [ 
 	|remoteMessage responseId|
 	responseId := self newId.
@@ -121,6 +126,14 @@ MpTransporter >> serialize: anObject [
 ]
 
 { #category : #sending }
+MpTransporter >> signalSendingRemoteMessage: remoteMessage raisedException: ex [
+	^ MpCouldNotDeliverMessageError new
+		message: remoteMessage;
+		originalException: ex;
+		signal
+]
+
+{ #category : #sending }
 MpTransporter >> signalTimeoutResponseOfMessage: remoteMessage [
 	MpRemoteMessageResultTimeout new
 		message: remoteMessage;
@@ -140,9 +153,4 @@ MpTransporter >> stop [
 { #category : #receiving }
 MpTransporter >> unmarshal: anObject [ 
 	^self marshaller unmarshal: anObject.
-]
-
-{ #category : #sending }
-MpTransporter >> waitForResultTimeoutDuration [
-	^self middleware waitForResultTimeoutDuration
 ]

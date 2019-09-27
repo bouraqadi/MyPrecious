@@ -5,8 +5,8 @@ Class {
 		'marshaller',
 		'referenceConverter',
 		'address',
-		'waitForResultTimeoutDuration',
-		'transporter'
+		'transporter',
+		'receptionTimeoutDuration'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -27,7 +27,7 @@ MpMiddleware >> defaultReceptionServicePriority [
 ]
 
 { #category : #initialization }
-MpMiddleware >> defaultWaitForResultTimeoutDuration [
+MpMiddleware >> defaultReceptionTimeoutDuration [
 	^500 milliSeconds 
 ]
 
@@ -47,7 +47,7 @@ MpMiddleware >> initialize [
 	referenceConverter := self referenceConverterClass middleware: self.
 	marshaller := self marshallerClass middleware: self.
 	transporter := self transporterClass middleware: self.
-	self waitForResultTimeoutDuration: self defaultWaitForResultTimeoutDuration.
+	self receptionTimeoutDuration: self defaultReceptionTimeoutDuration.
 	self receptionServicePriority: self defaultReceptionServicePriority.
 ]
 
@@ -93,6 +93,16 @@ MpMiddleware >> proxyClass [
 { #category : #activity }
 MpMiddleware >> receptionServicePriority: anInteger [
 	self transporter receptionServicePriority: anInteger
+]
+
+{ #category : #accessing }
+MpMiddleware >> receptionTimeoutDuration [
+	^receptionTimeoutDuration
+]
+
+{ #category : #accessing }
+MpMiddleware >> receptionTimeoutDuration: anObject [
+	receptionTimeoutDuration := anObject
 ]
 
 { #category : #accessing }
@@ -156,14 +166,4 @@ MpMiddleware >> transporter [
 { #category : #initialization }
 MpMiddleware >> transporterClass [
 	^MpTransporter
-]
-
-{ #category : #accessing }
-MpMiddleware >> waitForResultTimeoutDuration [
-	^waitForResultTimeoutDuration
-]
-
-{ #category : #accessing }
-MpMiddleware >> waitForResultTimeoutDuration: anObject [
-	waitForResultTimeoutDuration := anObject
 ]

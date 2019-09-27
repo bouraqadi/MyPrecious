@@ -38,14 +38,27 @@ MpConnection >> materializeAndUnmarshal: bytes [
 
 { #category : #receiving }
 MpConnection >> receiveBytes [
+	self receiveBytesTimeout: self receptionTimeoutDuration
+	
+]
+
+{ #category : #receiving }
+MpConnection >> receiveBytesTimeout: timeoutDuration [
 	self subclassResponsibility
 	
 ]
 
 { #category : #receiving }
 MpConnection >> receiveObject [
-	^self materializeAndUnmarshal: self receiveBytes.
+	| bytes |
+	bytes := self receiveBytesTimeout: self receptionTimeoutDuration.
+	^self materializeAndUnmarshal: bytes.
 	
+]
+
+{ #category : #accessing }
+MpConnection >> receptionTimeoutDuration [
+	^ self transporter receptionTimeoutDuration
 ]
 
 { #category : #sending }

@@ -33,7 +33,7 @@ MpMiddlewareTest >> assertIsProxy: anObject [
 ]
 
 { #category : #tests }
-MpMiddlewareTest >> defaultWaitForResultTimeoutDuration [
+MpMiddlewareTest >> defaultReceptionTimeoutDuration [
 	^100 milliSeconds
 ]
 
@@ -61,7 +61,7 @@ MpMiddlewareTest >> isProxy: anObject [
 { #category : #tests }
 MpMiddlewareTest >> newMiddleware [
 	^self middlewareClass new
-		waitForResultTimeoutDuration: self defaultWaitForResultTimeoutDuration;
+		receptionTimeoutDuration: self defaultReceptionTimeoutDuration;
 		yourself
 
 ]
@@ -209,7 +209,7 @@ MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
 	 ].
 	{process1. process2} do: [ : each |
 		each
-			priority: 20;
+			priority: 50;
 			start
 
 	].

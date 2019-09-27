@@ -68,14 +68,12 @@ MpUnconnectedTransporter >> receiveObject: anObject [
 
 { #category : #sending }
 MpUnconnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	[
-		self sendObject: remoteMessage toAddress: targetRemoteReference address
-	] on: Error do: [ : ex | 
-		MpCouldNotDeliverMessageError new
-			message: remoteMessage;
-			originalException: ex;
-			signal
-	]
+	[ self
+		sendObject: remoteMessage
+		toAddress: targetRemoteReference address 
+	] 
+		on: Error
+		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
 { #category : #sending }
@@ -100,7 +98,7 @@ MpUnconnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRefe
 	promisesLock
 		critical: [ promisesDict at: remoteMessage responseId put: promise ].
 	self sendAsynchronousMessage: remoteMessage to: targetReference.
-	[ promise wait: self waitForResultTimeoutDuration ]
+	[ promise wait: self receptionTimeoutDuration ]
 		on: CcPromiseTimeout
 		do: [ :ex | self signalTimeoutResponseOfMessage: remoteMessage ].
 	^ response contents
