@@ -1,6 +1,6 @@
 Class {
 	#name : #MpRemoteExceptionWrapper,
-	#superclass : #MpMessageSendExceptionWrapper,
+	#superclass : #MpRemoteMessagingError,
 	#category : #'MyPrecious-Kernel'
 }
 

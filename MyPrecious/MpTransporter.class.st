@@ -126,17 +126,18 @@ MpTransporter >> serialize: anObject [
 ]
 
 { #category : #sending }
-MpTransporter >> signalSendingRemoteMessage: remoteMessage raisedException: ex [
-	^ MpCouldNotDeliverMessageError new
+MpTransporter >> signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: exception [
+	MpRemoteMessageResultTimeout new
 		message: remoteMessage;
-		originalException: ex;
+		originalException: exception;
 		signal
 ]
 
 { #category : #sending }
-MpTransporter >> signalTimeoutResponseOfMessage: remoteMessage [
-	MpRemoteMessageResultTimeout new
+MpTransporter >> signalSendingRemoteMessage: remoteMessage raisedException: ex [
+	^ MpCouldNotDeliverMessageError new
 		message: remoteMessage;
+		originalException: ex;
 		signal
 ]
 

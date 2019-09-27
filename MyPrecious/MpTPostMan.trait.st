@@ -9,7 +9,7 @@ MpTPostMan >> basicDeliverSynchronousMessage: remoteMessage [
 		self normalResponseClass
 			id: remoteMessage responseId
 			result: remoteMessage send 
-	] on: Exception do: [ :exception | 
+	] on: Error do: [ :exception | 
 		self exceptionResponseClass
 				id: remoteMessage responseId
 				exception: exception 

@@ -23,8 +23,8 @@ MpConnectionForTest >> connectTo: targetRemoteReference [
 ]
 
 { #category : #receiving }
-MpConnectionForTest >> receiveBytesTimeout: timeoutDuration [
-	self waitWhile: [receiveQueue peek isNil] onTimeout: timeoutDuration do: [MpTimeout signal].
+MpConnectionForTest >> receiveBytes [
+	self waitWhile: [receiveQueue peek isNil] timeout: self receptionTimeoutDuration.
 	^receiveQueue next
 ]
 

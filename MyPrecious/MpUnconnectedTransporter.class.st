@@ -51,7 +51,9 @@ MpUnconnectedTransporter >> readBytes [
 
 { #category : #receiving }
 MpUnconnectedTransporter >> receiveBytes [
-	self receiveBytes: self readBytes
+	| bytes |
+	bytes := self readBytes.
+	[ self receiveBytes: bytes ] fork
 ]
 
 { #category : #receiving }
@@ -100,6 +102,6 @@ MpUnconnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRefe
 	self sendAsynchronousMessage: remoteMessage to: targetReference.
 	[ promise wait: self receptionTimeoutDuration ]
 		on: CcPromiseTimeout
-		do: [ :ex | self signalTimeoutResponseOfMessage: remoteMessage ].
+		do: [ :ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex ].
 	^ response contents
 ]

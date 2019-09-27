@@ -46,7 +46,7 @@ MpConnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRemote
 	| connection response |
 	connection := self sendAsynchronousMessage: remoteMessage to: targetRemoteReference.
 	[response := connection receiveObject] 
-		on: MpTimeout 
-		do: [self signalTimeoutResponseOfMessage: remoteMessage].
+		on: Error 
+		do: [: ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex].
 	^response contents
 ]

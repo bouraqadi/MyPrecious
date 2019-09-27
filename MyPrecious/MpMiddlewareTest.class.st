@@ -1,8 +1,8 @@
 Class {
 	#name : #MpMiddlewareTest,
 	#superclass : #TestCase,
-	#traits : 'CcTConcurrencyTest + CcTWaitPolling',
-	#classTraits : 'CcTConcurrencyTest classTrait + CcTWaitPolling classTrait',
+	#traits : 'CcTConcurrencyTest',
+	#classTraits : 'CcTConcurrencyTest classTrait',
 	#instVars : [
 		'middlewareA',
 		'middlewareB',
@@ -83,6 +83,11 @@ MpMiddlewareTest >> passByReferenceObjects [
 
 { #category : #tests }
 MpMiddlewareTest >> runCaseManaged [
+	"Currently SUnit terminates all forked threads upon failure.
+This makes debugging very hard, if not impossible! We need to guess the state of the threads, since they are all terminated.
+Simply calling runCase is a dirty fix.
+We have to take care of terminating threads upon failures.
+"
 	self runCase
 ]
 
@@ -184,6 +189,27 @@ MpMiddlewareTest >> testExportedObjectReference [
 	remoteReferenceACopy := remoteReferenceA deepCopy.
 	self assert: (middlewareA objectAt: remoteReferenceACopy) == exportedObject.
 	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testMessagePingPong [
+	| valueHolderA1 remoteReferenceA1 proxyBtoA1 valueHolderB1 valueHolderA2 remoteReferenceB1 proxyAtoB1 remoteReferenceA2 proxyBtoA2 |
+	self allMiddleware do: [: each | each receptionTimeoutDuration: 2 seconds].
+	valueHolderA1 := self newValueHolder.
+	remoteReferenceA1 := middlewareA export: valueHolderA1.
+	proxyBtoA1 := middlewareB objectAt: remoteReferenceA1.
+	self assert: proxyBtoA1 chainSize equals: 1.
+	valueHolderB1 := self newValueHolder.	
+	valueHolderB1 contents: proxyBtoA1.
+	remoteReferenceB1 := middlewareB export: valueHolderB1.
+	proxyAtoB1 := middlewareA objectAt: remoteReferenceB1.	
+	self assert: proxyAtoB1 chainSize equals: 2.
+	valueHolderA2 := self newValueHolder.
+	valueHolderA2 contents: proxyAtoB1.
+	remoteReferenceA2 := middlewareA export: valueHolderA2.
+	proxyBtoA2 := middlewareB objectAt: remoteReferenceA2.
+	self assert: proxyBtoA2 chainSize equals: 3.
+
 ]
 
 { #category : #tests }
@@ -421,7 +447,7 @@ MpMiddlewareTest >> testTimeoutRemoteMessage [
 		[proxy wait] on: MpRemoteMessageResultTimeout do: [: ex | isTimeout := true].
 		doneSemaphore signal.
 	 ] fork.
-	self assertSemaphore: doneSemaphore signaledWithinMilliseconds: 200.
+	self assertSemaphore: doneSemaphore signaledWithinSeconds: 3.
 	self assert: isTimeout.
 
 ]

@@ -10,6 +10,12 @@ Class {
 }
 
 { #category : #accessing }
+MpValueHolderForTest >> chainSize [
+	self contents ifNil: [ ^1 ].
+	^1 + contents chainSize 
+]
+
+{ #category : #accessing }
 MpValueHolderForTest >> contents [
 	^ contents
 ]

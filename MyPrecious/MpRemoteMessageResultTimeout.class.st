@@ -1,6 +1,6 @@
 Class {
 	#name : #MpRemoteMessageResultTimeout,
-	#superclass : #MpMessageSendError,
+	#superclass : #MpRemoteMessagingError,
 	#category : #'MyPrecious-Kernel'
 }
 
