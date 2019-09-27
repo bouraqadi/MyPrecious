@@ -1,6 +1,8 @@
 Class {
 	#name : #MpUnconnectedTransporterForTest,
 	#superclass : #MpUnconnectedTransporter,
+	#traits : 'CcTWaitPolling',
+	#classTraits : 'CcTWaitPolling classTrait',
 	#instVars : [
 		'receiveQueue'
 	],

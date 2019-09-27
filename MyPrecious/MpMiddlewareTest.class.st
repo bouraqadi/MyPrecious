@@ -193,22 +193,22 @@ MpMiddlewareTest >> testExportedObjectReference [
 
 { #category : #tests }
 MpMiddlewareTest >> testMessagePingPong [
-	| valueHolderA1 remoteReferenceA1 proxyBtoA1 valueHolderB1 valueHolderA2 remoteReferenceB1 proxyAtoB1 remoteReferenceA2 proxyBtoA2 |
-	self allMiddleware do: [: each | each receptionTimeoutDuration: 2 seconds].
+	| valueHolderA1 remoteReferenceA1 proxyA1InB valueHolderB1 valueHolderA2 remoteReferenceB1 proxyB1InA remoteReferenceA2 proxyA2InB |
+	self allMiddleware do: [: each | each receptionTimeoutDuration: 500 milliSeconds].
 	valueHolderA1 := self newValueHolder.
 	remoteReferenceA1 := middlewareA export: valueHolderA1.
-	proxyBtoA1 := middlewareB objectAt: remoteReferenceA1.
-	self assert: proxyBtoA1 chainSize equals: 1.
+	proxyA1InB := middlewareB objectAt: remoteReferenceA1.
+	self assert: proxyA1InB chainSize equals: 1.
 	valueHolderB1 := self newValueHolder.	
-	valueHolderB1 contents: proxyBtoA1.
+	valueHolderB1 contents: proxyA1InB.
 	remoteReferenceB1 := middlewareB export: valueHolderB1.
-	proxyAtoB1 := middlewareA objectAt: remoteReferenceB1.	
-	self assert: proxyAtoB1 chainSize equals: 2.
+	proxyB1InA := middlewareA objectAt: remoteReferenceB1.	
+	self assert: proxyB1InA chainSize equals: 2.
 	valueHolderA2 := self newValueHolder.
-	valueHolderA2 contents: proxyAtoB1.
+	valueHolderA2 contents: proxyB1InA.
 	remoteReferenceA2 := middlewareA export: valueHolderA2.
-	proxyBtoA2 := middlewareB objectAt: remoteReferenceA2.
-	self assert: proxyBtoA2 chainSize equals: 3.
+	proxyA2InB := middlewareB objectAt: remoteReferenceA2.
+	self assert: proxyA2InB chainSize equals: 3.
 
 ]
 

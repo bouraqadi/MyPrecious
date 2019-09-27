@@ -18,12 +18,15 @@ BaselineOfMyPrecious >> baseline: spec [
 					repository: 'github://bouraqadi/PharoMisc' ];
 			baseline: 'NetworkExtras' with: [
 				spec
-					repository: 'github://bouraqadi/PharoMisc' ].
+					repository: 'github://bouraqadi/PharoMisc' ];
+			baseline: 'TaskIt' with: [
+				spec
+					repository: 'github://sbragagnolo/taskit' ].
 
 		spec 
 			repository: 'github://bouraqadi/MyPrecious';
 			package: #MyPrecious with: [
-				spec requires: #('Equals' 'Concurrency')];
+				spec requires: #('Equals' 'Concurrency' 'TaskIt')];
 			package: #MyPreciousTcp with: [
 				spec requires: #('MyPrecious' 'NetworkExtras')]
 	].

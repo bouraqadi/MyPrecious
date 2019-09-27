@@ -29,7 +29,7 @@ MpUnconnectedTransporter >> deliverSynchronousMessage: remoteMessage [
 { #category : #initialization }
 MpUnconnectedTransporter >> initialize [
 	super initialize.
-	promisesDict := WeakValueDictionary new.
+	promisesDict := Dictionary new.
 	promisesLock := Mutex new.
 
 ]
@@ -41,7 +41,7 @@ MpUnconnectedTransporter >> newReceptionService [
 
 { #category : #sending }
 MpUnconnectedTransporter >> promiseClass [
-	^ CcPromise
+	^ TKTFuture
 ]
 
 { #category : #receiving }
@@ -53,7 +53,7 @@ MpUnconnectedTransporter >> readBytes [
 MpUnconnectedTransporter >> receiveBytes [
 	| bytes |
 	bytes := self readBytes.
-	[ self receiveBytes: bytes ] fork
+	[self receiveBytes: bytes] fork
 ]
 
 { #category : #receiving }
@@ -94,14 +94,14 @@ MpUnconnectedTransporter >> sendObject: anObject toAddress: address [
 { #category : #sending }
 MpUnconnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	| promise response |
-	promise := self promiseClass
-		onFulfillDo: [ :normalResponse | response := normalResponse ]
-		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
+	promise := self promiseClass new
+		onSuccessDo: [ :normalResponse | response := normalResponse ];
+		onFailureDo: [ :exceptionResponse | response := exceptionResponse ].
 	promisesLock
 		critical: [ promisesDict at: remoteMessage responseId put: promise ].
 	self sendAsynchronousMessage: remoteMessage to: targetReference.
-	[ promise wait: self receptionTimeoutDuration ]
-		on: CcPromiseTimeout
+	[ promise waitForCompletion: self receptionTimeoutDuration ]
+		on: TKTTimeoutException
 		do: [ :ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex ].
 	^ response contents
 ]
