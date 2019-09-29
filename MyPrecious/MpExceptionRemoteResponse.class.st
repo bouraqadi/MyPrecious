@@ -37,5 +37,5 @@ MpExceptionRemoteResponse >> marshalWith: marshaller [
 
 { #category : #acting }
 MpExceptionRemoteResponse >> trigger: aPromise [
-	aPromise deployFailure: self
+	aPromise rejectWith: self
 ]

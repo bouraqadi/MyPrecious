@@ -37,7 +37,7 @@ MpNormalRemoteResponse >> result: anObject [
 
 { #category : #acting }
 MpNormalRemoteResponse >> trigger: aPromise [
-	aPromise deploySuccess: self
+	aPromise fulfillWith: self
 ]
 
 { #category : #marshalling }

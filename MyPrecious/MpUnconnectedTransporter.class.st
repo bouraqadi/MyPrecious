@@ -41,7 +41,7 @@ MpUnconnectedTransporter >> newReceptionService [
 
 { #category : #sending }
 MpUnconnectedTransporter >> promiseClass [
-	^ TKTFuture
+	^ CcPromise
 ]
 
 { #category : #receiving }
@@ -94,14 +94,14 @@ MpUnconnectedTransporter >> sendObject: anObject toAddress: address [
 { #category : #sending }
 MpUnconnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	| promise response |
-	promise := self promiseClass new
-		onSuccessDo: [ :normalResponse | response := normalResponse ];
-		onFailureDo: [ :exceptionResponse | response := exceptionResponse ].
+	promise := self promiseClass
+		onFulfillDo: [ :normalResponse | response := normalResponse ]
+		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
 	promisesLock
 		critical: [ promisesDict at: remoteMessage responseId put: promise ].
 	self sendAsynchronousMessage: remoteMessage to: targetReference.
-	[ promise waitForCompletion: self receptionTimeoutDuration ]
-		on: TKTTimeoutException
+	[ promise wait: self receptionTimeoutDuration ]
+		on: CcPromiseTimeout
 		do: [ :ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex ].
 	^ response contents
 ]
