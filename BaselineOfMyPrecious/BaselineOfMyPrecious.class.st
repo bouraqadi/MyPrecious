@@ -34,7 +34,7 @@ BaselineOfMyPrecious >> baseline: spec [
 		spec
 				group: 'kernel' with: #('MyPrecious');
 				group: 'tcp' with: #('kernel' 'MyPreciousTcp');
-				group: 'default' with: #('tcp' 'MyPreciousTests' 'MyPreciousTcpTest')
+				group: 'default' with: #('tcp' 'MyPreciousTests' 'MyPreciousTcpTests')
 	].
 
 ]
