@@ -28,7 +28,7 @@ BaselineOfMyPrecious >> baseline: spec [
 				spec requires: #('MyPrecious')];
 			package: #MyPreciousTcp with: [
 				spec requires: #('MyPrecious' 'NetworkExtras')];
-			package: #MyPreciousTcpTest with: [
+			package: #MyPreciousTcpTests with: [
 				spec requires: #('MyPreciousTests' 'MyPreciousTcp')].
 			
 		spec
