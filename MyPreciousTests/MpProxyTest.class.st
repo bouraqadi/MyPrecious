@@ -5,7 +5,7 @@ Class {
 		'proxy',
 		'transporter'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Common'
 }
 
 { #category : #tests }

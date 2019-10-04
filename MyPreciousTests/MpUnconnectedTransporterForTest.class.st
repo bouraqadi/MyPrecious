@@ -6,7 +6,7 @@ Class {
 	#instVars : [
 		'receiveQueue'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Unconnected'
 }
 
 { #category : #initialization }

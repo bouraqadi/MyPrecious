@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'messageAnswersDict'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Common'
 }
 
 { #category : #initialization }

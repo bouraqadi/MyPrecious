@@ -1,7 +1,7 @@
 Class {
 	#name : #MpConnectedTransportMiddlewareTest,
 	#superclass : #MpMiddlewareTest,
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Connected'
 }
 
 { #category : #tests }

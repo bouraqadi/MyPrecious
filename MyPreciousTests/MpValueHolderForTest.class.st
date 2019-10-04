@@ -6,7 +6,7 @@ Class {
 	#instVars : [
 		'contents'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Common'
 }
 
 { #category : #accessing }

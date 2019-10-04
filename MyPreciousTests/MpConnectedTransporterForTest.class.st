@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'connectionQueue'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Connected'
 }
 
 { #category : #receiving }

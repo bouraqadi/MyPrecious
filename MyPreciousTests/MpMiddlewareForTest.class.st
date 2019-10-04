@@ -5,7 +5,7 @@ Class {
 		'AddressCounter',
 		'Registry'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Common'
 }
 
 { #category : #accessing }

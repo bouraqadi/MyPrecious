@@ -24,8 +24,17 @@ BaselineOfMyPrecious >> baseline: spec [
 			repository: 'github://bouraqadi/MyPrecious';
 			package: #MyPrecious with: [
 				spec requires: #('Equals' 'Concurrency')];
+			package: #MyPreciousTests with: [
+				spec requires: #('MyPrecious')];
 			package: #MyPreciousTcp with: [
-				spec requires: #('MyPrecious' 'NetworkExtras')]
+				spec requires: #('MyPrecious' 'NetworkExtras')];
+			package: #MyPreciousTcpTest with: [
+				spec requires: #('MyPreciousTests' 'MyPreciousTcp')].
+			
+		spec
+				group: 'kernel' with: #('MyPrecious');
+				group: 'tcp' with: #('kernel' 'MyPreciousTcp');
+				group: 'default' with: #('tcp' 'MyPreciousTests' 'MyPreciousTcpTest')
 	].
 
 ]

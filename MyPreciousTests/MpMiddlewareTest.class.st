@@ -8,7 +8,7 @@ Class {
 		'middlewareB',
 		'middlewareC'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Common'
 }
 
 { #category : #testing }

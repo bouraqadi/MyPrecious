@@ -7,7 +7,7 @@ Class {
 		'receiveQueue',
 		'sendQueue'
 	],
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Connected'
 }
 
 { #category : #connecting }

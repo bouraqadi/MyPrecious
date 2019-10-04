@@ -1,7 +1,7 @@
 Class {
 	#name : #MpUnconnectedTransportMiddlewareForTest,
 	#superclass : #MpMiddlewareForTest,
-	#category : #'MyPrecious-Tests'
+	#category : #'MyPreciousTests-Unconnected'
 }
 
 { #category : #initialization }
