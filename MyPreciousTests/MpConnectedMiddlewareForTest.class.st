@@ -1,10 +1,10 @@
 Class {
-	#name : #MpConnectedTransportMiddlewareForTest,
+	#name : #MpConnectedMiddlewareForTest,
 	#superclass : #MpMiddlewareForTest,
 	#category : #'MyPreciousTests-Connected'
 }
 
 { #category : #initialization }
-MpConnectedTransportMiddlewareForTest >> transporterClass [
+MpConnectedMiddlewareForTest >> transporterClass [
 	^MpConnectedTransporterForTest 
 ]

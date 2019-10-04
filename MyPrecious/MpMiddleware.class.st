@@ -165,5 +165,5 @@ MpMiddleware >> transporter [
 
 { #category : #initialization }
 MpMiddleware >> transporterClass [
-	^MpTransporter
+	^self subclassResponsibility
 ]

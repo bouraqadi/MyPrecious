@@ -1,6 +1,6 @@
 Class {
 	#name : #MpTcpMiddlewareTest,
-	#superclass : #MpConnectedTransportMiddlewareTest,
+	#superclass : #MpConnectedMiddlewareTest,
 	#category : #MyPreciousTcpTests
 }
 

@@ -1,6 +1,6 @@
 Class {
-	#name : #MpConnectedTransporterForTest,
-	#superclass : #MpConnectedTransporter,
+	#name : #MpPersistentConnectionsTransporterForTest,
+	#superclass : #MpPersistentConnectionsTransporter,
 	#traits : 'MpTConnectedTransporterForTest',
 	#classTraits : 'MpTConnectedTransporterForTest classTrait',
 	#instVars : [
@@ -10,12 +10,12 @@ Class {
 }
 
 { #category : #accessing }
-MpConnectedTransporterForTest >> connectionQueue [
-	^ connectionQueue
+MpPersistentConnectionsTransporterForTest >> connectionQueue [
+	^connectionQueue
 ]
 
-{ #category : #initialization }
-MpConnectedTransporterForTest >> initialize [
+{ #category : #accessing }
+MpPersistentConnectionsTransporterForTest >> initialize [
 	super initialize.
 	connectionQueue := SharedQueue new
 ]

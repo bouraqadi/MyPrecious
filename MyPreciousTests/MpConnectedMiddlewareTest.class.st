@@ -1,16 +1,16 @@
 Class {
-	#name : #MpConnectedTransportMiddlewareTest,
+	#name : #MpConnectedMiddlewareTest,
 	#superclass : #MpMiddlewareTest,
 	#category : #'MyPreciousTests-Connected'
 }
 
 { #category : #tests }
-MpConnectedTransportMiddlewareTest >> middlewareClass [ 
-	^MpConnectedTransportMiddlewareForTest
+MpConnectedMiddlewareTest >> middlewareClass [ 
+	^MpConnectedMiddlewareForTest
 ]
 
 { #category : #tests }
-MpConnectedTransportMiddlewareTest >> testRemoteMessageBasicSend [
+MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 	| valueHolderA remoteReferenceA message connection |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.

@@ -5,6 +5,14 @@ Class {
 }
 
 { #category : #sending }
+MpConnectedTransporter >> basicSendAsynchronousMessage: remoteMessage to: targetRemoteReference [
+	| connection |
+	connection := self connectTo: targetRemoteReference.
+	connection sendObject: remoteMessage.
+	^ connection
+]
+
+{ #category : #sending }
 MpConnectedTransporter >> connectTo: targetRemoteReference [
 	^self newConnection
 		connectTo: targetRemoteReference;
@@ -31,12 +39,10 @@ MpConnectedTransporter >> receiveBytesVia: connection [
 
 { #category : #sending }
 MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	| connection |
-	[
-		connection := self connectTo: targetRemoteReference.
-		connection sendObject: remoteMessage.
-		^connection
-	] 
+	[ ^ self
+			basicSendAsynchronousMessage: remoteMessage
+			to: targetRemoteReference 
+	]
 		on: Error
 		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
