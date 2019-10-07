@@ -2,8 +2,7 @@ Class {
 	#name : #MpPersistentConnectionsTransporter,
 	#superclass : #MpConnectedTransporter,
 	#instVars : [
-		'connectionsDict',
-		'persistingReceptionServices'
+		'connectionsDict'
 	],
 	#category : #'MyPrecious-Kernel'
 }

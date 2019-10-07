@@ -9,6 +9,11 @@ Class {
 	#category : #'MyPreciousTests-Connected'
 }
 
+{ #category : #connecting }
+MpConnectedTransporterForTest >> connectionClass [
+	^MpOneShotConnectionForTest
+]
+
 { #category : #accessing }
 MpConnectedTransporterForTest >> connectionQueue [
 	^ connectionQueue
@@ -18,9 +23,4 @@ MpConnectedTransporterForTest >> connectionQueue [
 MpConnectedTransporterForTest >> initialize [
 	super initialize.
 	connectionQueue := SharedQueue new
-]
-
-{ #category : #receiving }
-MpConnectedTransporterForTest >> startServiceReceivingVia: connection [
-	[ self receiveBytesVia: connection ] fork
 ]

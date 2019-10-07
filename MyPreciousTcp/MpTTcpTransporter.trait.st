@@ -3,16 +3,11 @@ Trait {
 	#category : #MyPreciousTcp
 }
 
-{ #category : #sending }
-MpTTcpTransporter >> connectionClass [
-	^MpTcpConnection
-]
-
 { #category : #initialization }
 MpTTcpTransporter >> newReceptionService [
 	^self serverClass new
 		withCommunicationStreamDo: [ : stream | 
-			self startServiceReceivingFromStream: stream ];
+			self receiveBytesFromStream: stream ];
 		yourself
 ]
 
@@ -24,18 +19,12 @@ MpTTcpTransporter >> port: integer [
 
 { #category : #receiving }
 MpTTcpTransporter >> receiveBytesFromStream: stream [
-	| connection |
-	connection := self newConnection.
-	connection socketStream: stream.
-	self receiveBytesVia: connection
+	self newConnection
+		socketStream: stream;
+		startReceiving
 ]
 
 { #category : #initialization }
 MpTTcpTransporter >> serverClass [
 	^NeTcpServer 
-]
-
-{ #category : #initialization }
-MpTTcpTransporter >> startServiceReceivingFromStream: stream [
-	self explicitRequirement
 ]

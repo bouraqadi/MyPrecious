@@ -6,9 +6,7 @@ Class {
 	#category : #MyPreciousTcp
 }
 
-{ #category : #initialization }
-MpTcpPersistentConnectionsTransporter >> startServiceReceivingFromStream: stream [
-	| service |
-	service := CcService repeat: [self receiveBytesFromStream: stream].
-	service start
+{ #category : #connecting }
+MpTcpPersistentConnectionsTransporter >> connectionClass [
+	^MpTcpPersistentConnection
 ]

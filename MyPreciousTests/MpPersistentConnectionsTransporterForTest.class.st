@@ -10,6 +10,11 @@ Class {
 	#category : #'MyPreciousTests-Connected'
 }
 
+{ #category : #connecting }
+MpPersistentConnectionsTransporterForTest >> connectionClass [
+	^MpPersistentConnectionForTest
+]
+
 { #category : #accessing }
 MpPersistentConnectionsTransporterForTest >> connectionQueue [
 	^connectionQueue
@@ -20,12 +25,4 @@ MpPersistentConnectionsTransporterForTest >> initialize [
 	super initialize.
 	connectionQueue := SharedQueue new.
 	allReceptionServices := Set new
-]
-
-{ #category : #receiving }
-MpPersistentConnectionsTransporterForTest >> startServiceReceivingVia: connection [
-	| service |
-	service := CcService repeat: [ self receiveBytesVia: connection ].
-	service start.
-	allReceptionServices add: service
 ]

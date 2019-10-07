@@ -32,11 +32,6 @@ MpConnectedTransporter >> newConnection [
 		yourself
 ]
 
-{ #category : #receiving }
-MpConnectedTransporter >> receiveBytesVia: connection [
-	connection deliverReceivedObject
-]
-
 { #category : #sending }
 MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	[ ^ self

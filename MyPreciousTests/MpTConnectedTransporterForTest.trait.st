@@ -9,13 +9,8 @@ MpTConnectedTransporterForTest >> acceptConnections [
 	connection := self newConnection.
 	connection 
 		receiveQueue: self connectionQueue next;
-		sendQueue: self connectionQueue next.
-	self startServiceReceivingVia: connection
-]
-
-{ #category : #sending }
-MpTConnectedTransporterForTest >> connectionClass [
-	^MpConnectionForTest
+		sendQueue: self connectionQueue next;
+		startReceiving
 ]
 
 { #category : #receiving }

@@ -4,7 +4,8 @@ Class {
 	#traits : 'MpTPostMan',
 	#classTraits : 'MpTPostMan classTrait',
 	#instVars : [
-		'transporter'
+		'transporter',
+		'service'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -42,6 +43,11 @@ MpConnection >> materializeAndUnmarshal: bytes [
 ]
 
 { #category : #receiving }
+MpConnection >> newReceptionServiceDoing: aBlock [
+	self subclassResponsibility
+]
+
+{ #category : #receiving }
 MpConnection >> receiveBytes [
 	self subclassResponsibility
 ]
@@ -67,6 +73,12 @@ MpConnection >> sendObject: anObject [
 	| bytes |
 	bytes := self marshalAndSerialize: anObject.
 	self sendBytes: bytes
+]
+
+{ #category : #receiving }
+MpConnection >> startReceiving [
+	service := self newReceptionServiceDoing: [self deliverReceivedObject].
+	service start
 ]
 
 { #category : #accessing }

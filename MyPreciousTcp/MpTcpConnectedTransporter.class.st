@@ -6,7 +6,7 @@ Class {
 	#category : #MyPreciousTcp
 }
 
-{ #category : #initialization }
-MpTcpConnectedTransporter >> startServiceReceivingFromStream: stream [
-	[self receiveBytesFromStream: stream] fork
+{ #category : #connecting }
+MpTcpConnectedTransporter >> connectionClass [
+	^MpTcpOneShotConnection
 ]
