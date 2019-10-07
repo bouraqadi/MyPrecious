@@ -1,16 +1,11 @@
 Class {
 	#name : #MpConnectedTransporter,
 	#superclass : #MpTransporter,
+	#instVars : [
+		'connectionHandlingService'
+	],
 	#category : #'MyPrecious-Kernel'
 }
-
-{ #category : #sending }
-MpConnectedTransporter >> basicSendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	| connection |
-	connection := self connectTo: targetRemoteReference.
-	connection sendObject: remoteMessage.
-	^ connection
-]
 
 { #category : #connecting }
 MpConnectedTransporter >> connectTo: targetRemoteReference [
@@ -26,28 +21,58 @@ MpConnectedTransporter >> connectionClass [
 ]
 
 { #category : #connecting }
+MpConnectedTransporter >> connectionHandlingService [
+	^ connectionHandlingService
+]
+
+{ #category : #initialization }
+MpConnectedTransporter >> initialize [
+	super initialize.
+	connectionHandlingService := self newConnectionHandlingService
+
+]
+
+{ #category : #activity }
+MpConnectedTransporter >> isStarted [
+	^self connectionHandlingService isStarted.
+	
+]
+
+{ #category : #connecting }
 MpConnectedTransporter >> newConnection [
 	^self connectionClass new
 		transporter: self;
 		yourself
 ]
 
-{ #category : #sending }
-MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	[ ^ self
-			basicSendAsynchronousMessage: remoteMessage
-			to: targetRemoteReference 
-	]
-		on: Error
-		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
+{ #category : #initialization }
+MpConnectedTransporter >> newConnectionHandlingService [
+	self subclassResponsibility
+]
+
+{ #category : #initialization }
+MpConnectedTransporter >> receptionServicePriority: anInteger [
+	connectionHandlingService priority: anInteger
 ]
 
 { #category : #sending }
-MpConnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
-	| connection response |
-	connection := self sendAsynchronousMessage: remoteMessage to: targetRemoteReference.
-	[response := connection receiveObject] 
-		on: Error 
-		do: [: ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex].
-	^response contents
+MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
+	| connection |
+	[
+		connection := self connectTo: targetRemoteReference.
+		connection sendObject: remoteMessage.
+		^ connection	]
+	on: Error
+	do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
+]
+
+{ #category : #activity }
+MpConnectedTransporter >> start [
+	self connectionHandlingService start
+]
+
+{ #category : #activity }
+MpConnectedTransporter >> stop [
+	self connectionHandlingService stop.
+	
 ]

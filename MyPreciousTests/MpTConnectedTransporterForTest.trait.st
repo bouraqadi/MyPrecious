@@ -19,7 +19,7 @@ MpTConnectedTransporterForTest >> connectionQueue [
 ]
 
 { #category : #initialization }
-MpTConnectedTransporterForTest >> newReceptionService [
+MpTConnectedTransporterForTest >> newConnectionHandlingService [
 	^CcService repeat: [ self acceptConnections ]
 ]
 

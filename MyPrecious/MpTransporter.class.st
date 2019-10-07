@@ -2,7 +2,8 @@ Class {
 	#name : #MpTransporter,
 	#superclass : #MpMiddlewarePart,
 	#instVars : [
-		'receptionService'
+		'promisesDict',
+		'promisesLock'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -12,21 +13,31 @@ MpTransporter >> address [
 	^self middleware address
 ]
 
+{ #category : #receiving }
+MpTransporter >> deliverResponse: remoteResponse [
+	| promise |
+	promise := promisesLock critical: [
+		promisesDict at: remoteResponse id ifAbsent: [^self]].
+	remoteResponse trigger: promise
+
+]
+
 { #category : #initialization }
 MpTransporter >> initialize [
 	super initialize.
-	receptionService := self newReceptionService.
+	promisesDict := Dictionary new.
+	promisesLock := Mutex new.
 
 ]
 
 { #category : #activity }
 MpTransporter >> isStarted [
-	^self receptionService isStarted
+	^self subclassResponsibility
 ]
 
 { #category : #activity }
 MpTransporter >> isStopped [
-	^self receptionService isStopped
+	^self isStarted not
 ]
 
 { #category : #sending }
@@ -60,19 +71,14 @@ MpTransporter >> materializeFrom: bytes [
 	^FLMaterializer materializeFromByteArray: bytes
 ]
 
-{ #category : #initialization }
-MpTransporter >> newReceptionService [
-	self subclassResponsibility
-]
-
-{ #category : #accessing }
-MpTransporter >> receptionService [
-	^ receptionService
+{ #category : #sending }
+MpTransporter >> promiseClass [
+	^ CcPromise
 ]
 
 { #category : #initialization }
 MpTransporter >> receptionServicePriority: anInteger [
-	self receptionService priority: anInteger
+	self subclassResponsibility
 ]
 
 { #category : #sending }
@@ -121,8 +127,18 @@ MpTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReferenc
 ]
 
 { #category : #sending }
-MpTransporter >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
-	self subclassResponsibility
+MpTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
+	| promise response |
+	promise := self promiseClass
+		onFulfillDo: [ :normalResponse | response := normalResponse ]
+		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
+	promisesLock
+		critical: [ promisesDict at: remoteMessage responseId put: promise ].
+	self sendAsynchronousMessage: remoteMessage to: targetReference.
+	[ promise wait: self receptionTimeoutDuration ]
+		on: CcPromiseTimeout
+		do: [ :ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex ].
+	^ response contents
 ]
 
 { #category : #sending }
@@ -148,12 +164,12 @@ MpTransporter >> signalSendingRemoteMessage: remoteMessage raisedException: ex [
 
 { #category : #activity }
 MpTransporter >> start [
-	self receptionService start
+	self subclassResponsibility
 ]
 
 { #category : #activity }
 MpTransporter >> stop [
-	self receptionService stop
+	self subclassResponsibility
 ]
 
 { #category : #receiving }

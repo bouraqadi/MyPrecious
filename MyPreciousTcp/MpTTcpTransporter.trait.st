@@ -4,7 +4,7 @@ Trait {
 }
 
 { #category : #initialization }
-MpTTcpTransporter >> newReceptionService [
+MpTTcpTransporter >> newConnectionHandlingService [
 	^self serverClass new
 		withCommunicationStreamDo: [ : stream | 
 			self receiveBytesFromStream: stream ];
@@ -13,7 +13,7 @@ MpTTcpTransporter >> newReceptionService [
 
 { #category : #accessing }
 MpTTcpTransporter >> port: integer [
-	self receptionService port: integer.
+	self connectionHandlingService port: integer.
 
 ]
 

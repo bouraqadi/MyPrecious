@@ -1,6 +1,6 @@
 Trait {
 	#name : #MpTOneShotConnection,
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-ToDelete'
 }
 
 { #category : #'instance creation' }

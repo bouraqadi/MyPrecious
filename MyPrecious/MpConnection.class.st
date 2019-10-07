@@ -21,6 +21,11 @@ MpConnection >> deliverReceivedObject [
 ]
 
 { #category : #receiving }
+MpConnection >> deliverResponse: aResponse [
+	self transporter deliverResponse: aResponse
+]
+
+{ #category : #receiving }
 MpConnection >> deliverSaveConnection: saveConnectionMetaMessage [
 	self transporter saveConnection: self to: saveConnectionMetaMessage otherSideAddress
 ]

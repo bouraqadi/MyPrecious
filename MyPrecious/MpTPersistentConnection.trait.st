@@ -1,6 +1,6 @@
 Trait {
 	#name : #MpTPersistentConnection,
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-ToDelete'
 }
 
 { #category : #'instance creation' }

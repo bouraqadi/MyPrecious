@@ -4,20 +4,10 @@ Class {
 	#traits : 'MpTPostMan',
 	#classTraits : 'MpTPostMan classTrait',
 	#instVars : [
-		'promisesDict',
-		'promisesLock'
+		'receptionService'
 	],
 	#category : #'MyPrecious-Kernel'
 }
-
-{ #category : #receiving }
-MpUnconnectedTransporter >> deliverResponse: remoteResponse [
-	| promise |
-	promise := promisesLock critical: [
-		promisesDict at: remoteResponse id ifAbsent: [^self]].
-	remoteResponse trigger: promise
-
-]
 
 { #category : #receiving }
 MpUnconnectedTransporter >> deliverSynchronousMessage: remoteMessage [
@@ -29,19 +19,18 @@ MpUnconnectedTransporter >> deliverSynchronousMessage: remoteMessage [
 { #category : #initialization }
 MpUnconnectedTransporter >> initialize [
 	super initialize.
-	promisesDict := Dictionary new.
-	promisesLock := Mutex new.
+	receptionService := self newReceptionService.
 
+]
+
+{ #category : #activity }
+MpUnconnectedTransporter >> isStarted [
+	^self receptionService isStarted
 ]
 
 { #category : #initialization }
 MpUnconnectedTransporter >> newReceptionService [
 	^CcService repeat: [ self receiveBytes ]
-]
-
-{ #category : #sending }
-MpUnconnectedTransporter >> promiseClass [
-	^ CcPromise
 ]
 
 { #category : #receiving }
@@ -68,6 +57,16 @@ MpUnconnectedTransporter >> receiveObject: anObject [
 	anObject deliverBy: self
 ]
 
+{ #category : #accessing }
+MpUnconnectedTransporter >> receptionService [
+	^ receptionService
+]
+
+{ #category : #initialization }
+MpUnconnectedTransporter >> receptionServicePriority: anInteger [
+	self receptionService priority: anInteger
+]
+
 { #category : #sending }
 MpUnconnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	[ self
@@ -91,17 +90,12 @@ MpUnconnectedTransporter >> sendObject: anObject toAddress: address [
 	self sendBytes: bytes toAddress: address
 ]
 
-{ #category : #sending }
-MpUnconnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
-	| promise response |
-	promise := self promiseClass
-		onFulfillDo: [ :normalResponse | response := normalResponse ]
-		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
-	promisesLock
-		critical: [ promisesDict at: remoteMessage responseId put: promise ].
-	self sendAsynchronousMessage: remoteMessage to: targetReference.
-	[ promise wait: self receptionTimeoutDuration ]
-		on: CcPromiseTimeout
-		do: [ :ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex ].
-	^ response contents
+{ #category : #activity }
+MpUnconnectedTransporter >> start [
+	self receptionService start
+]
+
+{ #category : #activity }
+MpUnconnectedTransporter >> stop [
+	self receptionService stop
 ]
