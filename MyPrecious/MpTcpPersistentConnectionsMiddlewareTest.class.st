@@ -3,7 +3,7 @@ Class {
 	#superclass : #MpPersistentConnectionsMiddlewareTest,
 	#traits : 'MpTTcpMiddlewareTest',
 	#classTraits : 'MpTTcpMiddlewareTest classTrait',
-	#category : #MyPreciousTcpTests
+	#category : #'MyPrecious-ToDelete'
 }
 
 { #category : #tests }

@@ -199,7 +199,7 @@ MpMiddlewareTest >> testExportedObjectReference [
 { #category : #tests }
 MpMiddlewareTest >> testMessagePingPong [
 	| valueHolderA1 remoteReferenceA1 proxyA1InB valueHolderB1 valueHolderA2 remoteReferenceB1 proxyB1InA remoteReferenceA2 proxyA2InB |
-	self allMiddleware do: [: each | each receptionTimeoutDuration: 500 milliSeconds].
+	self allMiddleware do: [: each | each receptionTimeoutDuration: 5 seconds].
 	valueHolderA1 := self newValueHolder.
 	remoteReferenceA1 := middlewareA export: valueHolderA1.
 	proxyA1InB := middlewareB objectAt: remoteReferenceA1.

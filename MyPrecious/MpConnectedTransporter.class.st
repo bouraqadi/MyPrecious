@@ -64,6 +64,7 @@ MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
 	metaMessage otherSideAddress: self address.
 	^self newConnection
 		connectTo: targetRemoteReference;
+		startReceiving;
 		sendObject: metaMessage
 		yourself
 ]

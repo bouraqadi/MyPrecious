@@ -17,7 +17,7 @@ MpConnection >> connectTo: targetRemoteReference [
 
 { #category : #receiving }
 MpConnection >> deliverReceivedObject [
-	self receiveObject deliverBy: self
+	[self receiveObject deliverBy: self] on: CcTimeout do: [ ^self ] 
 ]
 
 { #category : #receiving }
@@ -45,11 +45,6 @@ MpConnection >> marshalAndSerialize: anObject [
 { #category : #receiving }
 MpConnection >> materializeAndUnmarshal: bytes [
 	^self transporter materializeAndUnmarshal: bytes
-]
-
-{ #category : #receiving }
-MpConnection >> newReceptionServiceDoing: aBlock [
-	self subclassResponsibility
 ]
 
 { #category : #receiving }
@@ -82,7 +77,7 @@ MpConnection >> sendObject: anObject [
 
 { #category : #receiving }
 MpConnection >> startReceiving [
-	service := self newReceptionServiceDoing: [self deliverReceivedObject].
+	service := CcService repeat: [self deliverReceivedObject].
 	service start
 ]
 

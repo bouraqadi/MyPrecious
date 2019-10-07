@@ -3,7 +3,7 @@ Class {
 	#superclass : #MpPersistentConnectionsTransporter,
 	#traits : 'MpTTcpTransporter',
 	#classTraits : 'MpTTcpTransporter classTrait',
-	#category : #MyPreciousTcp
+	#category : #'MyPrecious-ToDelete'
 }
 
 { #category : #connecting }

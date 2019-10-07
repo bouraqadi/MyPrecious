@@ -1,7 +1,7 @@
 Class {
 	#name : #MpTcpPersistentConnectionsMiddleware,
 	#superclass : #MpTcpMiddleware,
-	#category : #MyPreciousTcp
+	#category : #'MyPrecious-ToDelete'
 }
 
 { #category : #initialization }

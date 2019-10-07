@@ -3,5 +3,5 @@ Class {
 	#superclass : #MpTcpConnection,
 	#traits : 'MpTOneShotConnection',
 	#classTraits : 'MpTOneShotConnection classTrait',
-	#category : #MyPreciousTcp
+	#category : #'MyPrecious-ToDelete'
 }

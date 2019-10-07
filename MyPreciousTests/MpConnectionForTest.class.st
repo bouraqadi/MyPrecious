@@ -22,11 +22,6 @@ MpConnectionForTest >> connectTo: targetRemoteReference [
 
 ]
 
-{ #category : #'instance creation' }
-MpConnectionForTest >> newReceptionServiceDoing: aBlock [
-	^CcService repeat: aBlock
-]
-
 { #category : #receiving }
 MpConnectionForTest >> receiveBytes [
 	self waitWhile: [receiveQueue peek isNil] timeout: self receptionTimeoutDuration.
