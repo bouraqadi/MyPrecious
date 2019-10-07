@@ -2,18 +2,11 @@ Class {
 	#name : #MpConnectedTransporter,
 	#superclass : #MpTransporter,
 	#instVars : [
-		'connectionHandlingService'
+		'connectionHandlingService',
+		'connectionsDict'
 	],
 	#category : #'MyPrecious-Kernel'
 }
-
-{ #category : #connecting }
-MpConnectedTransporter >> connectTo: targetRemoteReference [
-	^self newConnection
-		connectTo: targetRemoteReference;
-		yourself
-		
-]
 
 { #category : #connecting }
 MpConnectedTransporter >> connectionClass [
@@ -25,10 +18,24 @@ MpConnectedTransporter >> connectionHandlingService [
 	^ connectionHandlingService
 ]
 
+{ #category : #connecting }
+MpConnectedTransporter >> connectionTo: targetRemoteReference [
+	^connectionsDict 
+		at: targetRemoteReference address
+		ifAbsentPut: [ self newConnectionTo: targetRemoteReference ]
+]
+
+{ #category : #accessing }
+MpConnectedTransporter >> connectionsDict [
+	^connectionsDict
+]
+
 { #category : #initialization }
 MpConnectedTransporter >> initialize [
 	super initialize.
-	connectionHandlingService := self newConnectionHandlingService
+	connectionsDict := Dictionary new.
+	connectionHandlingService := self newConnectionHandlingService.
+
 
 ]
 
@@ -50,16 +57,32 @@ MpConnectedTransporter >> newConnectionHandlingService [
 	self subclassResponsibility
 ]
 
+{ #category : #connecting }
+MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
+	| metaMessage |
+	metaMessage := MpSaveConnectionMetaMessage new.
+	metaMessage otherSideAddress: self address.
+	^self newConnection
+		connectTo: targetRemoteReference;
+		sendObject: metaMessage
+		yourself
+]
+
 { #category : #initialization }
 MpConnectedTransporter >> receptionServicePriority: anInteger [
 	connectionHandlingService priority: anInteger
+]
+
+{ #category : #connecting }
+MpConnectedTransporter >> saveConnection: aConnection to: address [
+	connectionsDict at: address put: aConnection
 ]
 
 { #category : #sending }
 MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	| connection |
 	[
-		connection := self connectTo: targetRemoteReference.
+		connection := self connectionTo: targetRemoteReference.
 		connection sendObject: remoteMessage.
 		^ connection	]
 	on: Error

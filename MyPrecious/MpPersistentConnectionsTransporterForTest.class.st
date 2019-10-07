@@ -7,7 +7,7 @@ Class {
 		'connectionQueue',
 		'allReceptionServices'
 	],
-	#category : #'MyPreciousTests-Connected'
+	#category : #'MyPrecious-ToDelete'
 }
 
 { #category : #connecting }

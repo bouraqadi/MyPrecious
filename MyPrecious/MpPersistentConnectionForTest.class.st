@@ -3,5 +3,5 @@ Class {
 	#superclass : #MpConnectionForTest,
 	#traits : 'MpTPersistentConnection',
 	#classTraits : 'MpTPersistentConnection classTrait',
-	#category : #'MyPreciousTests-Connected'
+	#category : #'MyPrecious-ToDelete'
 }

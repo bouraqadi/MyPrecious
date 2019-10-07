@@ -1,7 +1,7 @@
 Class {
 	#name : #MpPersistentConnectionsMiddlewareForTest,
 	#superclass : #MpMiddlewareForTest,
-	#category : #'MyPreciousTests-Connected'
+	#category : #'MyPrecious-ToDelete'
 }
 
 { #category : #initialization }

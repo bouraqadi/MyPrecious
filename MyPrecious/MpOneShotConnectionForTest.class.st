@@ -3,5 +3,5 @@ Class {
 	#superclass : #MpConnectionForTest,
 	#traits : 'MpTOneShotConnection',
 	#classTraits : 'MpTOneShotConnection classTrait',
-	#category : #'MyPreciousTests-Connected'
+	#category : #'MyPrecious-ToDelete'
 }

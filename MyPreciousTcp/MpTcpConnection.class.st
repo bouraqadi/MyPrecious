@@ -22,6 +22,11 @@ MpTcpConnection >> connectTo: targetRemoteReference [
 	self socketStream: newSocketStream
 ]
 
+{ #category : #'instance creation' }
+MpTcpConnection >> newReceptionServiceDoing: aBlock [
+	^CcService repeat: aBlock
+]
+
 { #category : #receiving }
 MpTcpConnection >> receiveBytes [
 	| bytesCountSize bytesCount |
