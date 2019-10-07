@@ -12,7 +12,7 @@ MpConnectedTransporter >> basicSendAsynchronousMessage: remoteMessage to: target
 	^ connection
 ]
 
-{ #category : #sending }
+{ #category : #connecting }
 MpConnectedTransporter >> connectTo: targetRemoteReference [
 	^self newConnection
 		connectTo: targetRemoteReference;
@@ -20,12 +20,12 @@ MpConnectedTransporter >> connectTo: targetRemoteReference [
 		
 ]
 
-{ #category : #sending }
+{ #category : #connecting }
 MpConnectedTransporter >> connectionClass [
 	self subclassResponsibility
 ]
 
-{ #category : #sending }
+{ #category : #connecting }
 MpConnectedTransporter >> newConnection [
 	^self connectionClass new
 		transporter: self;

@@ -19,3 +19,8 @@ MpConnectedTransporterForTest >> initialize [
 	super initialize.
 	connectionQueue := SharedQueue new
 ]
+
+{ #category : #receiving }
+MpConnectedTransporterForTest >> startServiceReceivingVia: connection [
+	[ self receiveBytesVia: connection ] fork
+]

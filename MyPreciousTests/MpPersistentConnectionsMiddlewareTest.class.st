@@ -5,6 +5,17 @@ Class {
 }
 
 { #category : #tests }
+MpPersistentConnectionsMiddlewareTest >> assertMiddleware: middleware persistsConnectionTo: address failMessage: aString [
+	| connectionsDict |
+	connectionsDict := middleware transporter connectionsDict.
+	self waitWhile: [connectionsDict isEmpty].
+	connectionsDict
+		at: address 
+		ifAbsent: [ self fail: aString ].
+
+]
+
+{ #category : #tests }
 MpPersistentConnectionsMiddlewareTest >> middlewareClass [ 
 	^MpPersistentConnectionsMiddlewareForTest
 ]
@@ -15,12 +26,14 @@ MpPersistentConnectionsMiddlewareTest >> testAsynchrounousMessageSenderAndReceiv
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
 	middlewareB sendAsync: #contents to: remoteReferenceA.
-	middlewareB transporter connectionsDict 
-		at: middlewareA address 
-		ifAbsent: [ self fail: 'Connection NOT persisted in sender' ].
-	middlewareA transporter connectionsDict 
-		at: middlewareB address 
-		ifAbsent: [ self fail: 'Connection NOT persisted in receiver' ].
+	self 
+		assertMiddleware: middlewareB 
+		persistsConnectionTo: middlewareA address 
+		failMessage: 'Connection NOT persisted in sender'.
+	self 
+		assertMiddleware: middlewareA 
+		persistsConnectionTo: middlewareB address 
+		failMessage: 'Connection NOT persisted in receiver'.
 
 ]
 
@@ -30,11 +43,13 @@ MpPersistentConnectionsMiddlewareTest >> testSynchrounousMessageSenderAndReceive
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
 	middlewareB send: #contents to: remoteReferenceA.
-	middlewareB transporter connectionsDict 
-		at: middlewareA address 
-		ifAbsent: [ self fail: 'Connection NOT persisted in sender' ].
-	middlewareA transporter connectionsDict 
-		at: middlewareB address 
-		ifAbsent: [ self fail: 'Connection NOT persisted in receiver' ].
+	self 
+		assertMiddleware: middlewareB 
+		persistsConnectionTo: middlewareA address 
+		failMessage: 'Connection NOT persisted in sender'.
+	self 
+		assertMiddleware: middlewareA 
+		persistsConnectionTo: middlewareB address 
+		failMessage: 'Connection NOT persisted in receiver'.
 
 ]

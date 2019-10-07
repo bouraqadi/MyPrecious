@@ -16,6 +16,11 @@ MpMiddlewareTest class >> isAbstract [
 	^self == MpMiddlewareTest
 ]
 
+{ #category : #testing }
+MpMiddlewareTest class >> shouldInheritSelectors [
+	^true
+]
+
 { #category : #tests }
 MpMiddlewareTest >> allMiddleware [
 	^{ middlewareA . middlewareB . middlewareC }

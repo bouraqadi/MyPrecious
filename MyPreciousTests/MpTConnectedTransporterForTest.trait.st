@@ -10,7 +10,7 @@ MpTConnectedTransporterForTest >> acceptConnections [
 	connection 
 		receiveQueue: self connectionQueue next;
 		sendQueue: self connectionQueue next.
-	[ self receiveBytesVia: connection ] fork
+	self startServiceReceivingVia: connection
 ]
 
 { #category : #sending }

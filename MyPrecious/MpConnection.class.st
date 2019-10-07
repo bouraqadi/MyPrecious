@@ -20,6 +20,11 @@ MpConnection >> deliverReceivedObject [
 ]
 
 { #category : #receiving }
+MpConnection >> deliverSaveConnection: saveConnectionMetaMessage [
+	self transporter saveConnection: self to: saveConnectionMetaMessage otherSideAddress
+]
+
+{ #category : #receiving }
 MpConnection >> deliverSynchronousMessage: remoteMessage [
 	| response |
 	response := self basicDeliverSynchronousMessage: remoteMessage.

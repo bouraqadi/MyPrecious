@@ -21,12 +21,12 @@ MpTransporter >> initialize [
 
 { #category : #activity }
 MpTransporter >> isStarted [
-	^receptionService isStarted
+	^self receptionService isStarted
 ]
 
 { #category : #activity }
 MpTransporter >> isStopped [
-	^receptionService isStopped
+	^self receptionService isStopped
 ]
 
 { #category : #sending }
@@ -65,9 +65,14 @@ MpTransporter >> newReceptionService [
 	self subclassResponsibility
 ]
 
+{ #category : #accessing }
+MpTransporter >> receptionService [
+	^ receptionService
+]
+
 { #category : #initialization }
 MpTransporter >> receptionServicePriority: anInteger [
-	receptionService priority: anInteger
+	self receptionService priority: anInteger
 ]
 
 { #category : #sending }
@@ -143,12 +148,12 @@ MpTransporter >> signalSendingRemoteMessage: remoteMessage raisedException: ex [
 
 { #category : #activity }
 MpTransporter >> start [
-	receptionService start
+	self receptionService start
 ]
 
 { #category : #activity }
 MpTransporter >> stop [
-	receptionService stop
+	self receptionService stop
 ]
 
 { #category : #receiving }
