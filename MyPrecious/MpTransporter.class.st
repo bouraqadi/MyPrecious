@@ -71,13 +71,23 @@ MpTransporter >> materializeFrom: bytes [
 	^FLMaterializer materializeFromByteArray: bytes
 ]
 
+{ #category : #accessing }
+MpTransporter >> processingPriority [
+	^self middleware processingPriority
+]
+
 { #category : #sending }
 MpTransporter >> promiseClass [
 	^ CcPromise
 ]
 
+{ #category : #accessing }
+MpTransporter >> receptionPriority [
+	^self subclassResponsibility
+]
+
 { #category : #initialization }
-MpTransporter >> receptionServicePriority: anInteger [
+MpTransporter >> receptionPriority: anInteger [
 	self subclassResponsibility
 ]
 

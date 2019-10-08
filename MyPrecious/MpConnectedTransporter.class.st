@@ -70,7 +70,12 @@ MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
 ]
 
 { #category : #initialization }
-MpConnectedTransporter >> receptionServicePriority: anInteger [
+MpConnectedTransporter >> receptionPriority [
+	^connectionHandlingService priority
+]
+
+{ #category : #initialization }
+MpConnectedTransporter >> receptionPriority: anInteger [
 	connectionHandlingService priority: anInteger
 ]
 

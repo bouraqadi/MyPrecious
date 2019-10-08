@@ -42,7 +42,7 @@ MpUnconnectedTransporter >> readBytes [
 MpUnconnectedTransporter >> receiveBytes [
 	| bytes |
 	bytes := self readBytes.
-	[self receiveBytes: bytes] fork
+	[self receiveBytes: bytes] forkAt: self processingPriority
 ]
 
 { #category : #receiving }
@@ -57,14 +57,19 @@ MpUnconnectedTransporter >> receiveObject: anObject [
 	anObject deliverBy: self
 ]
 
-{ #category : #accessing }
-MpUnconnectedTransporter >> receptionService [
-	^ receptionService
+{ #category : #initialization }
+MpUnconnectedTransporter >> receptionPriority [
+	^self receptionService priority
 ]
 
 { #category : #initialization }
-MpUnconnectedTransporter >> receptionServicePriority: anInteger [
+MpUnconnectedTransporter >> receptionPriority: anInteger [
 	self receptionService priority: anInteger
+]
+
+{ #category : #accessing }
+MpUnconnectedTransporter >> receptionService [
+	^ receptionService
 ]
 
 { #category : #sending }

@@ -32,6 +32,11 @@ MpConnection >> deliverSynchronousMessage: remoteMessage [
 	self sendObject: response
 ]
 
+{ #category : #connecting }
+MpConnection >> isConnected [
+	self subclassResponsibility
+]
+
 { #category : #sending }
 MpConnection >> marshalAndSerialize: anObject [
 	^self transporter marshalAndSerialize: anObject
@@ -40,6 +45,11 @@ MpConnection >> marshalAndSerialize: anObject [
 { #category : #receiving }
 MpConnection >> materializeAndUnmarshal: bytes [
 	^self transporter materializeAndUnmarshal: bytes
+]
+
+{ #category : #accessing }
+MpConnection >> processingPriority [
+	^ self transporter processingPriority
 ]
 
 { #category : #receiving }
@@ -54,7 +64,12 @@ MpConnection >> receiveObject [
 	[
 		receivedObject := self materializeAndUnmarshal: receivedBytes.
 		receivedObject deliverBy: self
-	] fork
+	] forkAt: self processingPriority
+]
+
+{ #category : #accessing }
+MpConnection >> receptionPriority [
+	^ self transporter receptionPriority
 ]
 
 { #category : #accessing }
@@ -77,6 +92,7 @@ MpConnection >> sendObject: anObject [
 { #category : #receiving }
 MpConnection >> startReceiving [
 	service := CcService repeat: [self receiveObject].
+	service priority: self receptionPriority.
 	service start
 ]
 

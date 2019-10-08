@@ -6,7 +6,8 @@ Class {
 		'referenceConverter',
 		'address',
 		'transporter',
-		'receptionTimeoutDuration'
+		'receptionTimeoutDuration',
+		'processingPriority'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -22,8 +23,13 @@ MpMiddleware >> address: anAddress [
 ]
 
 { #category : #initialization }
-MpMiddleware >> defaultReceptionServicePriority [
-	^Processor userInterruptPriority 
+MpMiddleware >> defaultProcessingPriority [
+	^Processor userSchedulingPriority
+]
+
+{ #category : #initialization }
+MpMiddleware >> defaultReceptionPriority [
+	^Processor userBackgroundPriority
 ]
 
 { #category : #initialization }
@@ -48,7 +54,9 @@ MpMiddleware >> initialize [
 	marshaller := self marshallerClass middleware: self.
 	transporter := self transporterClass middleware: self.
 	self receptionTimeoutDuration: self defaultReceptionTimeoutDuration.
-	self receptionServicePriority: self defaultReceptionServicePriority.
+	self 
+		receptionPriority: self defaultReceptionPriority
+		processingPriority: self defaultProcessingPriority 
 ]
 
 { #category : #activity }
@@ -85,14 +93,27 @@ MpMiddleware >> printOn: aStream [
 		<<$)
 ]
 
+{ #category : #activity }
+MpMiddleware >> processingPriority [
+	^processingPriority
+]
+
 { #category : #initialization }
 MpMiddleware >> proxyClass [
 	^MpProxy
 ]
 
 { #category : #activity }
-MpMiddleware >> receptionServicePriority: anInteger [
-	self transporter receptionServicePriority: anInteger
+MpMiddleware >> receptionPriority [
+	^self transporter receptionPriority
+]
+
+{ #category : #activity }
+MpMiddleware >> receptionPriority: newReceptionPriority processingPriority: newProcessingPriority [
+	newReceptionPriority < newProcessingPriority ifFalse: [ 
+		self error: 'Processing priority should be greater than reception priority' ].
+	self transporter receptionPriority: newReceptionPriority.
+	processingPriority  := newProcessingPriority
 ]
 
 { #category : #accessing }
