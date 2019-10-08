@@ -39,7 +39,7 @@ MpMiddlewareTest >> assertIsProxy: anObject [
 
 { #category : #tests }
 MpMiddlewareTest >> defaultReceptionTimeoutDuration [
-	^100 milliSeconds
+	^500 milliSeconds
 ]
 
 { #category : #tests }
@@ -93,7 +93,8 @@ This makes debugging very hard, if not impossible! We need to guess the state of
 Simply calling runCase is a dirty fix.
 We have to take care of terminating threads upon failures.
 "
-	self runCase
+	thisContext sender methodSelector == #runCaseForDebug: ifTrue: [^self runCase].
+	^super runCaseManaged
 ]
 
 { #category : #tests }
@@ -110,6 +111,7 @@ MpMiddlewareTest >> setUp [
 MpMiddlewareTest >> tearDown [
 	super tearDown.
 	self allMiddleware do: #stop.
+	MpMiddlewareForTest resetRegistry.
 ]
 
 { #category : #tests }
@@ -199,7 +201,6 @@ MpMiddlewareTest >> testExportedObjectReference [
 { #category : #tests }
 MpMiddlewareTest >> testMessagePingPong [
 	| valueHolderA1 remoteReferenceA1 proxyA1InB valueHolderB1 valueHolderA2 remoteReferenceB1 proxyB1InA remoteReferenceA2 proxyA2InB |
-	self allMiddleware do: [: each | each receptionTimeoutDuration: 500 milliSeconds].
 	valueHolderA1 := self newValueHolder.
 	remoteReferenceA1 := middlewareA export: valueHolderA1.
 	proxyA1InB := middlewareB objectAt: remoteReferenceA1.
