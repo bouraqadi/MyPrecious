@@ -13,13 +13,17 @@ MpTcpConnection >> byteCountArraySize [
 ]
 
 { #category : #connecting }
-MpTcpConnection >> connectTo: targetRemoteReference [
-	| targetAddress newSocketStream |
-	targetAddress := targetRemoteReference address.
+MpTcpConnection >> connect [
+	| newSocketStream |
 	newSocketStream := ZdcSocketStream
-		openConnectionToHost: targetAddress ip
-		port: targetAddress port.
+		openConnectionToHost: self otherSideAddress ip
+		port: self otherSideAddress port.
 	self socketStream: newSocketStream
+]
+
+{ #category : #connecting }
+MpTcpConnection >> isSendingPossible [
+	^self socketStream isConnected
 ]
 
 { #category : #receiving }

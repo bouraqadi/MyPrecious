@@ -44,10 +44,10 @@ MpConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 	middlewareC send: #contents to: remoteReferenceA.
 	self allMiddleware do: [ : aMiddleware |
 		initialConnections := aMiddleware transporter connections.
-		initialConnections do: [ : aConnection | self deny: aConnection isClosed ].
+		initialConnections do: [ : aConnection | self assert: aConnection isConnected ].
 		aMiddleware stop.
 		self assert: aMiddleware transporter connections isEmpty.
-		initialConnections do: [ : aConnection | self assert: aConnection isClosed ]
+		initialConnections do: [ : aConnection | self deny: aConnection isConnected ]
 	]
 	
 ]

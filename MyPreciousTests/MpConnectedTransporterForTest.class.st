@@ -9,11 +9,12 @@ Class {
 
 { #category : #receiving }
 MpConnectedTransporterForTest >> acceptConnections [
-	| connection |
+	| connection queues |
 	connection := self newConnection.
+	queues := self connectionQueue next.
 	connection 
-		receiveQueue: self connectionQueue next;
-		sendQueue: self connectionQueue next;
+		receiveQueue: queues first;
+		sendQueue: queues last;
 		startReceiving
 ]
 

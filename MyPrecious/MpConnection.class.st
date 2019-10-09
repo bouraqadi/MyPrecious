@@ -5,13 +5,14 @@ Class {
 	#classTraits : 'MpTPostMan classTrait',
 	#instVars : [
 		'transporter',
-		'service'
+		'receptionService',
+		'otherSideAddress'
 	],
 	#category : #'MyPrecious-Kernel'
 }
 
 { #category : #connecting }
-MpConnection >> connectTo: targetRemoteReference [
+MpConnection >> connect [
 	self subclassResponsibility
 ]
 
@@ -22,6 +23,7 @@ MpConnection >> deliverResponse: aResponse [
 
 { #category : #receiving }
 MpConnection >> deliverSaveConnection: saveConnectionMetaMessage [
+	self otherSideAddress: saveConnectionMetaMessage otherSideAddress.
 	self transporter saveConnection: self to: saveConnectionMetaMessage otherSideAddress
 ]
 
@@ -32,13 +34,23 @@ MpConnection >> deliverSynchronousMessage: remoteMessage [
 	self sendObject: response
 ]
 
-{ #category : #testing }
-MpConnection >> isClosed [
-	^service isStopped
+{ #category : #connecting }
+MpConnection >> isConnected [
+	^self isReceptionStarted and: [ self isSendingPossible ]
 ]
 
 { #category : #connecting }
-MpConnection >> isConnected [
+MpConnection >> isReceptionStarted [
+	^receptionService isStarted
+]
+
+{ #category : #connecting }
+MpConnection >> isReceptionStopped [
+	^receptionService isStopped
+]
+
+{ #category : #connecting }
+MpConnection >> isSendingPossible [
 	self subclassResponsibility
 ]
 
@@ -50,6 +62,16 @@ MpConnection >> marshalAndSerialize: anObject [
 { #category : #receiving }
 MpConnection >> materializeAndUnmarshal: bytes [
 	^self transporter materializeAndUnmarshal: bytes
+]
+
+{ #category : #accessing }
+MpConnection >> otherSideAddress [
+	^ otherSideAddress
+]
+
+{ #category : #accessing }
+MpConnection >> otherSideAddress: anObject [
+	otherSideAddress := anObject
 ]
 
 { #category : #accessing }
@@ -96,14 +118,14 @@ MpConnection >> sendObject: anObject [
 
 { #category : #receiving }
 MpConnection >> startReceiving [
-	service := CcService repeat: [self receiveObject].
-	service priority: self receptionPriority.
-	service start
+	receptionService := CcService repeat: [self receiveObject].
+	receptionService priority: self receptionPriority.
+	receptionService start
 ]
 
 { #category : #receiving }
 MpConnection >> stopReceiving [
-	service stop
+	receptionService stop
 ]
 
 { #category : #accessing }

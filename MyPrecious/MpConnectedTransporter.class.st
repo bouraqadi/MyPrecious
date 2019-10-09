@@ -70,11 +70,11 @@ MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
 	| metaMessage |
 	metaMessage := MpSaveConnectionMetaMessage new.
 	metaMessage otherSideAddress: self address.
-	^self newConnection
-		connectTo: targetRemoteReference;
+	^ self newConnection
+		otherSideAddress: targetRemoteReference address;
+		connect;
 		startReceiving;
-		sendObject: metaMessage
-		yourself
+		sendObject: metaMessage yourself
 ]
 
 { #category : #initialization }

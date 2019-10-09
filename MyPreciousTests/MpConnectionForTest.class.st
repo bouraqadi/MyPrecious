@@ -11,15 +11,18 @@ Class {
 }
 
 { #category : #connecting }
-MpConnectionForTest >> connectTo: targetRemoteReference [
+MpConnectionForTest >> connect [
 	| targetTransporter |
-	targetTransporter := self registry at: targetRemoteReference address.
+	targetTransporter := self registry at: self otherSideAddress.
 	sendQueue := SharedQueue new.
 	receiveQueue := SharedQueue new.
-	targetTransporter connectionQueue
-		nextPut: sendQueue; 
-		nextPut: receiveQueue.
+	targetTransporter connectionQueue nextPut: {sendQueue. receiveQueue}.
 
+]
+
+{ #category : #connecting }
+MpConnectionForTest >> isSendingPossible [
+	^sendQueue isNotNil
 ]
 
 { #category : #receiving }
