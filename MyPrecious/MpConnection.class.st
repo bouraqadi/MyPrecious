@@ -32,6 +32,11 @@ MpConnection >> deliverSynchronousMessage: remoteMessage [
 	self sendObject: response
 ]
 
+{ #category : #testing }
+MpConnection >> isClosed [
+	^service isStopped
+]
+
 { #category : #connecting }
 MpConnection >> isConnected [
 	self subclassResponsibility
@@ -94,6 +99,11 @@ MpConnection >> startReceiving [
 	service := CcService repeat: [self receiveObject].
 	service priority: self receptionPriority.
 	service start
+]
+
+{ #category : #receiving }
+MpConnection >> stopReceiving [
+	service stop
 ]
 
 { #category : #accessing }

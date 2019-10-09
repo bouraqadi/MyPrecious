@@ -26,6 +26,11 @@ MpConnectedTransporter >> connectionTo: targetRemoteReference [
 ]
 
 { #category : #accessing }
+MpConnectedTransporter >> connections [
+	^self connectionsDict values
+]
+
+{ #category : #accessing }
 MpConnectedTransporter >> connectionsDict [
 	^connectionsDict
 ]
@@ -33,10 +38,8 @@ MpConnectedTransporter >> connectionsDict [
 { #category : #initialization }
 MpConnectedTransporter >> initialize [
 	super initialize.
-	connectionsDict := Dictionary new.
-	connectionHandlingService := self newConnectionHandlingService.
-
-
+	self resetConnectionsDict.
+	connectionHandlingService := self newConnectionHandlingService
 ]
 
 { #category : #activity }
@@ -79,6 +82,11 @@ MpConnectedTransporter >> receptionPriority: anInteger [
 	connectionHandlingService priority: anInteger
 ]
 
+{ #category : #initialization }
+MpConnectedTransporter >> resetConnectionsDict [
+	connectionsDict := Dictionary new
+]
+
 { #category : #connecting }
 MpConnectedTransporter >> saveConnection: aConnection to: address [
 	connectionsDict at: address put: aConnection
@@ -103,5 +111,7 @@ MpConnectedTransporter >> start [
 { #category : #activity }
 MpConnectedTransporter >> stop [
 	self connectionHandlingService stop.
-	
+	self connections do: #stopReceiving.
+	self resetConnectionsDict.
+
 ]

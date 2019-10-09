@@ -38,6 +38,26 @@ MpConnectedMiddlewareTest >> testAsynchrounousMessageSenderAndReceiverSaveConnec
 ]
 
 { #category : #tests }
+MpConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
+	| valueHolderA remoteReferenceA initialConnections |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	middlewareB send: #contents to: remoteReferenceA.
+	middlewareC send: #contents to: remoteReferenceA.
+	self allMiddleware do: [ : aMiddleware |
+		initialConnections := aMiddleware transporter connections.
+		initialConnections do: [ : aConnection | self deny: aConnection isClosed ].
+		aMiddleware stop.
+		self 
+			waitUntil: [aMiddleware transporter connectionsDict isEmpty] 
+			onTimeout: 500 milliSeconds 
+			do: [self fail: 'ConnectionsDict was not reset upon stop' ].
+		initialConnections do: [ : aConnection | self assert: aConnection isClosed ]
+	]
+	
+]
+
+{ #category : #tests }
 MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 	| valueHolderA remoteReferenceA message connection |
 	valueHolderA := self newValueHolder.
