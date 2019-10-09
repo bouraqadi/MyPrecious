@@ -42,3 +42,12 @@ MpUnconnectedTransportMiddlewareTest >> testRemoteMessageBasicSend [
 	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
 	
 ]
+
+{ #category : #tests }
+MpUnconnectedTransportMiddlewareTest >> testStopReceptionService [
+	self allMiddleware do: [ : each |
+		self assert: each transporter receptionService isStarted.
+		each stop.
+		self deny: each transporter receptionService isStarted.
+	]
+]

@@ -6,11 +6,9 @@ Class {
 
 { #category : #tests }
 MpConnectedMiddlewareTest >> assertMiddleware: middleware persistsConnectionTo: address failMessage: aString [
-	| connectionsDict |
-	connectionsDict := middleware transporter connectionsDict.
-	self waitWhile: [connectionsDict isEmpty].
-	connectionsDict
-		at: address 
+	self waitWhile: [middleware transporter connections isEmpty].
+	middleware transporter
+		connectionAt: address 
 		ifAbsent: [ self fail: aString ].
 
 ]
@@ -48,7 +46,7 @@ MpConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 		initialConnections := aMiddleware transporter connections.
 		initialConnections do: [ : aConnection | self deny: aConnection isClosed ].
 		aMiddleware stop.
-		self assert: aMiddleware transporter connectionsDict isEmpty.
+		self assert: aMiddleware transporter connections isEmpty.
 		initialConnections do: [ : aConnection | self assert: aConnection isClosed ]
 	]
 	
@@ -69,6 +67,15 @@ MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 	connection sendObject: message.
 	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
 	
+]
+
+{ #category : #tests }
+MpConnectedMiddlewareTest >> testStopConnectionHandlingService [
+	self allMiddleware do: [ : each |
+		self assert: each transporter connectionService isStarted.
+		each stop.
+		self deny: each transporter connectionService isStarted.
+	]
 ]
 
 { #category : #tests }

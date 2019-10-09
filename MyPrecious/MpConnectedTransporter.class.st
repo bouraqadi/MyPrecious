@@ -2,11 +2,19 @@ Class {
 	#name : #MpConnectedTransporter,
 	#superclass : #MpTransporter,
 	#instVars : [
-		'connectionHandlingService',
-		'connectionsDict'
+		'connectionsDict',
+		'connectionService',
+		'connectionsLock'
 	],
 	#category : #'MyPrecious-Kernel'
 }
+
+{ #category : #connecting }
+MpConnectedTransporter >> connectionAt: address ifAbsent: aBlock [
+	^connectionsLock critical: [connectionsDict 
+		at: address
+		ifAbsent: aBlock]
+]
 
 { #category : #connecting }
 MpConnectedTransporter >> connectionClass [
@@ -14,37 +22,34 @@ MpConnectedTransporter >> connectionClass [
 ]
 
 { #category : #connecting }
-MpConnectedTransporter >> connectionHandlingService [
-	^ connectionHandlingService
+MpConnectedTransporter >> connectionService [
+	^ connectionService
 ]
 
 { #category : #connecting }
 MpConnectedTransporter >> connectionTo: targetRemoteReference [
-	^connectionsDict 
-		at: targetRemoteReference address
-		ifAbsentPut: [ self newConnectionTo: targetRemoteReference ]
+	^connectionsLock critical: [
+		connectionsDict 
+			at: targetRemoteReference address
+			ifAbsentPut: [ self newConnectionTo: targetRemoteReference ]]
 ]
 
 { #category : #accessing }
 MpConnectedTransporter >> connections [
-	^self connectionsDict values
-]
-
-{ #category : #accessing }
-MpConnectedTransporter >> connectionsDict [
-	^connectionsDict
+	^connectionsLock critical: [connectionsDict values]
 ]
 
 { #category : #initialization }
 MpConnectedTransporter >> initialize [
 	super initialize.
+	connectionsLock := Mutex new.
 	self resetConnectionsDict.
-	connectionHandlingService := self newConnectionHandlingService
+	connectionService := self newConnectionHandlingService
 ]
 
 { #category : #activity }
 MpConnectedTransporter >> isStarted [
-	^self connectionHandlingService isStarted.
+	^self connectionService isStarted.
 	
 ]
 
@@ -74,22 +79,22 @@ MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
 
 { #category : #initialization }
 MpConnectedTransporter >> receptionPriority [
-	^connectionHandlingService priority
+	^connectionService priority
 ]
 
 { #category : #initialization }
 MpConnectedTransporter >> receptionPriority: anInteger [
-	connectionHandlingService priority: anInteger
+	connectionService priority: anInteger
 ]
 
 { #category : #initialization }
 MpConnectedTransporter >> resetConnectionsDict [
-	connectionsDict := Dictionary new
+	connectionsLock critical: [connectionsDict := Dictionary new]
 ]
 
 { #category : #connecting }
 MpConnectedTransporter >> saveConnection: aConnection to: address [
-	connectionsDict at: address put: aConnection
+	connectionsLock critical: [connectionsDict at: address put: aConnection]
 ]
 
 { #category : #sending }
@@ -105,12 +110,12 @@ MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemot
 
 { #category : #activity }
 MpConnectedTransporter >> start [
-	self connectionHandlingService start
+	self connectionService start
 ]
 
 { #category : #activity }
 MpConnectedTransporter >> stop [
-	self connectionHandlingService stop.
+	self connectionService stop.
 	self connections do: #stopReceiving.
 	self resetConnectionsDict.
 

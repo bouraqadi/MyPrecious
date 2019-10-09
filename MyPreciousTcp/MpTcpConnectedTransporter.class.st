@@ -19,7 +19,7 @@ MpTcpConnectedTransporter >> newConnectionHandlingService [
 
 { #category : #accessing }
 MpTcpConnectedTransporter >> port: integer [
-	self connectionHandlingService port: integer.
+	self connectionService port: integer.
 
 ]
 
