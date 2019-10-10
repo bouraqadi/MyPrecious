@@ -22,6 +22,11 @@ MpTcpConnection >> connect [
 ]
 
 { #category : #connecting }
+MpTcpConnection >> disconnect [
+	self socketStream close
+]
+
+{ #category : #connecting }
 MpTcpConnection >> isSendingPossible [
 	^self socketStream isConnected
 ]

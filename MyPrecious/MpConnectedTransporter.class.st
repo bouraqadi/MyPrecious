@@ -9,6 +9,14 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #sending }
+MpConnectedTransporter >> basicSendMessage: remoteMessage to: targetRemoteReference [
+	| connection |
+	connection := self connectionTo: targetRemoteReference.
+	connection sendObject: remoteMessage.
+	^ connection
+]
+
 { #category : #connecting }
 MpConnectedTransporter >> connectionAt: address ifAbsent: aBlock [
 	^connectionsLock critical: [connectionsDict 
@@ -99,13 +107,10 @@ MpConnectedTransporter >> saveConnection: aConnection to: address [
 
 { #category : #sending }
 MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	| connection |
-	[
-		connection := self connectionTo: targetRemoteReference.
-		connection sendObject: remoteMessage.
-		^ connection	]
-	on: Error
-	do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
+	[ ^ self basicSendMessage: remoteMessage to: targetRemoteReference ]
+		on: Error
+		do:
+			[ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
 { #category : #activity }

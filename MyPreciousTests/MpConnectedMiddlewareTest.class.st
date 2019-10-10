@@ -53,6 +53,37 @@ MpConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 ]
 
 { #category : #tests }
+MpConnectedMiddlewareTest >> testReconnectsIfOtherSideIsDisconnected [
+	| valueHolderA remoteReferenceA connectionA|
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	"Ensure connection created"
+	middlewareB send: #contents to: remoteReferenceA.
+	connectionA := middlewareA transporter connections first.
+	connectionA disconnect.
+	self deny: connectionA isConnected.
+	middlewareB send: #contents to: remoteReferenceA.
+	self assert: middlewareA transporter connections size equals: 1.
+	self assert: middlewareA transporter connections first isConnected
+
+]
+
+{ #category : #tests }
+MpConnectedMiddlewareTest >> testReconnectsIftherSideStopsReceiving [
+	| valueHolderA remoteReferenceA connectionA newValue |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	"Ensure connection created"
+	middlewareB send: #contents to: remoteReferenceA.
+	connectionA := middlewareA transporter connections first.
+	connectionA stopReceiving.
+	newValue := #somethingSpecial. 
+	middlewareB send: #contents: arguments: { newValue } to: remoteReferenceA.
+	self assert: valueHolderA contents equals: newValue
+
+]
+
+{ #category : #tests }
 MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 	| valueHolderA remoteReferenceA message connection |
 	valueHolderA := self newValueHolder.
@@ -92,5 +123,22 @@ MpConnectedMiddlewareTest >> testSynchrounousMessageSenderAndReceiverSaveConnect
 		assertMiddleware: middlewareA 
 		persistsConnectionTo: middlewareB address 
 		failMessage: 'Connection NOT persisted in receiver'.
+
+]
+
+{ #category : #tests }
+MpConnectedMiddlewareTest >> testWaitsCreatingConnectionUntilOtherSideIsAvailable [
+	| valueHolderA remoteReferenceA newValue sendSemaphore |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	middlewareA stop.
+	newValue := #somethingSpecial. 
+	sendSemaphore := Semaphore new.
+	[
+		middlewareB sendAsync: #contents: arguments: { newValue } to: remoteReferenceA.
+		sendSemaphore signal] fork.
+	[middlewareA start] fork.
+	self deny: (sendSemaphore wait: 500 milliSeconds).
+	self assert: valueHolderA contents equals: newValue
 
 ]

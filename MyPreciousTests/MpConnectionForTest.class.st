@@ -4,6 +4,7 @@ Class {
 	#traits : 'CcTWaitPolling',
 	#classTraits : 'CcTWaitPolling classTrait',
 	#instVars : [
+		'otherSide',
 		'receiveQueue',
 		'sendQueue'
 	],
@@ -14,15 +15,45 @@ Class {
 MpConnectionForTest >> connect [
 	| targetTransporter |
 	targetTransporter := self registry at: self otherSideAddress.
-	sendQueue := SharedQueue new.
-	receiveQueue := SharedQueue new.
-	targetTransporter connectionQueue nextPut: {sendQueue. receiveQueue}.
+	targetTransporter connectionQueue nextPut: self.
+	self 
+		waitUntil: [ self isConnected ] 
+		onTimeout: self receptionTimeoutDuration
+		do: [ MpConnectionFailed signal ]
+
+]
+
+{ #category : #connecting }
+MpConnectionForTest >> connectTo: aConnection [
+	self otherSide: aConnection;
+		sendQueue: SharedQueue new;
+		receiveQueue: SharedQueue new.
+	aConnection otherSide: self;
+		sendQueue: self receiveQueue;
+		receiveQueue: self sendQueue.
+]
+
+{ #category : #connecting }
+MpConnectionForTest >> disconnect [
+	otherSide disconnect.
+	sendQueue := nil.
+	receiveQueue := nil
 
 ]
 
 { #category : #connecting }
 MpConnectionForTest >> isSendingPossible [
 	^sendQueue isNotNil
+]
+
+{ #category : #accessing }
+MpConnectionForTest >> otherSide [
+	^ otherSide
+]
+
+{ #category : #accessing }
+MpConnectionForTest >> otherSide: anObject [
+	otherSide := anObject
 ]
 
 { #category : #receiving }

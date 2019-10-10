@@ -35,6 +35,11 @@ MpConnection >> deliverSynchronousMessage: remoteMessage [
 ]
 
 { #category : #connecting }
+MpConnection >> disconnect [
+	self subclassResponsibility
+]
+
+{ #category : #connecting }
 MpConnection >> isConnected [
 	^self isReceptionStarted and: [ self isSendingPossible ]
 ]
