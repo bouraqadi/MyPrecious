@@ -46,7 +46,7 @@ MpConnection >> isConnected [
 
 { #category : #connecting }
 MpConnection >> isReceptionStarted [
-	^receptionService isStarted
+	^receptionService notNil and: [receptionService isStarted]
 ]
 
 { #category : #connecting }

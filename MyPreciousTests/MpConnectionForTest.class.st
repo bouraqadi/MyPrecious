@@ -25,10 +25,13 @@ MpConnectionForTest >> connect [
 
 { #category : #connecting }
 MpConnectionForTest >> connectTo: aConnection [
-	self otherSide: aConnection;
+	self 
+		otherSide: aConnection;
 		sendQueue: SharedQueue new;
 		receiveQueue: SharedQueue new.
-	aConnection otherSide: self;
+
+	aConnection 
+		otherSide: self;
 		sendQueue: self receiveQueue;
 		receiveQueue: self sendQueue.
 ]

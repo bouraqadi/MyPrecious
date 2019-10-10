@@ -5,9 +5,6 @@ Class {
 }
 
 { #category : #accessing }
-MpCouldNotDeliverMessageError >> description [
-	^String streamContents: [ : str|
-		str << 'Could not deliver remote message '.
-		self printSelectorOn: str.
-	]
+MpCouldNotDeliverMessageError >> defaultMessageText [
+	^'Could not deliver remote message '
 ]

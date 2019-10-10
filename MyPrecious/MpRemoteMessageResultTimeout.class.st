@@ -5,8 +5,7 @@ Class {
 }
 
 { #category : #accessing }
-MpRemoteMessageResultTimeout >> description [
-	^String streamContents: [: str |
-		str nextPutAll: 'Timeout waiting for response for remote message '.
-		self printSelectorOn: str]
+MpRemoteMessageResultTimeout >> defaultMessageText [
+	^'Timeout waiting for response for remote message '.
+
 ]

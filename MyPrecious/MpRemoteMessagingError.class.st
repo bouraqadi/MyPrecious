@@ -9,6 +9,21 @@ Class {
 }
 
 { #category : #accessing }
+MpRemoteMessagingError >> defaultMessageText [
+	self subclassResponsibility
+]
+
+{ #category : #accessing }
+MpRemoteMessagingError >> description [
+	^String streamContents: [: stream |
+		stream << super description.
+		self printSelectorOn: stream.
+		stream
+			<< ' - ';
+			<< self originalException description]
+]
+
+{ #category : #accessing }
 MpRemoteMessagingError >> message [
 	^ message
 ]
@@ -16,6 +31,12 @@ MpRemoteMessagingError >> message [
 { #category : #accessing }
 MpRemoteMessagingError >> message: anObject [
 	message := anObject
+]
+
+{ #category : #accessing }
+MpRemoteMessagingError >> messageText [
+	^super messageText ifEmpty: [ 
+		self defaultMessageText ]
 ]
 
 { #category : #accessing }
