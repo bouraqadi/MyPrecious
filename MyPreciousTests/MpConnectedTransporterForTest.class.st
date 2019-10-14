@@ -1,6 +1,6 @@
 Class {
 	#name : #MpConnectedTransporterForTest,
-	#superclass : #MpConnectedTransporter,
+	#superclass : #MpReliableConnectedTransporter,
 	#instVars : [
 		'connectionQueue'
 	],
@@ -10,8 +10,8 @@ Class {
 { #category : #receiving }
 MpConnectedTransporterForTest >> acceptConnections [
 	| connection otherSideConnection |
-	connection := self newConnection.
 	otherSideConnection := self connectionQueue next.
+	connection := self connectionAt: otherSideConnection address ifAbsent: [ self newConnection ].
 	connection 
 		connectTo: otherSideConnection;
 		startReceiving

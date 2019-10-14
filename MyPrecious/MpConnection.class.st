@@ -11,6 +11,11 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #accessing }
+MpConnection >> address [
+	^self transporter address
+]
+
 { #category : #connecting }
 MpConnection >> connect [
 	self subclassResponsibility
@@ -123,6 +128,7 @@ MpConnection >> sendObject: anObject [
 
 { #category : #receiving }
 MpConnection >> startReceiving [
+	self isReceptionStarted ifTrue: [ ^self ].
 	receptionService := CcService repeat: [self receiveObject].
 	receptionService priority: self receptionPriority.
 	receptionService start

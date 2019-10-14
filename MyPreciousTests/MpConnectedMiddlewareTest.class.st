@@ -63,6 +63,8 @@ MpConnectedMiddlewareTest >> testReconnectsIfOtherSideIsDisconnected [
 	connectionA disconnect.
 	self deny: connectionA isConnected.
 	middlewareB send: #contents to: remoteReferenceA.
+	"We on purpose access the collection of connections, since we don't know how reconnections are handled.
+	There can be different implementations, i.e. connections can be fixed or recreated."
 	self assert: middlewareA transporter connections size equals: 1.
 	self assert: middlewareA transporter connections first isConnected
 
@@ -85,7 +87,7 @@ MpConnectedMiddlewareTest >> testReconnectsIftherSideStopsReceiving [
 
 { #category : #tests }
 MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
-	| valueHolderA remoteReferenceA message connection |
+	| valueHolderA remoteReferenceA message |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
 	message := MpSynchronousRemoteMessage new
@@ -94,8 +96,7 @@ MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 		receiver: remoteReferenceA;
 		senderAddress: middlewareB address;
 		responseId: #anyID.
-	connection := middlewareB transporter connectionTo: remoteReferenceA.
-	connection sendObject: message.
+	middlewareB transporter basicSendMessage: message to: remoteReferenceA.
 	self waitUntil: [valueHolderA contents = 2] onTimeout: 300 milliSeconds do: [ self fail: 'Assertion failed' ]
 	
 ]
@@ -134,11 +135,8 @@ MpConnectedMiddlewareTest >> testWaitsCreatingConnectionUntilOtherSideIsAvailabl
 	middlewareA stop.
 	newValue := #somethingSpecial. 
 	sendSemaphore := Semaphore new.
-	[
-		middlewareB sendAsync: #contents: arguments: { newValue } to: remoteReferenceA.
-		sendSemaphore signal] fork.
+	[middlewareB sendAsync: #contents: arguments: { newValue } to: remoteReferenceA] fork.
 	[middlewareA start] fork.
-	self deny: (sendSemaphore wait: 500 milliSeconds).
-	self assert: valueHolderA contents equals: newValue
+	self waitUntil: valueHolderA contents = newValue timeout: 500 milliSeconds. 
 
 ]

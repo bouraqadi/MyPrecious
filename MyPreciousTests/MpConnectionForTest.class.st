@@ -17,7 +17,7 @@ MpConnectionForTest >> connect [
 	targetTransporter := self registry at: self otherSideAddress.
 	targetTransporter connectionQueue nextPut: self.
 	self 
-		waitUntil: [ self isConnected ] 
+		waitUntil: [ self isSendingPossible ] 
 		onTimeout: self receptionTimeoutDuration
 		do: [ MpConnectionFailed signal ]
 
@@ -38,9 +38,13 @@ MpConnectionForTest >> connectTo: aConnection [
 
 { #category : #connecting }
 MpConnectionForTest >> disconnect [
-	otherSide disconnect.
+	| peer |
+	otherSide ifNil: [^self].
 	sendQueue := nil.
-	receiveQueue := nil
+	peer := otherSide.
+	otherSide := nil.
+	peer disconnect.
+
 
 ]
 
