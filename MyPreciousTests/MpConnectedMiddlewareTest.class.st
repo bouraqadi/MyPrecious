@@ -129,14 +129,13 @@ MpConnectedMiddlewareTest >> testSynchrounousMessageSenderAndReceiverSaveConnect
 
 { #category : #tests }
 MpConnectedMiddlewareTest >> testWaitsCreatingConnectionUntilOtherSideIsAvailable [
-	| valueHolderA remoteReferenceA newValue sendSemaphore |
+	| valueHolderA remoteReferenceA newValue |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
 	middlewareA stop.
 	newValue := #somethingSpecial. 
-	sendSemaphore := Semaphore new.
 	[middlewareB sendAsync: #contents: arguments: { newValue } to: remoteReferenceA] fork.
 	[middlewareA start] fork.
-	self waitUntil: valueHolderA contents = newValue timeout: 500 milliSeconds. 
+	self waitUntil: valueHolderA contents = newValue timeout: 1000 milliSeconds. 
 
 ]

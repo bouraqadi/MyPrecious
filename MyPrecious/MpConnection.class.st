@@ -29,7 +29,7 @@ MpConnection >> deliverResponse: aResponse [
 { #category : #receiving }
 MpConnection >> deliverSaveConnection: saveConnectionMetaMessage [
 	self otherSideAddress: saveConnectionMetaMessage otherSideAddress.
-	self transporter saveConnection: self to: saveConnectionMetaMessage otherSideAddress
+	self transporter saveConnection: self toAddress: saveConnectionMetaMessage otherSideAddress
 ]
 
 { #category : #receiving }
@@ -112,6 +112,14 @@ MpConnection >> receptionPriority [
 { #category : #accessing }
 MpConnection >> receptionTimeoutDuration [
 	^ self transporter receptionTimeoutDuration
+]
+
+{ #category : #connecting }
+MpConnection >> reset [
+	self disconnect.
+	self stopReceiving.
+	self connect.
+	self startReceiving
 ]
 
 { #category : #sending }

@@ -14,7 +14,7 @@ Class {
 { #category : #connecting }
 MpConnectionForTest >> connect [
 	| targetTransporter |
-	targetTransporter := self registry at: self otherSideAddress.
+	targetTransporter := self registry at: self otherSideAddress ifAbsent: [MpConnectionFailed signal].
 	targetTransporter connectionQueue nextPut: self.
 	self 
 		waitUntil: [ self isSendingPossible ] 

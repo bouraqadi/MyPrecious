@@ -101,7 +101,7 @@ MpConnectedTransporter >> resetConnectionsDict [
 ]
 
 { #category : #connecting }
-MpConnectedTransporter >> saveConnection: aConnection to: address [
+MpConnectedTransporter >> saveConnection: aConnection toAddress: address [
 	connectionsLock critical: [connectionsDict at: address put: aConnection]
 ]
 

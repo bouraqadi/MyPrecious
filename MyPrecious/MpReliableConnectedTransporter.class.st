@@ -8,18 +8,6 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
-{ #category : #connecting }
-MpReliableConnectedTransporter >> connectionTo: targetRemoteReference [
-	| connection |
-	connection := super connectionTo: targetRemoteReference.
-	connection isConnected ifTrue: [ ^connection ].
-	self 
-		repeat: [ connection connect ] 
-		until: [connection isConnected]
-		onFailDo: [MpConnectionFailed signal].
-	^connection
-]
-
 { #category : #initialization }
 MpReliableConnectedTransporter >> defaultDurationBetweenAttempts [
 	^100 milliSeconds
@@ -57,14 +45,28 @@ MpReliableConnectedTransporter >> maxAttemptsCount: anObject [
 	maxAttemptsCount := anObject
 ]
 
-{ #category : #connecting }
-MpReliableConnectedTransporter >> newConnectionTo: targetRemoteReference [
-	| newConnection |
-	self 
-		repeat: [newConnection := super newConnectionTo: targetRemoteReference] 
-		until: [newConnection notNil and: [newConnection isConnected]]
-		onFailDo: [MpConnectionFailed signal].
-	^newConnection
+{ #category : #sending }
+MpReliableConnectedTransporter >> reconectTo: targetRemoteReference [
+	(self connectionTo: targetRemoteReference) reset
+]
+
+{ #category : #attempting }
+MpReliableConnectedTransporter >> repeat: actionBlock onException: exceptionClass do: exceptionHandlerBlock onFail: failBlock [
+	| attemptsLeft done capturedException |
+	attemptsLeft :=  self maxAttemptsCount.
+	done := false.
+	[done] whileFalse: [
+			capturedException := nil.
+			actionBlock on: exceptionClass do: [: exception | capturedException := exception].
+			capturedException 
+				ifNil: [done := true]
+				ifNotNil: [
+					attemptsLeft := attemptsLeft - 1.
+					attemptsLeft = 0 ifTrue: [failBlock cull: capturedException].
+					exceptionHandlerBlock cull: capturedException.
+					self durationBetweenAttempts wait].
+			].
+
 ]
 
 { #category : #attempting }
@@ -76,4 +78,22 @@ MpReliableConnectedTransporter >> repeat: actionBlock until: conditionBlock onFa
 	].
 	failBlock value
 
+]
+
+{ #category : #sending }
+MpReliableConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
+	self 
+		repeat: [ super sendAsynchronousMessage: remoteMessage to: targetRemoteReference ]
+		onException: MpCouldNotDeliverMessageError, MpConnectionFailed
+		do: [ self reconectTo: targetRemoteReference ]
+		onFail: [ : exception | exception signal ]
+]
+
+{ #category : #sending }
+MpReliableConnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
+	self 
+		repeat: [ ^super sendSynchronousMessage: remoteMessage to: targetRemoteReference ]
+		onException: MpCouldNotDeliverMessageError, MpConnectionFailed, MpRemoteMessageResultTimeout
+		do: [ self reconectTo: targetRemoteReference ]
+		onFail: [ : exception | exception signal ]
 ]

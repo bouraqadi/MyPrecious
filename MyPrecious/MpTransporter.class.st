@@ -71,6 +71,14 @@ MpTransporter >> materializeFrom: bytes [
 	^FLMaterializer materializeFromByteArray: bytes
 ]
 
+{ #category : #sending }
+MpTransporter >> newPromiseAt: id [
+	| newPromise |
+	newPromise := self promiseClass new.
+	promisesLock critical: [ promisesDict at: id put: newPromise ].
+	^newPromise
+]
+
 { #category : #accessing }
 MpTransporter >> processingPriority [
 	^self middleware processingPriority
@@ -139,15 +147,12 @@ MpTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReferenc
 { #category : #sending }
 MpTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	| promise response |
-	promise := self promiseClass
+	promise := self newPromiseAt: remoteMessage responseId.
+	promise
 		onFulfillDo: [ :normalResponse | response := normalResponse ]
 		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
-	promisesLock
-		critical: [ promisesDict at: remoteMessage responseId put: promise ].
 	self sendAsynchronousMessage: remoteMessage to: targetReference.
-	[ promise wait: self receptionTimeoutDuration ]
-		on: CcPromiseTimeout
-		do: [ :ex | self signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: ex ].
+	self waitResponseFor: remoteMessage onPromise: promise.
 	^ response contents
 ]
 
@@ -185,4 +190,14 @@ MpTransporter >> stop [
 { #category : #receiving }
 MpTransporter >> unmarshal: anObject [ 
 	^self marshaller unmarshal: anObject.
+]
+
+{ #category : #sending }
+MpTransporter >> waitResponseFor: remoteMessage onPromise: promise [
+	[ promise wait: self receptionTimeoutDuration ]
+		on: CcPromiseTimeout
+		do: [ :ex | 
+			self
+				signalReceivingResponseOfRemoteMessage: remoteMessage
+				raisedException: ex ]
 ]
