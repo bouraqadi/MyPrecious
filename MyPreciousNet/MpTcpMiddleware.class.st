@@ -1,7 +1,7 @@
 Class {
 	#name : #MpTcpMiddleware,
 	#superclass : #MpMiddleware,
-	#category : #MyPreciousTcp
+	#category : #'MyPreciousNet-Tcp'
 }
 
 { #category : #initialization }

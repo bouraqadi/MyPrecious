@@ -7,7 +7,7 @@ Class {
 		'ip',
 		'port'
 	],
-	#category : #MyPreciousTcp
+	#category : #'MyPreciousNet-Tcp'
 }
 
 { #category : #'instance creation' }

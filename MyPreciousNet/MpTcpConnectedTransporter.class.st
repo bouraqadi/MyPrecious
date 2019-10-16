@@ -1,7 +1,7 @@
 Class {
 	#name : #MpTcpConnectedTransporter,
 	#superclass : #MpReliableConnectedTransporter,
-	#category : #MyPreciousTcp
+	#category : #'MyPreciousNet-Tcp'
 }
 
 { #category : #connecting }

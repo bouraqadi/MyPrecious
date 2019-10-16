@@ -26,15 +26,15 @@ BaselineOfMyPrecious >> baseline: spec [
 				spec requires: #('Equals' 'Concurrency')];
 			package: #MyPreciousTests with: [
 				spec requires: #('MyPrecious')];
-			package: #MyPreciousTcp with: [
+			package: #MyPreciousNet with: [
 				spec requires: #('MyPrecious' 'NetworkExtras')];
-			package: #MyPreciousTcpTests with: [
-				spec requires: #('MyPreciousTests' 'MyPreciousTcp')].
+			package: #MyPreciousNetTests with: [
+				spec requires: #('MyPreciousTests' 'MyPreciousNet')].
 			
 		spec
 				group: 'kernel' with: #('MyPrecious');
-				group: 'tcp' with: #('kernel' 'MyPreciousTcp');
-				group: 'default' with: #('tcp' 'MyPreciousTests' 'MyPreciousTcpTests')
+				group: 'net' with: #('kernel' 'MyPreciousNet');
+				group: 'default' with: #('net' 'MyPreciousTests' 'MyPreciousNetTests')
 	].
 
 ]

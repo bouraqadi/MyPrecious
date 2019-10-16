@@ -1,11 +1,11 @@
 Class {
-	#name : #MpConnectedMiddlewareTest,
+	#name : #MpReliableConnectedMiddlewareTest,
 	#superclass : #MpMiddlewareTest,
 	#category : #'MyPreciousTests-Connected'
 }
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> assertMiddleware: middleware persistsConnectionTo: address failMessage: aString [
+MpReliableConnectedMiddlewareTest >> assertMiddleware: middleware persistsConnectionTo: address failMessage: aString [
 	self waitWhile: [middleware transporter connections isEmpty].
 	middleware transporter
 		connectionAt: address 
@@ -14,12 +14,12 @@ MpConnectedMiddlewareTest >> assertMiddleware: middleware persistsConnectionTo: 
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> middlewareClass [ 
+MpReliableConnectedMiddlewareTest >> middlewareClass [ 
 	^MpConnectedMiddlewareForTest
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testAsynchrounousMessageSenderAndReceiverSaveConnections [
+MpReliableConnectedMiddlewareTest >> testAsynchrounousMessageSenderAndReceiverSaveConnections [
 	| valueHolderA remoteReferenceA |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -36,7 +36,7 @@ MpConnectedMiddlewareTest >> testAsynchrounousMessageSenderAndReceiverSaveConnec
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
+MpReliableConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 	| valueHolderA remoteReferenceA initialConnections |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -53,7 +53,7 @@ MpConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testReconnectsIfOtherSideIsDisconnected [
+MpReliableConnectedMiddlewareTest >> testReconnectsIfOtherSideIsDisconnected [
 	| valueHolderA remoteReferenceA connectionA|
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -71,7 +71,7 @@ MpConnectedMiddlewareTest >> testReconnectsIfOtherSideIsDisconnected [
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testReconnectsIftherSideStopsReceiving [
+MpReliableConnectedMiddlewareTest >> testReconnectsIftherSideStopsReceiving [
 	| valueHolderA remoteReferenceA connectionA newValue |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -86,7 +86,7 @@ MpConnectedMiddlewareTest >> testReconnectsIftherSideStopsReceiving [
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
+MpReliableConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 	| valueHolderA remoteReferenceA message |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -102,7 +102,7 @@ MpConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testStopConnectionHandlingService [
+MpReliableConnectedMiddlewareTest >> testStopConnectionHandlingService [
 	self allMiddleware do: [ : each |
 		self assert: each transporter connectionService isStarted.
 		each stop.
@@ -111,7 +111,7 @@ MpConnectedMiddlewareTest >> testStopConnectionHandlingService [
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testSynchrounousMessageSenderAndReceiverSaveConnections [
+MpReliableConnectedMiddlewareTest >> testSynchrounousMessageSenderAndReceiverSaveConnections [
 	| valueHolderA remoteReferenceA |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.
@@ -128,7 +128,7 @@ MpConnectedMiddlewareTest >> testSynchrounousMessageSenderAndReceiverSaveConnect
 ]
 
 { #category : #tests }
-MpConnectedMiddlewareTest >> testWaitsCreatingConnectionUntilOtherSideIsAvailable [
+MpReliableConnectedMiddlewareTest >> testWaitsCreatingConnectionUntilOtherSideIsAvailable [
 	| valueHolderA remoteReferenceA newValue |
 	valueHolderA := self newValueHolder.
 	remoteReferenceA := middlewareA export: valueHolderA.

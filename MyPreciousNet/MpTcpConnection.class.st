@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'socketStream'
 	],
-	#category : #MyPreciousTcp
+	#category : #'MyPreciousNet-Tcp'
 }
 
 { #category : #connecting }
