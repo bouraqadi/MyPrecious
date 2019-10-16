@@ -36,6 +36,11 @@ MpMiddlewareForTest >> address: anAddress [
 	self registry at: anAddress put: self transporter
 ]
 
+{ #category : #initialization }
+MpMiddlewareForTest >> addressClass [
+	^nil
+]
+
 { #category : #accessing }
 MpMiddlewareForTest >> addressCounter [
 	^self class addressCounter
@@ -44,12 +49,6 @@ MpMiddlewareForTest >> addressCounter [
 { #category : #accessing }
 MpMiddlewareForTest >> addressCounter: newCount [
 	self class addressCounter: newCount
-]
-
-{ #category : #initialization }
-MpMiddlewareForTest >> initialize [
-	super initialize.
-	self address: self newAddress
 ]
 
 { #category : #accessing }

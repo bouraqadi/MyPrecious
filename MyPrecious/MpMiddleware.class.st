@@ -23,6 +23,11 @@ MpMiddleware >> address: anAddress [
 ]
 
 { #category : #initialization }
+MpMiddleware >> addressClass [
+	self subclassResponsibility
+]
+
+{ #category : #initialization }
 MpMiddleware >> defaultProcessingPriority [
 	^Processor userSchedulingPriority
 ]
@@ -56,7 +61,8 @@ MpMiddleware >> initialize [
 	self receptionTimeoutDuration: self defaultReceptionTimeoutDuration.
 	self 
 		receptionPriority: self defaultReceptionPriority
-		processingPriority: self defaultProcessingPriority 
+		processingPriority: self defaultProcessingPriority.
+	self address: self newAddress
 ]
 
 { #category : #activity }
@@ -77,6 +83,11 @@ MpMiddleware >> marshaller [
 { #category : #initialization }
 MpMiddleware >> marshallerClass [
 	^MpMarshaller
+]
+
+{ #category : #initialization }
+MpMiddleware >> newAddress [
+	^self addressClass new
 ]
 
 { #category : #exporting }

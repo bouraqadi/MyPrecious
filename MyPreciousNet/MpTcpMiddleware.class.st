@@ -1,18 +1,14 @@
 Class {
 	#name : #MpTcpMiddleware,
 	#superclass : #MpMiddleware,
+	#traits : 'MpTNetMiddleware',
+	#classTraits : 'MpTNetMiddleware classTrait',
 	#category : #'MyPreciousNet-Tcp'
 }
 
 { #category : #initialization }
-MpTcpMiddleware >> localHostAddress [
-	^NetNameResolver localHostAddress
-]
-
-{ #category : #initialization }
-MpTcpMiddleware >> port: portNumber [
-	self transporter port: portNumber.
-	address := MpIpFullAddress ip: self localHostAddress port: portNumber 
+MpTcpMiddleware >> addressClass [
+	^MpIpFullAddress 
 ]
 
 { #category : #initialization }
