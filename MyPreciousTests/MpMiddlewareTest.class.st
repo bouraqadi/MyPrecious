@@ -39,7 +39,7 @@ MpMiddlewareTest >> assertIsProxy: anObject [
 
 { #category : #tests }
 MpMiddlewareTest >> defaultReceptionTimeoutDuration [
-	^200 milliSeconds
+	^100 milliSeconds
 ]
 
 { #category : #tests }
