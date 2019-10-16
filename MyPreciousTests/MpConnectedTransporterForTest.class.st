@@ -9,12 +9,9 @@ Class {
 
 { #category : #receiving }
 MpConnectedTransporterForTest >> acceptConnections [
-	| connection otherSideConnection |
+	| otherSideConnection |
 	otherSideConnection := self connectionQueue next.
-	connection := self connectionAt: otherSideConnection address ifAbsent: [ self newConnection ].
-	connection 
-		connectTo: otherSideConnection;
-		startReceiving
+	self acceptConnectionWith: otherSideConnection
 ]
 
 { #category : #connecting }

@@ -11,14 +11,33 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #connecting }
+MpConnection >> acceptConnectionWith: anObject [
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 MpConnection >> address [
 	^self transporter address
 ]
 
 { #category : #connecting }
-MpConnection >> connect [
+MpConnection >> basicConnect [
 	self subclassResponsibility
+]
+
+{ #category : #connecting }
+MpConnection >> basicDisconnect [
+	self subclassResponsibility
+]
+
+{ #category : #connecting }
+MpConnection >> connect [
+	| metaMessage |
+	self basicConnect.
+	metaMessage := MpSaveConnectionMetaMessage new.
+	metaMessage otherSideAddress: self address.
+	self sendObject: metaMessage
 ]
 
 { #category : #receiving }
@@ -41,7 +60,7 @@ MpConnection >> deliverSynchronousMessage: remoteMessage [
 
 { #category : #connecting }
 MpConnection >> disconnect [
-	self subclassResponsibility
+	[self basicDisconnect] on: Exception do: [ "ignore" ]
 ]
 
 { #category : #connecting }

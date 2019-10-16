@@ -9,6 +9,14 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #connecting }
+MpConnectedTransporter >> acceptConnectionWith: anObject [
+	^ self newConnection
+		acceptConnectionWith: anObject;
+		startReceiving;
+		yourself
+]
+
 { #category : #sending }
 MpConnectedTransporter >> basicSendMessage: remoteMessage to: targetRemoteReference [
 	| connection |
@@ -76,14 +84,11 @@ MpConnectedTransporter >> newConnectionHandlingService [
 
 { #category : #connecting }
 MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
-	| metaMessage |
-	metaMessage := MpSaveConnectionMetaMessage new.
-	metaMessage otherSideAddress: self address.
 	^ self newConnection
 		otherSideAddress: targetRemoteReference address;
 		connect;
-		startReceiving;
-		sendObject: metaMessage yourself
+		startReceiving; 
+		yourself
 ]
 
 { #category : #initialization }

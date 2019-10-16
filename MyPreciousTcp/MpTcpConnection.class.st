@@ -7,14 +7,15 @@ Class {
 	#category : #MyPreciousTcp
 }
 
-{ #category : #accessing }
-MpTcpConnection >> byteCountArraySize [
-	^4
+{ #category : #connecting }
+MpTcpConnection >> acceptConnectionWith: aSocketStream [
+	self socketStream: aSocketStream
 ]
 
 { #category : #connecting }
-MpTcpConnection >> connect [
+MpTcpConnection >> basicConnect [
 	| newSocketStream |
+	self otherSideAddress ifNil: [ MpConnectionFailed signal ].
 	newSocketStream := ZdcSocketStream
 		openConnectionToHost: self otherSideAddress ip
 		port: self otherSideAddress port.
@@ -22,8 +23,14 @@ MpTcpConnection >> connect [
 ]
 
 { #category : #connecting }
-MpTcpConnection >> disconnect [
+MpTcpConnection >> basicDisconnect [
+	self socketStream ifNil: [ ^self ].
 	self socketStream close
+]
+
+{ #category : #accessing }
+MpTcpConnection >> byteCountArraySize [
+	^4
 ]
 
 { #category : #connecting }

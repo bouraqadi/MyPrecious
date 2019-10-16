@@ -12,7 +12,33 @@ Class {
 }
 
 { #category : #connecting }
-MpConnectionForTest >> connect [
+MpConnectionForTest >> acceptConnectionFrom: aConnection [
+	self 
+		otherSide: aConnection;
+		sendQueue: SharedQueue new;
+		receiveQueue: SharedQueue new.
+
+	aConnection 
+		otherSide: self;
+		sendQueue: self receiveQueue;
+		receiveQueue: self sendQueue.
+]
+
+{ #category : #connecting }
+MpConnectionForTest >> acceptConnectionWith: aConnection [
+	self 
+		otherSide: aConnection;
+		sendQueue: SharedQueue new;
+		receiveQueue: SharedQueue new.
+
+	aConnection 
+		otherSide: self;
+		sendQueue: self receiveQueue;
+		receiveQueue: self sendQueue.
+]
+
+{ #category : #connecting }
+MpConnectionForTest >> basicConnect [
 	| targetTransporter |
 	targetTransporter := self registry at: self otherSideAddress ifAbsent: [MpConnectionFailed signal].
 	targetTransporter connectionQueue nextPut: self.
@@ -20,6 +46,18 @@ MpConnectionForTest >> connect [
 		waitUntil: [ self isSendingPossible ] 
 		onTimeout: self receptionTimeoutDuration
 		do: [ MpConnectionFailed signal ]
+
+]
+
+{ #category : #connecting }
+MpConnectionForTest >> basicDisconnect [
+	| peer |
+	otherSide ifNil: [^self].
+	sendQueue := nil.
+	peer := otherSide.
+	otherSide := nil.
+	peer disconnect.
+
 
 ]
 
@@ -34,18 +72,6 @@ MpConnectionForTest >> connectTo: aConnection [
 		otherSide: self;
 		sendQueue: self receiveQueue;
 		receiveQueue: self sendQueue.
-]
-
-{ #category : #connecting }
-MpConnectionForTest >> disconnect [
-	| peer |
-	otherSide ifNil: [^self].
-	sendQueue := nil.
-	peer := otherSide.
-	otherSide := nil.
-	peer disconnect.
-
-
 ]
 
 { #category : #connecting }

@@ -1,6 +1,6 @@
 Class {
 	#name : #MpTcpConnectedTransporter,
-	#superclass : #MpConnectedTransporter,
+	#superclass : #MpReliableConnectedTransporter,
 	#category : #MyPreciousTcp
 }
 
@@ -13,7 +13,7 @@ MpTcpConnectedTransporter >> connectionClass [
 MpTcpConnectedTransporter >> newConnectionHandlingService [
 	^self serverClass new
 		withCommunicationStreamDo: [ : stream | 
-			self receiveBytesFromStream: stream ];
+			self acceptConnectionWith: stream ];
 		yourself
 ]
 
@@ -21,13 +21,6 @@ MpTcpConnectedTransporter >> newConnectionHandlingService [
 MpTcpConnectedTransporter >> port: integer [
 	self connectionService port: integer.
 
-]
-
-{ #category : #receiving }
-MpTcpConnectedTransporter >> receiveBytesFromStream: stream [
-	self newConnection
-		socketStream: stream;
-		startReceiving
 ]
 
 { #category : #initialization }
