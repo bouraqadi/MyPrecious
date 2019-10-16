@@ -52,32 +52,15 @@ MpReliableConnectedTransporter >> reconectTo: targetRemoteReference [
 
 { #category : #attempting }
 MpReliableConnectedTransporter >> repeat: actionBlock onException: exceptionClass do: exceptionHandlerBlock onFail: failBlock [
-	| attemptsLeft done capturedException |
-	attemptsLeft :=  self maxAttemptsCount.
-	done := false.
-	[done] whileFalse: [
-			capturedException := nil.
-			actionBlock on: exceptionClass do: [: exception | capturedException := exception].
-			capturedException 
-				ifNil: [done := true]
-				ifNotNil: [
-					attemptsLeft := attemptsLeft - 1.
-					attemptsLeft = 0 ifTrue: [failBlock cull: capturedException].
-					exceptionHandlerBlock cull: capturedException.
-					self durationBetweenAttempts wait].
-			].
-
-]
-
-{ #category : #attempting }
-MpReliableConnectedTransporter >> repeat: actionBlock until: conditionBlock onFailDo: failBlock [
+	| capturedException |
 	self maxAttemptsCount timesRepeat: [
-		actionBlock on: Exception do: ["ignore"].
-		conditionBlock value ifTrue: [ ^self ].
+		capturedException := nil.
+		actionBlock on: exceptionClass do: [: exception | capturedException := exception].
+		capturedException ifNil: [^self].
+		exceptionHandlerBlock cull: capturedException.
 		self durationBetweenAttempts wait.
 	].
-	failBlock value
-
+	failBlock cull: capturedException
 ]
 
 { #category : #sending }

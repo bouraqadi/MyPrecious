@@ -36,6 +36,7 @@ MpConnectedTransporter >> connectionService [
 
 { #category : #connecting }
 MpConnectedTransporter >> connectionTo: targetRemoteReference [
+	targetRemoteReference ifNil: [MpConnectionFailed signal].
 	^connectionsLock critical: [
 		connectionsDict 
 			at: targetRemoteReference address
@@ -109,8 +110,7 @@ MpConnectedTransporter >> saveConnection: aConnection toAddress: address [
 MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	[ ^ self basicSendMessage: remoteMessage to: targetRemoteReference ]
 		on: Error
-		do:
-			[ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
+		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
 { #category : #activity }

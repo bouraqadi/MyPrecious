@@ -39,7 +39,7 @@ MpMiddlewareTest >> assertIsProxy: anObject [
 
 { #category : #tests }
 MpMiddlewareTest >> defaultReceptionTimeoutDuration [
-	^500 milliSeconds
+	^200 milliSeconds
 ]
 
 { #category : #tests }
@@ -61,6 +61,11 @@ MpMiddlewareTest >> is: anObject instanceOf: aClass [
 { #category : #tests }
 MpMiddlewareTest >> isProxy: anObject [
 	^self is: anObject instanceOf: MpProxy
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> middlewareClass [
+	self subclassResponsibility
 ]
 
 { #category : #tests }
@@ -335,10 +340,10 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSend0Args [
 MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilAddress [
 	self should: [
 		middlewareB sendAsync: #contents: arguments: #(3) to: MpRemoteReference new
-	] raise: MpCouldNotDeliverMessageError.
+	] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 	self should: [
 		middlewareB sendAsync: #size to: MpRemoteReference new
-	] raise: MpCouldNotDeliverMessageError.
+	] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 
 ]
 
@@ -346,10 +351,10 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilAddress [
 MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilReference [
 	self should: [
 		middlewareB sendAsync: #contents: arguments: #(3) to: nil
-	] raise: MpCouldNotDeliverMessageError.
+	] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 	self should: [
 		middlewareB sendAsync: #size to: nil
-	] raise: MpCouldNotDeliverMessageError.
+	] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 
 ]
 
@@ -383,15 +388,15 @@ MpMiddlewareTest >> testRemoteMessageSynchronousSend [
 
 { #category : #tests }
 MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilAddress [
-	self should: [middlewareB send: #foo to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError.
-	self should: [middlewareB send: #at: arguments: #(1) to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError.
+	self should: [middlewareB send: #foo to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
+	self should: [middlewareB send: #at: arguments: #(1) to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 
 ]
 
 { #category : #tests }
 MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilReference [
-	self should: [middlewareB send: #foo to: nil] raise: MpCouldNotDeliverMessageError.
-	self should: [middlewareB send: #at: arguments: #(1) to: nil] raise: MpCouldNotDeliverMessageError.
+	self should: [middlewareB send: #foo to: nil] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
+	self should: [middlewareB send: #at: arguments: #(1) to: nil] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 
 ]
 

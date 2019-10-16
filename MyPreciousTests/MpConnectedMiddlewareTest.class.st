@@ -136,6 +136,6 @@ MpConnectedMiddlewareTest >> testWaitsCreatingConnectionUntilOtherSideIsAvailabl
 	newValue := #somethingSpecial. 
 	[middlewareB sendAsync: #contents: arguments: { newValue } to: remoteReferenceA] fork.
 	[middlewareA start] fork.
-	self waitUntil: valueHolderA contents = newValue timeout: 1000 milliSeconds. 
+	self waitUntil: [valueHolderA contents = newValue] timeout: 500 milliSeconds. 
 
 ]
