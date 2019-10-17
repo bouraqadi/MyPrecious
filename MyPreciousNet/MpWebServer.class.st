@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'communicationHandlingBlock',
 		'communicationHandlingPriority',
-		'priority'
+		'service'
 	],
 	#category : #'MyPreciousNet-Web'
 }
@@ -33,6 +33,11 @@ MpWebServer >> communicationHandlingPriority: anObject [
 	communicationHandlingPriority := anObject
 ]
 
+{ #category : #initialization }
+MpWebServer >> defaultPriority [
+	^Processor userBackgroundPriority
+]
+
 { #category : #'request handling' }
 MpWebServer >> executeOneRequestResponseOn: stream [
 	| request response timing|
@@ -55,14 +60,21 @@ MpWebServer >> handleRequest: request [
 		yourself.
 ]
 
+{ #category : #initialization }
+MpWebServer >> initialize [
+	super initialize.
+	service := CcService repeat: [ self listenLoop ] ensure: [self releaseServerSocket].
+	self communicationHandlingPriority: self defaultPriority.
+]
+
 { #category : #accessing }
 MpWebServer >> priority [
-	^ priority
+	^service priority
 ]
 
 { #category : #accessing }
 MpWebServer >> priority: anObject [
-	priority := anObject
+	service priority: anObject
 ]
 
 { #category : #'request handling' }
@@ -82,11 +94,9 @@ MpWebServer >> start [
 	If I am running, I will first stop and thus effectively restart"
 	
 	self stop: false.
-	self class default = self ifTrue: [ self register ].
-	process := [ [ self listenLoop ] repeat ]
-		forkAt: self priority 
-		named: self serverProcessName.
-	self logStarted.
+	service 
+		name: self serverProcessName;
+		start
 
 ]
 

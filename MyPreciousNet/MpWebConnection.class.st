@@ -5,15 +5,6 @@ Class {
 }
 
 { #category : #connecting }
-MpWebConnection >> acceptConnectionWith: aSocketStream [
-	| timing request |
-	super acceptConnectionWith: aSocketStream.
-	timing := ZnServerTransactionTiming new.
-	request := ZnRequest readFrom: aSocketStream.
-
-]
-
-{ #category : #connecting }
 MpWebConnection >> basicConnect [
 	| newSocketStream |
 	newSocketStream := ZnClient new 
