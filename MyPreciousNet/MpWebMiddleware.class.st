@@ -12,6 +12,17 @@ MpWebMiddleware >> addressClass [
 ]
 
 { #category : #initialization }
+MpWebMiddleware >> defaultProtocol [
+	^MpWebFullAddress http
+]
+
+{ #category : #initialization }
+MpWebMiddleware >> initialize [
+	super initialize.
+	self protocol: self defaultProtocol
+]
+
+{ #category : #initialization }
 MpWebMiddleware >> protocol: webProtocol [
 	^self address protocol: webProtocol
 ]

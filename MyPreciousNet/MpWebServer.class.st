@@ -54,10 +54,7 @@ MpWebServer >> executeOneRequestResponseOn: stream [
 
 { #category : #'request handling' }
 MpWebServer >> handleRequest: request [
-	^ZnResponse new
-		statusLine: (ZnStatusLine ok);
-		headers: ZnHeaders defaultResponseHeaders;
-		yourself.
+	^ZnResponse ok: (ZnEntity text: 'Connection established').
 ]
 
 { #category : #initialization }
