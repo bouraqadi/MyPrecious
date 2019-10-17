@@ -448,14 +448,14 @@ MpMiddlewareTest >> testResultProxyToObjectInThirdMiddleware [
 
 { #category : #tests }
 MpMiddlewareTest >> testTimeoutRemoteMessage [
-	| proxy remoteReference infiniteWaitSemaphore doneSemaphore isTimeout |
-	infiniteWaitSemaphore := Semaphore new.
+	| proxy remoteReference waitSemaphore doneSemaphore isTimeout |
+	waitSemaphore := Semaphore new.
 	doneSemaphore := Semaphore new.
-	remoteReference := middlewareA export: infiniteWaitSemaphore.
+	remoteReference := middlewareA export: waitSemaphore.
 	proxy := middlewareB objectAt: remoteReference.
 	isTimeout := false.
 	[
-		[proxy wait] on: MpRemoteMessageResultTimeout do: [: ex | isTimeout := true].
+		[proxy wait: 20 seconds] on: MpRemoteMessageResultTimeout do: [: ex | isTimeout := true].
 		doneSemaphore signal.
 	 ] fork.
 	self assertSemaphore: doneSemaphore signaledWithinSeconds: 3.

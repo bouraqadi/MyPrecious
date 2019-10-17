@@ -55,7 +55,7 @@ MpConnection >> deliverSaveConnection: saveConnectionMetaMessage [
 MpConnection >> deliverSynchronousMessage: remoteMessage [
 	| response |
 	response := self basicDeliverSynchronousMessage: remoteMessage.
-	self sendObject: response
+	[self sendObject: response] on: Exception do: [ : exception | self sendingResponseToMessage: remoteMessage raised: exception ]
 ]
 
 { #category : #connecting }
@@ -151,6 +151,23 @@ MpConnection >> sendObject: anObject [
 	| bytes |
 	bytes := self marshalAndSerialize: anObject.
 	self sendBytes: bytes
+]
+
+{ #category : #receiving }
+MpConnection >> sendingResponseToMessage: remoteMessage raised: exception [
+	| logString |
+	logString := String streamContents: [: stream|
+		stream
+			cr;
+			print: self address;
+			cr;
+			<<  'Could not send response to message ';
+			print: remoteMessage selector; 
+			cr;
+			<< exception description;
+			cr
+			].
+	self log: logString
 ]
 
 { #category : #receiving }

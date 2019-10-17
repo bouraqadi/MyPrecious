@@ -7,6 +7,7 @@ Class {
 { #category : #connecting }
 MpWebConnection >> basicConnect [
 	| newSocketStream |
+	self otherSideAddress ifNil: [MpConnectionFailed signal].
 	newSocketStream := ZnClient new 
 		ifFail: [ :exception | MpConnectionFailed signal];
 		get: self otherSideUrl;

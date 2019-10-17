@@ -64,6 +64,11 @@ MpWebServer >> initialize [
 	self communicationHandlingPriority: self defaultPriority.
 ]
 
+{ #category : #testing }
+MpWebServer >> isStarted [
+	^service isStarted
+]
+
 { #category : #accessing }
 MpWebServer >> priority [
 	^service priority
@@ -87,14 +92,15 @@ MpWebServer >> serveConnectionOn: listeningSocket [
 
 { #category : #public }
 MpWebServer >> start [
-	"Start me. I will start listening on my port for incoming HTTP connections.
-	If I am running, I will first stop and thus effectively restart"
-	
-	self stop: false.
 	service 
 		name: self serverProcessName;
 		start
 
+]
+
+{ #category : #public }
+MpWebServer >> stop [
+	service stop
 ]
 
 { #category : #initialization }
