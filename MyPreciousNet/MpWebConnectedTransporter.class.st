@@ -8,3 +8,8 @@ Class {
 MpWebConnectedTransporter >> connectionClass [
 	^MpWebConnection
 ]
+
+{ #category : #initialization }
+MpWebConnectedTransporter >> serverClass [
+	^MpWebServer 
+]
