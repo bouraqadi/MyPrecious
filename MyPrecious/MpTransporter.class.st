@@ -13,6 +13,11 @@ MpTransporter >> address [
 	^self middleware address
 ]
 
+{ #category : #sending }
+MpTransporter >> basicSendMessage: remoteMessage to: targetRemoteReference [
+	self subclassResponsibility
+]
+
 { #category : #receiving }
 MpTransporter >> deliverResponse: remoteResponse [
 	| promise |
@@ -141,7 +146,8 @@ MpTransporter >> sendAsync: selector to: targetRemoteReference [
 
 { #category : #sending }
 MpTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	self subclassResponsibility
+	self basicSendMessage: remoteMessage to: targetRemoteReference
+
 ]
 
 { #category : #sending }
@@ -151,7 +157,7 @@ MpTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	promise
 		onFulfillDo: [ :normalResponse | response := normalResponse ]
 		onRejectDo: [ :exceptionResponse | response := exceptionResponse ].
-	self sendAsynchronousMessage: remoteMessage to: targetReference.
+	self basicSendMessage: remoteMessage to: targetReference.
 	self waitResponseFor: remoteMessage onPromise: promise.
 	^ response contents
 ]

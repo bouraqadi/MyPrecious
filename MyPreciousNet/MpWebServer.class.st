@@ -65,6 +65,11 @@ MpWebServer >> initialize [
 ]
 
 { #category : #testing }
+MpWebServer >> isRunning [
+	^self isStarted
+]
+
+{ #category : #testing }
 MpWebServer >> isStarted [
 	^service isStarted
 ]

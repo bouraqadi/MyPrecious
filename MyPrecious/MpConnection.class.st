@@ -159,6 +159,8 @@ MpConnection >> sendingResponseToMessage: remoteMessage raised: exception [
 	logString := String streamContents: [: stream|
 		stream
 			cr;
+			print: Time now;
+			cr;
 			print: self address;
 			cr;
 			<<  'Could not send response to message ';

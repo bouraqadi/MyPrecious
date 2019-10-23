@@ -9,6 +9,16 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #sending }
+MpUnconnectedTransporter >> basicSendMessage: remoteMessage to: targetRemoteReference [
+	[ self
+		sendObject: remoteMessage
+		toAddress: targetRemoteReference address 
+	] 
+		on: Error
+		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
+]
+
 { #category : #receiving }
 MpUnconnectedTransporter >> deliverSynchronousMessage: remoteMessage [
 	| response |
@@ -70,16 +80,6 @@ MpUnconnectedTransporter >> receptionPriority: anInteger [
 { #category : #accessing }
 MpUnconnectedTransporter >> receptionService [
 	^ receptionService
-]
-
-{ #category : #sending }
-MpUnconnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	[ self
-		sendObject: remoteMessage
-		toAddress: targetRemoteReference address 
-	] 
-		on: Error
-		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
 { #category : #sending }

@@ -19,10 +19,13 @@ MpConnectedTransporter >> acceptConnectionWith: anObject [
 
 { #category : #sending }
 MpConnectedTransporter >> basicSendMessage: remoteMessage to: targetRemoteReference [
-	| connection |
+	[| connection |
 	connection := self connectionTo: targetRemoteReference.
 	connection sendObject: remoteMessage.
 	^ connection
+	]
+		on: Error
+		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
 { #category : #connecting }
@@ -109,13 +112,6 @@ MpConnectedTransporter >> resetConnectionsDict [
 { #category : #connecting }
 MpConnectedTransporter >> saveConnection: aConnection toAddress: address [
 	connectionsLock critical: [connectionsDict at: address put: aConnection]
-]
-
-{ #category : #sending }
-MpConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	[ ^ self basicSendMessage: remoteMessage to: targetRemoteReference ]
-		on: Error
-		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
 { #category : #activity }
