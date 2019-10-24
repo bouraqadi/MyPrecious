@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'id'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Messages'
 }
 
 { #category : #accessing }

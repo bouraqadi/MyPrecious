@@ -8,7 +8,7 @@ Class {
 		'receptionService',
 		'otherSideAddress'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Connected'
 }
 
 { #category : #connecting }

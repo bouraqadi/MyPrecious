@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'otherSideAddress'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Connected'
 }
 
 { #category : #communicating }

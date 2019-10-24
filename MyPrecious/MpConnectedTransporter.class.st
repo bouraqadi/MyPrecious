@@ -6,7 +6,7 @@ Class {
 		'connectionService',
 		'connectionsLock'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Connected'
 }
 
 { #category : #connecting }

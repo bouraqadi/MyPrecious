@@ -5,7 +5,7 @@ Class {
 		'responseId',
 		'senderAddress'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Messages'
 }
 
 { #category : #communicating }

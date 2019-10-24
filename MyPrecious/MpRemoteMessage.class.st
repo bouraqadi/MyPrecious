@@ -6,7 +6,7 @@ Class {
 		'arguments',
 		'receiver'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Messages'
 }
 
 { #category : #accessing }

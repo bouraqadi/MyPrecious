@@ -1,7 +1,7 @@
 Class {
 	#name : #MpAsynchronousRemoteMessage,
 	#superclass : #MpRemoteMessage,
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Messages'
 }
 
 { #category : #communicating }

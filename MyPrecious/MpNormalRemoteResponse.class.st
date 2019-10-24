@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'result'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Messages'
 }
 
 { #category : #'instance creation' }

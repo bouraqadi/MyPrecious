@@ -1,7 +1,7 @@
 Class {
 	#name : #MpMetaMessage,
 	#superclass : #Object,
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Connected'
 }
 
 { #category : #communicating }

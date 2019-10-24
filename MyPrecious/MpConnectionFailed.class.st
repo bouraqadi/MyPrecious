@@ -1,5 +1,5 @@
 Class {
 	#name : #MpConnectionFailed,
 	#superclass : #Error,
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Connected'
 }

@@ -5,7 +5,7 @@ Class {
 		'maxAttemptsCount',
 		'durationBetweenAttempts'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : #'MyPrecious-Connected'
 }
 
 { #category : #initialization }
