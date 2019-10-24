@@ -2,81 +2,66 @@ Class {
 	#name : #MpReliableConnectedTransporter,
 	#superclass : #MpConnectedTransporter,
 	#instVars : [
-		'maxAttemptsCount',
-		'durationBetweenAttempts'
+		'reliabilityStrategy'
 	],
 	#category : #'MyPrecious-Connected'
 }
 
-{ #category : #initialization }
-MpReliableConnectedTransporter >> defaultDurationBetweenAttempts [
-	^100 milliSeconds
+{ #category : #sending }
+MpReliableConnectedTransporter >> basicSendAsynchronousMessage: remoteMessage to: targetRemoteReference [
+	super sendAsynchronousMessage: remoteMessage to: targetRemoteReference
+
+]
+
+{ #category : #sending }
+MpReliableConnectedTransporter >> basicSendSynchronousMessage: remoteMessage to: targetRemoteReference [
+	^super sendSynchronousMessage: remoteMessage to: targetRemoteReference
+
 ]
 
 { #category : #initialization }
-MpReliableConnectedTransporter >> defaultMaxAttemptsCount [
-	^5
-]
-
-{ #category : #attempting }
-MpReliableConnectedTransporter >> durationBetweenAttempts [
-	^ durationBetweenAttempts
-]
-
-{ #category : #attempting }
-MpReliableConnectedTransporter >> durationBetweenAttempts: anObject [
-	durationBetweenAttempts := anObject
+MpReliableConnectedTransporter >> defaultReliabilityStrategyClass [
+	^MpRecreateConnection
 ]
 
 { #category : #initialization }
 MpReliableConnectedTransporter >> initialize [
 	super initialize.
-	self maxAttemptsCount: self defaultMaxAttemptsCount.
-	self durationBetweenAttempts: self defaultDurationBetweenAttempts
+	self reliabilityStrategy: self defaultReliabilityStrategyClass new.
+
 ]
 
-{ #category : #attempting }
-MpReliableConnectedTransporter >> maxAttemptsCount [
-	^maxAttemptsCount
+{ #category : #accessing }
+MpReliableConnectedTransporter >> reliabilityStrategy [
+	^ reliabilityStrategy
 ]
 
-{ #category : #attempting }
-MpReliableConnectedTransporter >> maxAttemptsCount: anObject [
-	maxAttemptsCount := anObject
+{ #category : #accessing }
+MpReliableConnectedTransporter >> reliabilityStrategy: aMpReliabilityStrategy [
+	reliabilityStrategy := aMpReliabilityStrategy.
+	reliabilityStrategy transporter: self
 ]
 
-{ #category : #sending }
-MpReliableConnectedTransporter >> reconectTo: targetRemoteReference [
-	(self connectionTo: targetRemoteReference) reset
-]
-
-{ #category : #attempting }
-MpReliableConnectedTransporter >> repeat: actionBlock onException: exceptionClass do: exceptionHandlerBlock onFail: failBlock [
-	| capturedException |
-	self maxAttemptsCount timesRepeat: [
-		capturedException := nil.
-		actionBlock on: exceptionClass do: [: exception | capturedException := exception].
-		capturedException ifNil: [^self].
-		exceptionHandlerBlock cull: capturedException.
-		self durationBetweenAttempts wait.
-	].
-	failBlock cull: capturedException
+{ #category : #connecting }
+MpReliableConnectedTransporter >> removeConnectionTo: remoteReference [
+	remoteReference ifNil: [ ^self ].
+	^connectionsLock critical: [connectionsDict 
+		removeKey: remoteReference address
+		ifAbsent: nil "ignore"]
 ]
 
 { #category : #sending }
 MpReliableConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
-	self 
-		repeat: [ super sendAsynchronousMessage: remoteMessage to: targetRemoteReference ]
-		onException: MpCouldNotDeliverMessageError, MpConnectionFailed
-		do: [ self reconectTo: targetRemoteReference ]
-		onFail: [ : exception | exception signal ]
+	^self reliabilityStrategy
+		sendAsynchronousMessage: remoteMessage 
+		to: targetRemoteReference
+
 ]
 
 { #category : #sending }
 MpReliableConnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
-	self 
-		repeat: [ ^super sendSynchronousMessage: remoteMessage to: targetRemoteReference ]
-		onException: MpCouldNotDeliverMessageError, MpConnectionFailed, MpRemoteMessageResultTimeout
-		do: [ self reconectTo: targetRemoteReference ]
-		onFail: [ : exception | exception signal ]
+	^self reliabilityStrategy
+		sendSynchronousMessage: remoteMessage 
+		to: targetRemoteReference
+
 ]

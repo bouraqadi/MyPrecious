@@ -37,7 +37,7 @@ MpNormalRemoteResponse >> result: anObject [
 
 { #category : #acting }
 MpNormalRemoteResponse >> trigger: aPromise [
-	aPromise fulfillWith: self
+	[aPromise fulfillWith: self] on: CcPromiseAlreadySettledError  do: nil
 ]
 
 { #category : #marshalling }
