@@ -37,5 +37,5 @@ MpExceptionRemoteResponse >> marshalWith: marshaller [
 
 { #category : #acting }
 MpExceptionRemoteResponse >> trigger: aPromise [	
-	[aPromise rejectWith: self] on: CcPromiseAlreadySettledError  do: nil
+	[aPromise rejectWith: self] on: CcPromiseAlreadySettledError do: [nil]
 ]

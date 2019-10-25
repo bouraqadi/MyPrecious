@@ -116,7 +116,9 @@ MpConnectedTransporter >> saveConnection: aConnection toAddress: address [
 
 { #category : #activity }
 MpConnectedTransporter >> start [
-	self connectionService start
+	self connectionService 
+		name: 'Connection service ', self address printString;
+		start
 ]
 
 { #category : #activity }

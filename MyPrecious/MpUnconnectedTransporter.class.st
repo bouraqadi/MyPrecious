@@ -86,6 +86,13 @@ MpUnconnectedTransporter >> receptionService [
 	^ receptionService
 ]
 
+{ #category : #activity }
+MpUnconnectedTransporter >> receptionServiceName [
+	^String streamContents: [: str | 
+		str << 'Reception Service '.
+		str print: self address]
+]
+
 { #category : #sending }
 MpUnconnectedTransporter >> sendBytes: bytes toAddress: address [
 	self subclassResponsibility
@@ -101,9 +108,9 @@ MpUnconnectedTransporter >> sendObject: anObject toAddress: address [
 
 { #category : #activity }
 MpUnconnectedTransporter >> start [
-	self receptionService 
-			name: 'Reception Service ', self address printString;
-			start
+	self receptionService
+		name: self receptionServiceName;
+		start
 ]
 
 { #category : #activity }

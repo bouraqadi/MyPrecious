@@ -32,7 +32,11 @@ MpConnectedTransporterForTest >> initialize [
 
 { #category : #initialization }
 MpConnectedTransporterForTest >> newConnectionHandlingService [
-	^CcService repeat: [ self acceptConnections ]
+	^TKTParameterizableService new
+		step: [self acceptConnections];
+		stepDelay: 0 milliSecond;
+		yourself
+
 ]
 
 { #category : #sending }

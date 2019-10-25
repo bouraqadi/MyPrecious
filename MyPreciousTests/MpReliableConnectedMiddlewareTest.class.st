@@ -47,7 +47,7 @@ MpReliableConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 		initialConnections do: [ : aConnection | self assert: aConnection isConnected ].
 		aMiddleware stop.
 		self assert: aMiddleware transporter connections isEmpty.
-		initialConnections do: [ : aConnection | self deny: aConnection isConnected ]
+		initialConnections do: [ : aConnection | self waitUntil: [aConnection isConnected] ]
 	]
 	
 ]
@@ -104,9 +104,9 @@ MpReliableConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 { #category : #tests }
 MpReliableConnectedMiddlewareTest >> testStopConnectionHandlingService [
 	self allMiddleware do: [ : each |
-		self assert: each transporter connectionService isStarted.
+		self assert: each transporter connectionService isRunning.
 		each stop.
-		self deny: each transporter connectionService isStarted.
+		self waitUntil: [each transporter connectionService isRunning].
 	]
 ]
 

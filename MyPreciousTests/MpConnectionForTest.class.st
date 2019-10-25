@@ -105,6 +105,14 @@ MpConnectionForTest >> receiveQueue: anObject [
 	receiveQueue := anObject
 ]
 
+{ #category : #receiving }
+MpConnectionForTest >> receptionServiceName [
+	^String streamContents: [ : stream |
+		stream 
+			<< 'Connection from ';
+			print: Time now ]
+]
+
 { #category : #connecting }
 MpConnectionForTest >> registry [
 	^self transporter registry

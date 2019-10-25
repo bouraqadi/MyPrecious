@@ -70,7 +70,7 @@ MpConnection >> isConnected [
 
 { #category : #connecting }
 MpConnection >> isReceptionStarted [
-	^receptionService notNil and: [receptionService isStarted]
+	^receptionService notNil and: [receptionService isRunning]
 ]
 
 { #category : #connecting }
@@ -128,6 +128,16 @@ MpConnection >> receptionPriority [
 	^ self transporter receptionPriority
 ]
 
+{ #category : #receiving }
+MpConnection >> receptionServiceName [
+	^String streamContents: [: stream |
+		stream 
+			<< 'Connection from ';
+			print: self address;
+			<< ' to ';
+			print: self otherSideAddress]
+]
+
 { #category : #accessing }
 MpConnection >> receptionTimeoutDuration [
 	^ self transporter receptionTimeoutDuration
@@ -174,10 +184,15 @@ MpConnection >> sendingResponseToMessage: remoteMessage raised: exception [
 
 { #category : #receiving }
 MpConnection >> startReceiving [
-	self isReceptionStarted ifTrue: [ ^self ].
-	receptionService := CcService repeat: [self receiveObject].
-	receptionService priority: self receptionPriority.
-	receptionService start
+	self isReceptionStarted
+		ifTrue: [ ^ self ].
+	receptionService := TKTParameterizableService new.
+	receptionService
+		step: [ self receiveObject ];
+		stepDelay: 0 milliSecond;
+		priority: self receptionPriority;
+		name: self receptionServiceName;
+		start
 ]
 
 { #category : #receiving }
