@@ -103,11 +103,6 @@ MpConnection >> otherSideAddress: anObject [
 	otherSideAddress := anObject
 ]
 
-{ #category : #accessing }
-MpConnection >> processingPriority [
-	^ self transporter processingPriority
-]
-
 { #category : #receiving }
 MpConnection >> receiveBytes [
 	self subclassResponsibility
@@ -117,10 +112,10 @@ MpConnection >> receiveBytes [
 MpConnection >> receiveObject [
 	| receivedBytes receivedObject|
 	receivedBytes := [self receiveBytes] on: Exception do: [ ^self ].
-	[
+	self schedule: [
 		receivedObject := self materializeAndUnmarshal: receivedBytes.
 		receivedObject deliverBy: self
-	] forkAt: self processingPriority
+	]
 ]
 
 { #category : #accessing }

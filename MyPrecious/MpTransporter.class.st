@@ -3,7 +3,8 @@ Class {
 	#superclass : #MpMiddlewarePart,
 	#instVars : [
 		'promisesDict',
-		'promisesLock'
+		'promisesLock',
+		'incomingMessagesRunner'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -25,6 +26,11 @@ MpTransporter >> deliverResponse: remoteResponse [
 		promisesDict at: remoteResponse id ifAbsent: [^self]].
 	remoteResponse trigger: promise
 
+]
+
+{ #category : #accessing }
+MpTransporter >> incomingMessagesRunner [
+	^self middleware incomingMessagesRunner
 ]
 
 { #category : #initialization }
@@ -82,11 +88,6 @@ MpTransporter >> newPromiseAt: id [
 	newPromise := self promiseClass new.
 	promisesLock critical: [ promisesDict at: id put: newPromise ].
 	^newPromise
-]
-
-{ #category : #accessing }
-MpTransporter >> processingPriority [
-	^self middleware processingPriority
 ]
 
 { #category : #sending }

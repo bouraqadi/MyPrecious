@@ -7,7 +7,9 @@ Class {
 		'address',
 		'transporter',
 		'receptionTimeoutDuration',
-		'processingPriority'
+		'processingPriority',
+		'maxNumberOfMessageProcessingWorkers',
+		'incomingMessagesRunner'
 	],
 	#category : #'MyPrecious-Kernel'
 }
@@ -25,6 +27,11 @@ MpMiddleware >> address: anAddress [
 { #category : #initialization }
 MpMiddleware >> addressClass [
 	self subclassResponsibility
+]
+
+{ #category : #initialization }
+MpMiddleware >> defaultMaxNumberOfMessageProcessingWorkers [
+	^15
 ]
 
 { #category : #initialization }
@@ -52,6 +59,11 @@ MpMiddleware >> export: anObject id: aString [
 	^self referenceConverter export: anObject id: aString 
 ]
 
+{ #category : #accessing }
+MpMiddleware >> incomingMessagesRunner [
+	^incomingMessagesRunner
+]
+
 { #category : #initialization }
 MpMiddleware >> initialize [
 	super initialize.
@@ -62,7 +74,9 @@ MpMiddleware >> initialize [
 	self 
 		receptionPriority: self defaultReceptionPriority
 		processingPriority: self defaultProcessingPriority.
-	self address: self newAddress
+	self address: self newAddress.
+	incomingMessagesRunner := self newIncomingMessagesRunner.
+
 ]
 
 { #category : #activity }
@@ -85,9 +99,22 @@ MpMiddleware >> marshallerClass [
 	^MpMarshaller
 ]
 
+{ #category : #accessing }
+MpMiddleware >> maxNumberOfMessageProcessingWorkers: anInteger [
+	self newIncomingMessagesRunner poolMaxSize: anInteger
+]
+
 { #category : #initialization }
 MpMiddleware >> newAddress [
 	^self addressClass new
+]
+
+{ #category : #initialization }
+MpMiddleware >> newIncomingMessagesRunner [
+	^self workerPoolClass new
+		priority: self processingPriority;
+		poolMaxSize: self defaultMaxNumberOfMessageProcessingWorkers;
+		yourself
 ]
 
 { #category : #exporting }
@@ -182,11 +209,13 @@ MpMiddleware >> sendAsync: selector to: targetRemoteReference [
 
 { #category : #activity }
 MpMiddleware >> start [
+	self incomingMessagesRunner start.
 	self transporter start
 ]
 
 { #category : #activity }
 MpMiddleware >> stop [
+	self incomingMessagesRunner stop.
 	self transporter stop
 ]
 
@@ -198,4 +227,9 @@ MpMiddleware >> transporter [
 { #category : #initialization }
 MpMiddleware >> transporterClass [
 	^self subclassResponsibility
+]
+
+{ #category : #initialization }
+MpMiddleware >> workerPoolClass [
+	^TKTWorkerPool
 ]

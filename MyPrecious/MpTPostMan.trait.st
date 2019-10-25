@@ -37,3 +37,10 @@ MpTPostMan >> exceptionResponseClass [
 MpTPostMan >> normalResponseClass [
 	^ MpNormalRemoteResponse
 ]
+
+{ #category : #receiving }
+MpTPostMan >> schedule: aValuable [
+	| task |
+	task := TKTTask valuable: aValuable.
+	self incomingMessagesRunner schedule: task
+]

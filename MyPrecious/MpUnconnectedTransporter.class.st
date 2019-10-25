@@ -56,7 +56,8 @@ MpUnconnectedTransporter >> readBytes [
 MpUnconnectedTransporter >> receiveBytes [
 	| bytes |
 	bytes := self readBytes.
-	[self receiveBytes: bytes] forkAt: self processingPriority
+	self schedule: [self receiveBytes: bytes].
+
 ]
 
 { #category : #receiving }
