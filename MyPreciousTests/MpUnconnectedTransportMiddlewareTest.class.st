@@ -46,8 +46,8 @@ MpUnconnectedTransportMiddlewareTest >> testRemoteMessageBasicSend [
 { #category : #tests }
 MpUnconnectedTransportMiddlewareTest >> testStopReceptionService [
 	self allMiddleware do: [ : each |
-		self assert: each transporter receptionService isStarted.
+		self assert: each transporter receptionService isRunning.
 		each stop.
-		self deny: each transporter receptionService isStarted.
+		self waitUntil: [each transporter receptionService isRunning].
 	]
 ]

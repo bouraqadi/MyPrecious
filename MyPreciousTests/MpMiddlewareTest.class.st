@@ -114,14 +114,9 @@ MpMiddlewareTest >> setUp [
 
 { #category : #tests }
 MpMiddlewareTest >> tearDown [
-	| garbage |
 	super tearDown.
-"	self allMiddleware do: #stop.
+	self allMiddleware do: #stop.
 	MpMiddlewareForTest resetRegistry.
-"garbage := MpWebServer allInstances, CcService allInstances, MpMiddleware allSubInstances.
-garbage do: #stop.
-garbage do: [ : each | each becomeForward: nil ].
-Smalltalk garbageCollect.
 
 ]
 

@@ -40,7 +40,11 @@ MpUnconnectedTransporter >> isStarted [
 
 { #category : #initialization }
 MpUnconnectedTransporter >> newReceptionService [
-	^CcService repeat: [ self receiveBytes ]
+	^TKTParameterizableService new
+		step: [self receiveBytes];
+		stepDelay: 0 milliSecond;
+		yourself
+
 ]
 
 { #category : #receiving }
@@ -97,7 +101,9 @@ MpUnconnectedTransporter >> sendObject: anObject toAddress: address [
 
 { #category : #activity }
 MpUnconnectedTransporter >> start [
-	self receptionService start
+	self receptionService 
+			name: 'Reception Service ', self address printString;
+			start
 ]
 
 { #category : #activity }
