@@ -10,7 +10,8 @@ Class {
 { #category : #receiving }
 MpConnectedTransporterForTest >> acceptConnections [
 	| otherSideConnection |
-	otherSideConnection := self connectionQueue next.
+	otherSideConnection := self connectionQueue nextOrNil.
+	otherSideConnection ifNil: [ ^self ].
 	self acceptConnectionWith: otherSideConnection
 ]
 

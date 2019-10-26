@@ -106,7 +106,7 @@ MpReliableConnectedMiddlewareTest >> testStopConnectionHandlingService [
 	self allMiddleware do: [ : each |
 		self assert: each transporter connectionService isRunning.
 		each stop.
-		self waitUntil: [each transporter connectionService isRunning].
+		self waitWhile: [each transporter connectionService isRunning].
 	]
 ]
 

@@ -116,7 +116,6 @@ MpMiddlewareTest >> setUp [
 MpMiddlewareTest >> tearDown [
 	super tearDown.
 	self allMiddleware do: #stop.
-	MpMiddlewareForTest resetRegistry.
 
 ]
 
@@ -207,6 +206,8 @@ MpMiddlewareTest >> testExportedObjectReference [
 { #category : #tests }
 MpMiddlewareTest >> testMessagePingPong [
 	| valueHolderA1 remoteReferenceA1 proxyA1InB valueHolderB1 valueHolderA2 remoteReferenceB1 proxyB1InA remoteReferenceA2 proxyA2InB |
+	self allMiddleware do: [ : each |
+		each receptionTimeoutDuration: 1 second ].
 	valueHolderA1 := self newValueHolder.
 	remoteReferenceA1 := middlewareA export: valueHolderA1.
 	proxyA1InB := middlewareB objectAt: remoteReferenceA1.

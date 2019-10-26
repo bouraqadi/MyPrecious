@@ -56,6 +56,7 @@ MpUnconnectedTransporter >> readBytes [
 MpUnconnectedTransporter >> receiveBytes [
 	| bytes |
 	bytes := self readBytes.
+	bytes ifNil: [ ^self ].
 	self schedule: [self receiveBytes: bytes].
 
 ]

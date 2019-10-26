@@ -18,7 +18,7 @@ MpUnconnectedTransporterForTest >> initialize [
 
 { #category : #receiving }
 MpUnconnectedTransporterForTest >> readBytes [
-	^receiveQueue next
+	^receiveQueue nextOrNil
 ]
 
 { #category : #accessing }
