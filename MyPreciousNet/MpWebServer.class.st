@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'communicationHandlingBlock',
 		'communicationHandlingPriority',
-		'service'
+		'service',
+		'serverName'
 	],
 	#category : #'MyPreciousNet-Web'
 }
@@ -75,6 +76,18 @@ MpWebServer >> isStarted [
 ]
 
 { #category : #accessing }
+MpWebServer >> name [
+	^serverName ifNil: [ self serverProcessName ]
+]
+
+{ #category : #accessing }
+MpWebServer >> name: aString [
+	serverName := aString.
+	service ifNil: [ ^self ].
+	service name: serverName
+]
+
+{ #category : #accessing }
 MpWebServer >> priority [
 	^service priority
 ]
@@ -98,7 +111,7 @@ MpWebServer >> serveConnectionOn: listeningSocket [
 { #category : #public }
 MpWebServer >> start [
 	service 
-		name: self serverProcessName;
+		name: self name;
 		start
 
 ]

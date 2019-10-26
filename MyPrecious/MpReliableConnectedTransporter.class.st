@@ -45,9 +45,10 @@ MpReliableConnectedTransporter >> reliabilityStrategy: aMpReliabilityStrategy [
 { #category : #connecting }
 MpReliableConnectedTransporter >> removeConnectionTo: remoteReference [
 	remoteReference ifNil: [ ^self ].
-	^connectionsLock critical: [connectionsDict 
-		removeKey: remoteReference address
-		ifAbsent: nil "ignore"]
+	^connectionsLock critical: [
+		connectionsDict 
+			at: remoteReference address ifPresent: [: oldConnection | oldConnection stopReceiving];
+			removeKey: remoteReference address ifAbsent: nil "ignore"]
 ]
 
 { #category : #sending }

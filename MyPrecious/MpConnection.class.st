@@ -47,8 +47,9 @@ MpConnection >> deliverResponse: aResponse [
 
 { #category : #receiving }
 MpConnection >> deliverSaveConnection: saveConnectionMetaMessage [
+	self transporter saveConnection: self toAddress: saveConnectionMetaMessage otherSideAddress.
 	self otherSideAddress: saveConnectionMetaMessage otherSideAddress.
-	self transporter saveConnection: self toAddress: saveConnectionMetaMessage otherSideAddress
+
 ]
 
 { #category : #receiving }
@@ -104,8 +105,9 @@ MpConnection >> otherSideAddress [
 ]
 
 { #category : #accessing }
-MpConnection >> otherSideAddress: anObject [
-	otherSideAddress := anObject
+MpConnection >> otherSideAddress: newAddress [
+	otherSideAddress := newAddress.
+	self updateServiceName
 ]
 
 { #category : #receiving }
@@ -208,4 +210,10 @@ MpConnection >> transporter [
 { #category : #accessing }
 MpConnection >> transporter: anObject [
 	transporter := anObject
+]
+
+{ #category : #accessing }
+MpConnection >> updateServiceName [
+	receptionService ifNil: [ ^self ].
+	receptionService name: self receptionServiceName
 ]
