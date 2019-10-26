@@ -63,6 +63,11 @@ MpConnection >> disconnect [
 	[self basicDisconnect] on: Exception do: [ "ignore" ]
 ]
 
+{ #category : #accessing }
+MpConnection >> incomingMessagesRunner [
+	^self transporter incomingMessagesRunner.
+]
+
 { #category : #connecting }
 MpConnection >> isConnected [
 	^self isReceptionStarted and: [ self isSendingPossible ]

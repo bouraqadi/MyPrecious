@@ -226,7 +226,7 @@ MpMiddlewareTest >> testMessagePingPong [
 
 { #category : #tests }
 MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
-	| valueHolderA1 valueHolderA2 remoteReferenceA1 remoteReferenceA2 proxyB1 proxyB2 semaphore1 semaphore2 result1 result2 process1 process2 |
+	| valueHolderA1 valueHolderA2 remoteReferenceA1 remoteReferenceA2 proxyB1 proxyB2 semaphore1 semaphore2 result1 result2 block1 block2 |
 	valueHolderA1 := self newValueHolder.
 	valueHolderA1 contents: 1.
 	remoteReferenceA1 := middlewareA export: valueHolderA1.
@@ -237,19 +237,18 @@ MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
 	semaphore1 := Semaphore new.
 	proxyB2 := middlewareB objectAt: remoteReferenceA2.
 	semaphore2 := Semaphore new.
-	process1 := CcService do: [ 
+	block1 := [ 
 		result1 := proxyB1 contents.
 		semaphore1 signal.
 	 ].
-	process2 := CcService do: [ 
+	block2 := [ 
 		result2 := proxyB2 contents.
 		semaphore2 signal.
 	 ].
-	{process1. process2} do: [ : each |
-		each
-			priority: 50;
-			start
-
+	{block1. block2} do: [ : each |
+		|task|
+		task := TKTTask valuable: each.
+		task schedule: TKTNewProcessTaskRunner new
 	].
 	self assertSemaphore: semaphore1 signaledWithinMilliseconds: 500.
 	self assertSemaphore: semaphore2 signaledWithinMilliseconds: 500.
