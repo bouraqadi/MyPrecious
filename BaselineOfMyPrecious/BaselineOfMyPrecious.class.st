@@ -10,6 +10,9 @@ BaselineOfMyPrecious >> baseline: spec [
 
 	spec for: #'common' do: [
 		spec 
+			baseline: 'TaskIt' with: [
+				spec "Use the fork for now until my fixes get integrated"
+					repository: 'github://bouraqadi/taskit' ];
 			baseline: 'Equals' with: [
 				spec
 					repository: 'github://bouraqadi/PharoMisc' ];
@@ -23,7 +26,7 @@ BaselineOfMyPrecious >> baseline: spec [
 		spec 
 			repository: 'github://bouraqadi/MyPrecious';
 			package: #MyPrecious with: [
-				spec requires: #('Equals' 'Concurrency')];
+				spec requires: #('Equals' 'Concurrency' 'TaskIt')];
 			package: #MyPreciousTests with: [
 				spec requires: #('MyPrecious')];
 			package: #MyPreciousNet with: [
