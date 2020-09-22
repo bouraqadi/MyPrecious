@@ -44,5 +44,5 @@ MpIpFullAddress >> printOn: aStream [
 		<< 'IP: ';
 		print: self ip;
 		<< ' - Port: ';
-		<< self port
+		print: self port
 ]
