@@ -10,6 +10,6 @@ To install evaluate the following expression in a Playground
 ```Smalltalk
 Metacello new
   baseline: 'MyPrecious';
-  repository: 'github://bouraqadi/MyPrecious';
+  repository: 'github://bouraqadi/MyPrecious:pharo9';
   load
  ```
