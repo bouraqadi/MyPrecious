@@ -54,10 +54,9 @@ MpReferenceConverter >> newProxyTo: remoteReference [
 
 { #category : #exporting }
 MpReferenceConverter >> newRemoteReferenceWithId: id [
-	^self remoteReferenceClass new
-		objectId: id;
-		address: self address;
-		yourself
+	^self remoteReferenceClass 
+		address: self address
+		objectId: id
 
 ]
 

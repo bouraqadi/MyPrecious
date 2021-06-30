@@ -4,6 +4,11 @@ Class {
 	#category : #'MyPreciousTests-Connected'
 }
 
+{ #category : #testing }
+MpReliableConnectedMiddlewareTest class >> isAbstract [
+	^self == MpReliableConnectedMiddlewareTest 
+]
+
 { #category : #tests }
 MpReliableConnectedMiddlewareTest >> assertMiddleware: middleware persistsConnectionTo: address failMessage: aString [
 	self waitWhile: [middleware transporter connections isEmpty].

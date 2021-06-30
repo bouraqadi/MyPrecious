@@ -15,9 +15,14 @@ MpProxyTest >> proxyClass [
 
 { #category : #tests }
 MpProxyTest >> setUp [
+
+	| someReference |
 	super setUp.
 	transporter := MpTransporterMock new.
-	proxy := self proxyClass transporter: transporter remoteReference: MpRemoteReference new
+	someReference := MpRemoteReference basicNew.
+	proxy := self proxyClass
+		         transporter: transporter
+		         remoteReference: someReference
 ]
 
 { #category : #tests }

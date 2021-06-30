@@ -169,14 +169,14 @@ MpMiddlewareTest >> testArgProxyToObjectInThirdMiddleware [
 
 { #category : #tests }
 MpMiddlewareTest >> testExportObject [
-	| exportedObject remoteReferenceA exportedObjectCopy |
-	exportedObject := self newValueHolder.
-	remoteReferenceA := middlewareA export: exportedObject.
-	self assert: (middlewareA export: exportedObject) equals: remoteReferenceA.
-	exportedObjectCopy := self newValueHolder.
-	self assert: exportedObjectCopy equals: exportedObject.
-	self deny: exportedObjectCopy == exportedObject.
-	self deny: (middlewareA export: exportedObjectCopy) equals: remoteReferenceA.
+	| exportedObject1 remoteReference1 exportedObject2 |
+	exportedObject1 := self newValueHolder.
+	remoteReference1 := middlewareA export: exportedObject1.
+	self assert: (middlewareA export: exportedObject1) equals: remoteReference1.
+	exportedObject2 := self newValueHolder.
+	self assert: exportedObject2 equals: exportedObject1.
+	self deny: exportedObject2 identicalTo: exportedObject1.
+	self deny: (middlewareA export: exportedObject2) equals: remoteReference1.
 	
 ]
 
@@ -272,17 +272,24 @@ MpMiddlewareTest >> testProxyCreatedOnlyOnce [
 	remoteReference := middlewareA export: self newValueHolder.
 	proxy1 := middlewareB objectAt: remoteReference.
 	proxy2 := middlewareB objectAt: remoteReference.
-	self assert: proxy1 == proxy2.
+	self assert: proxy1 identicalTo: proxy2.
 	
 ]
 
 { #category : #tests }
 MpMiddlewareTest >> testProxyCreatedWithGivenId [
-	| remoteReference proxy id |
+
+	| remoteReference proxy id exportedObject |
 	id := #someUniqueID.
-	remoteReference :=  middlewareA export: self newValueHolder id: id.
+	exportedObject := self newValueHolder.
+	exportedObject contents: 42.
+	middlewareA export: exportedObject id: id.
+	remoteReference := MpRemoteReference
+		                   address: middlewareA address
+		                   objectId: id.
 	proxy := middlewareB objectAt: remoteReference.
-	self assertIsProxy: proxy
+	self assertIsProxy: proxy.
+	self assert: proxy contents equals: 42
 ]
 
 { #category : #tests }
@@ -339,13 +346,17 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSend0Args [
 
 { #category : #tests }
 MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilAddress [
-	self should: [
-		middlewareB sendAsync: #contents: arguments: #(3) to: MpRemoteReference new
-	] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
-	self should: [
-		middlewareB sendAsync: #size to: MpRemoteReference new
-	] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 
+	self
+		should: [ 
+			middlewareB
+				sendAsync: #contents:
+				arguments: #( 3 )
+				to: MpRemoteReference basicNew ]
+		raise: MpCouldNotDeliverMessageError , MpConnectionFailed.
+	self
+		should: [ middlewareB sendAsync: #size to: MpRemoteReference basicNew ]
+		raise: MpCouldNotDeliverMessageError , MpConnectionFailed
 ]
 
 { #category : #tests }
@@ -389,9 +400,14 @@ MpMiddlewareTest >> testRemoteMessageSynchronousSend [
 
 { #category : #tests }
 MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilAddress [
-	self should: [middlewareB send: #foo to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
-	self should: [middlewareB send: #at: arguments: #(1) to: MpRemoteReference new] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 
+	self
+		should: [ middlewareB send: #foo to: MpRemoteReference basicNew ]
+		raise: MpCouldNotDeliverMessageError , MpConnectionFailed.
+	self
+		should: [ 
+		middlewareB send: #at: arguments: #( 1 ) to: MpRemoteReference basicNew ]
+		raise: MpCouldNotDeliverMessageError , MpConnectionFailed
 ]
 
 { #category : #tests }

@@ -10,6 +10,20 @@ Class {
 	#category : #'MyPrecious-Kernel'
 }
 
+{ #category : #'instance creation' }
+MpRemoteReference class >> address: address objectId: id [
+
+	^ super new
+		  address: address;
+		  objectId: id;
+		  yourself
+]
+
+{ #category : #'instance creation' }
+MpRemoteReference class >> new [
+	self error: 'Use address:objectId: to create remote reference instances'
+]
+
 { #category : #accessing }
 MpRemoteReference >> address [
 	^address
