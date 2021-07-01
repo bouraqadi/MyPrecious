@@ -92,6 +92,21 @@ MpMiddlewareTest >> passByReferenceObjects [
 ]
 
 { #category : #tests }
+MpMiddlewareTest >> passByReferenceObjectsForEqualityTest [
+
+	^ { 
+		  #(  ).
+		  #( 42 ).
+		  { #( 42 ) }.
+		  Set new.
+		  (Set with: 42).
+		  (Set with: { #( 42 ) }).
+		  MpValueHolderForTest new.
+		  (MpValueHolderForTest contents: 42).
+		  (MpValueHolderForTest contents: MpValueHolderForTest new) }
+]
+
+{ #category : #tests }
 MpMiddlewareTest >> runCaseManaged [
 	"Currently SUnit terminates all forked threads upon failure.
 This makes debugging very hard, if not impossible! We need to guess the state of the threads, since they are all terminated.
@@ -135,17 +150,27 @@ MpMiddlewareTest >> testArgPassByCopy [
 
 { #category : #tests }
 MpMiddlewareTest >> testArgPassByReference [
-	| valueHolder proxy remoteReference |
-	valueHolder := self newValueHolder.
-	remoteReference := middlewareA export: valueHolder.
-	proxy := middlewareB objectAt: remoteReference.
-	self passByReferenceObjects do: [ : arg |
-		proxy contents: arg.
-		self assertIsProxy: valueHolder contents.
-		self deny: valueHolder contents == arg.
-		self deny: valueHolder contents == proxy]
-	
 
+	| valueHolderA proxyAInB remoteReferenceA proxyBInA |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	proxyAInB := middlewareB objectAt: remoteReferenceA.
+	self passByReferenceObjects do: [ :objectInB | 
+		proxyAInB contents: objectInB.
+		self assertIsProxy: valueHolderA contents ].
+	self passByReferenceObjectsForEqualityTest with: self passByReferenceObjectsForEqualityTest do: [ 
+			:objectInB :equalObject | 
+		self assert: objectInB equals: equalObject.
+		self assert: equalObject equals: objectInB.
+		proxyAInB contents: objectInB.
+		proxyBInA := valueHolderA contents.
+		self assertIsProxy: proxyBInA.
+		self deny: objectInB identicalTo: proxyBInA.
+		self assert: objectInB equals: proxyBInA.
+		self assert: proxyBInA equals: objectInB.
+		self assert: equalObject equals: proxyBInA.
+		self assert: proxyBInA equals: equalObject.
+		 ]
 ]
 
 { #category : #tests }
@@ -316,13 +341,13 @@ MpMiddlewareTest >> testProxyOnClass [
 
 { #category : #tests }
 MpMiddlewareTest >> testProxyUnicity [
+
 	| remoteReferenceA proxyB remoteReferenceACopy |
 	remoteReferenceA := middlewareA export: Object new.
 	proxyB := middlewareB objectAt: remoteReferenceA.
-	self assert: (middlewareB objectAt: remoteReferenceA) == proxyB.
+	self assert: (middlewareB objectAt: remoteReferenceA) identicalTo: proxyB.
 	remoteReferenceACopy := remoteReferenceA deepCopy.
-	self assert: (middlewareB objectAt: remoteReferenceACopy) == proxyB.
-	
+	self assert: (middlewareB objectAt: remoteReferenceACopy) identicalTo: proxyB
 ]
 
 { #category : #tests }

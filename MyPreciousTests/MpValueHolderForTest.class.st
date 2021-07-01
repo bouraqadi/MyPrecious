@@ -9,6 +9,14 @@ Class {
 	#category : #'MyPreciousTests-Common'
 }
 
+{ #category : #'instance creation' }
+MpValueHolderForTest class >> contents: anObject [
+	^self new
+contents: anObject
+;
+yourself		
+]
+
 { #category : #accessing }
 MpValueHolderForTest >> chainSize [
 	self contents ifNil: [ ^1 ].
