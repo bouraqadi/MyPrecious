@@ -53,3 +53,15 @@ remoteReference := MpRemoteReference
 proxy := middlewareB objectAt: remoteReference.
 ```
 
+## Proxy Class and Species
+
+We assume that **classes that have the same name are interoperable**. This asumption is useful for instnce, when it comes to testing equality.
+So, when we send a proxy the `class` or the `species` message, we get a class from the local image (the one where the message was issued), if there is one with the same name as the actual remote class.
+
+```smalltalk
+objectFromA := #(1 2 3).
+remoteReferenceA := middlewareA export: objectFromA.
+proxyAInB := middlewareB objectAt: remoteReferenceA.
+proxyAInB class. "--> actual Array class in B"
+proxyAInB species. "--> actual Array class in B"
+```
