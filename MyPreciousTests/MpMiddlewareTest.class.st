@@ -83,12 +83,22 @@ MpMiddlewareTest >> newValueHolder [
 
 { #category : #tests }
 MpMiddlewareTest >> passByCopyObjects [
-	^{'Hello Pharo'. 958. 3.14. false. true. nil. $a. 3/2} 
+
+	^ { #someSymbol.
+		  'Hello Pharo'.
+		  958.
+		  3.14.
+		  false.
+		  true.
+		  nil.
+		  $a.
+		  (3 / 2) }
 ]
 
 { #category : #tests }
 MpMiddlewareTest >> passByReferenceObjects [
-	^{Object new. Class. #(). Set new. [1+2]}
+
+	^self passByReferenceObjectsForIdentityTest, self passByReferenceObjectsForEqualityTest 
 ]
 
 { #category : #tests }
@@ -104,6 +114,15 @@ MpMiddlewareTest >> passByReferenceObjectsForEqualityTest [
 		  MpValueHolderForTest new.
 		  (MpValueHolderForTest contents: 42).
 		  (MpValueHolderForTest contents: MpValueHolderForTest new) }
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> passByReferenceObjectsForIdentityTest [
+
+	^ { 
+		  Object new.
+		  Class.
+		  [ 1 + 2 ] }
 ]
 
 { #category : #tests }
@@ -158,19 +177,21 @@ MpMiddlewareTest >> testArgPassByReference [
 	self passByReferenceObjects do: [ :objectInB | 
 		proxyAInB contents: objectInB.
 		self assertIsProxy: valueHolderA contents ].
-	self passByReferenceObjectsForEqualityTest with: self passByReferenceObjectsForEqualityTest do: [ 
-			:objectInB :equalObject | 
-		self assert: objectInB equals: equalObject.
-		self assert: equalObject equals: objectInB.
-		proxyAInB contents: objectInB.
-		proxyBInA := valueHolderA contents.
-		self assertIsProxy: proxyBInA.
-		self deny: objectInB identicalTo: proxyBInA.
-		self assert: objectInB equals: proxyBInA.
-		self assert: proxyBInA equals: objectInB.
-		self assert: equalObject equals: proxyBInA.
-		self assert: proxyBInA equals: equalObject.
-		 ]
+	self passByReferenceObjectsForEqualityTest
+		with: self passByReferenceObjectsForEqualityTest
+		do: [ :objectInB :equalObject | 
+			self assert: objectInB equals: equalObject.
+			self assert: equalObject equals: objectInB.
+			proxyAInB contents: objectInB.
+			proxyBInA := valueHolderA contents.
+			self assertIsProxy: proxyBInA.
+			self deny: objectInB identicalTo: proxyBInA.
+			self denyIsProxy: proxyBInA species.
+			self denyIsProxy: proxyBInA class.
+			self assert: objectInB equals: proxyBInA.
+			self assert: proxyBInA equals: objectInB.
+			self assert: equalObject equals: proxyBInA.
+			self assert: proxyBInA equals: equalObject ]
 ]
 
 { #category : #tests }
@@ -190,6 +211,19 @@ MpMiddlewareTest >> testArgProxyToObjectInThirdMiddleware [
 		proxyCInA contents: arg.
 		self assert: c contents equals: arg]
 	
+]
+
+{ #category : #tests }
+MpMiddlewareTest >> testArgSymbolPassByCopy [
+	| valueHolderA remoteReferenceA proxyB |
+	valueHolderA := self newValueHolder.
+	remoteReferenceA := middlewareA export: valueHolderA.
+	proxyB := middlewareB objectAt: remoteReferenceA.
+	proxyB contents: #someSymbol.
+	self denyIsProxy: valueHolderA contents. 
+	self assert: valueHolderA contents identicalTo: #someSymbol
+	
+
 ]
 
 { #category : #tests }
@@ -333,7 +367,6 @@ MpMiddlewareTest >> testProxyOnClass [
 	self assertIsProxy: classProxy.
 	instanceProxy := classProxy new.
 	self assertIsProxy: instanceProxy.
-	self assert: (instanceProxy isKindOf: classProxy).
 	otherRemoteRef := middlewareA export: Array.
 	otherClassProxy := middlewareB objectAt: otherRemoteRef.
 	self deny: classProxy == otherClassProxy
