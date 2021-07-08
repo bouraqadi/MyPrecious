@@ -5,7 +5,9 @@ Modularity is THE keyword behind *MyPrecious*. It should make it easy to impleme
 
 At the time of writing, this is just a plan, still to be implemented an validated for real.
 
-# Install
+## [Documentation](Doc.md)
+
+## Install
 To install evaluate the following expression in a Playground
 ```Smalltalk
 Metacello new
