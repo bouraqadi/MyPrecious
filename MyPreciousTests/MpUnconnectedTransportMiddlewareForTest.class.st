@@ -1,10 +1,12 @@
 Class {
-	#name : #MpUnconnectedTransportMiddlewareForTest,
-	#superclass : #MpMiddlewareForTest,
-	#category : #'MyPreciousTests-Unconnected'
+	#name : 'MpUnconnectedTransportMiddlewareForTest',
+	#superclass : 'MpMiddlewareForTest',
+	#category : 'MyPreciousTests-Unconnected',
+	#package : 'MyPreciousTests',
+	#tag : 'Unconnected'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpUnconnectedTransportMiddlewareForTest >> responseHeadersForKey: key [
 	^ ZnHeaders defaultResponseHeaders
 			at: 'Upgrade' put: 'websocket';
@@ -13,7 +15,7 @@ MpUnconnectedTransportMiddlewareForTest >> responseHeadersForKey: key [
 			yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpUnconnectedTransportMiddlewareForTest >> transporterClass [
 	^MpUnconnectedTransporterForTest 
 ]

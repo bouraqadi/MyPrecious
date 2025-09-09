@@ -1,15 +1,17 @@
 Class {
-	#name : #MpValueHolderForTest,
-	#superclass : #Object,
+	#name : 'MpValueHolderForTest',
+	#superclass : 'Object',
 	#traits : 'TEquality',
 	#classTraits : 'TEquality classTrait',
 	#instVars : [
 		'contents'
 	],
-	#category : #'MyPreciousTests-Common'
+	#category : 'MyPreciousTests-Common',
+	#package : 'MyPreciousTests',
+	#tag : 'Common'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 MpValueHolderForTest class >> contents: anObject [
 	^self new
 contents: anObject
@@ -17,18 +19,18 @@ contents: anObject
 yourself		
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpValueHolderForTest >> chainSize [
 	self contents ifNil: [ ^1 ].
 	^1 + contents chainSize 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpValueHolderForTest >> contents [
 	^ contents
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpValueHolderForTest >> contents: anObject [
 	contents := anObject
 ]

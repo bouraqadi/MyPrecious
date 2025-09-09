@@ -1,13 +1,15 @@
 Class {
-	#name : #MpConnectedTransporterForTest,
-	#superclass : #MpReliableConnectedTransporter,
+	#name : 'MpConnectedTransporterForTest',
+	#superclass : 'MpReliableConnectedTransporter',
 	#instVars : [
 		'connectionQueue'
 	],
-	#category : #'MyPreciousTests-Connected'
+	#category : 'MyPreciousTests-Connected',
+	#package : 'MyPreciousTests',
+	#tag : 'Connected'
 }
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnectedTransporterForTest >> acceptConnections [
 	| otherSideConnection |
 	otherSideConnection := self connectionQueue nextOrNil.
@@ -15,23 +17,23 @@ MpConnectedTransporterForTest >> acceptConnections [
 	self acceptConnectionWith: otherSideConnection
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporterForTest >> connectionClass [
 	^MpConnectionForTest
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectedTransporterForTest >> connectionQueue [
 	^ connectionQueue
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpConnectedTransporterForTest >> initialize [
 	super initialize.
 	connectionQueue := SharedQueue new
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpConnectedTransporterForTest >> newConnectionHandlingService [
 	^TKTParameterizableService new
 		step: [self acceptConnections];
@@ -40,7 +42,7 @@ MpConnectedTransporterForTest >> newConnectionHandlingService [
 
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpConnectedTransporterForTest >> registry [
 	^self middleware registry
 ]

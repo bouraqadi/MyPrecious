@@ -1,6 +1,6 @@
 Class {
-	#name : #MpConnectionForTest,
-	#superclass : #MpConnection,
+	#name : 'MpConnectionForTest',
+	#superclass : 'MpConnection',
 	#traits : 'CcTWaitPolling',
 	#classTraits : 'CcTWaitPolling classTrait',
 	#instVars : [
@@ -8,10 +8,12 @@ Class {
 		'receiveQueue',
 		'sendQueue'
 	],
-	#category : #'MyPreciousTests-Connected'
+	#category : 'MyPreciousTests-Connected',
+	#package : 'MyPreciousTests',
+	#tag : 'Connected'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectionForTest >> acceptConnectionFrom: aConnection [
 	self 
 		otherSide: aConnection;
@@ -24,7 +26,7 @@ MpConnectionForTest >> acceptConnectionFrom: aConnection [
 		receiveQueue: self sendQueue.
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectionForTest >> acceptConnectionWith: aConnection [
 	self 
 		otherSide: aConnection;
@@ -37,7 +39,7 @@ MpConnectionForTest >> acceptConnectionWith: aConnection [
 		receiveQueue: self sendQueue.
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectionForTest >> basicConnect [
 	| targetTransporter |
 	targetTransporter := self registry at: self otherSideAddress ifAbsent: [MpConnectionFailed signal].
@@ -49,7 +51,7 @@ MpConnectionForTest >> basicConnect [
 
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectionForTest >> basicDisconnect [
 	| peer |
 	otherSide ifNil: [^self].
@@ -61,7 +63,7 @@ MpConnectionForTest >> basicDisconnect [
 
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectionForTest >> connectTo: aConnection [
 	self 
 		otherSide: aConnection;
@@ -74,38 +76,38 @@ MpConnectionForTest >> connectTo: aConnection [
 		receiveQueue: self sendQueue.
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectionForTest >> isSendingPossible [
 	^sendQueue isNotNil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectionForTest >> otherSide [
 	^ otherSide
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectionForTest >> otherSide: anObject [
 	otherSide := anObject
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnectionForTest >> receiveBytes [
 	self waitWhile: [receiveQueue peek isNil] timeout: self receptionTimeoutDuration.
 	^receiveQueue next
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectionForTest >> receiveQueue [
 	^ receiveQueue
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectionForTest >> receiveQueue: anObject [
 	receiveQueue := anObject
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnectionForTest >> receptionServiceName [
 	^String streamContents: [ : stream |
 		stream 
@@ -113,22 +115,22 @@ MpConnectionForTest >> receptionServiceName [
 			print: Time now ]
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectionForTest >> registry [
 	^self transporter registry
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpConnectionForTest >> sendBytes: bytes [
 	sendQueue nextPut: bytes
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectionForTest >> sendQueue [
 	^ sendQueue
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectionForTest >> sendQueue: anObject [
 	sendQueue := anObject
 ]

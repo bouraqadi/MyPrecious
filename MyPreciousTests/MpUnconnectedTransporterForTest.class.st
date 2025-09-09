@@ -1,37 +1,39 @@
 Class {
-	#name : #MpUnconnectedTransporterForTest,
-	#superclass : #MpUnconnectedTransporter,
+	#name : 'MpUnconnectedTransporterForTest',
+	#superclass : 'MpUnconnectedTransporter',
 	#traits : 'CcTWaitPolling',
 	#classTraits : 'CcTWaitPolling classTrait',
 	#instVars : [
 		'receiveQueue'
 	],
-	#category : #'MyPreciousTests-Unconnected'
+	#category : 'MyPreciousTests-Unconnected',
+	#package : 'MyPreciousTests',
+	#tag : 'Unconnected'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpUnconnectedTransporterForTest >> initialize [
 	super initialize.
 	receiveQueue := SharedQueue new.
 	
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpUnconnectedTransporterForTest >> readBytes [
 	^receiveQueue nextOrNil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpUnconnectedTransporterForTest >> receiveQueue [
 	^ receiveQueue
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpUnconnectedTransporterForTest >> registry [
 	^self middleware registry
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpUnconnectedTransporterForTest >> sendBytes: bytes toAddress: address [
 	| targetTransporter |
 	targetTransporter := self registry at: address.

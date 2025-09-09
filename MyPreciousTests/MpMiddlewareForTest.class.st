@@ -1,57 +1,59 @@
 Class {
-	#name : #MpMiddlewareForTest,
-	#superclass : #MpMiddleware,
+	#name : 'MpMiddlewareForTest',
+	#superclass : 'MpMiddleware',
 	#classVars : [
 		'AddressCounter',
 		'Registry'
 	],
-	#category : #'MyPreciousTests-Common'
+	#category : 'MyPreciousTests-Common',
+	#package : 'MyPreciousTests',
+	#tag : 'Common'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest class >> addressCounter [
 	^ AddressCounter ifNil: [ AddressCounter := 0 ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest class >> addressCounter: newCount [
 	AddressCounter := newCount
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest class >> registry [
 	^ Registry ifNil: [Registry := WeakValueDictionary new ]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddlewareForTest class >> resetRegistry [ 	
 	<script>
 	AddressCounter := nil.
 	Registry := nil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest >> address: anAddress [
 	super address: anAddress.
 	self registry at: anAddress put: self transporter
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddlewareForTest >> addressClass [
 	^nil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest >> addressCounter [
 	^self class addressCounter
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest >> addressCounter: newCount [
 	self class addressCounter: newCount
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest >> newAddress [
 	| previousCount currentCount|
 	previousCount := self addressCounter.
@@ -64,7 +66,7 @@ MpMiddlewareForTest >> newAddress [
 				print: currentCount ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewareForTest >> registry [
 	^self class registry
 ]

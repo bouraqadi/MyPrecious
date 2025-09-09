@@ -1,26 +1,28 @@
 Class {
-	#name : #MpTransporterMock,
-	#superclass : #Object,
+	#name : 'MpTransporterMock',
+	#superclass : 'Object',
 	#instVars : [
 		'messageAnswersDict'
 	],
-	#category : #'MyPreciousTests-Common'
+	#category : 'MyPreciousTests-Common',
+	#package : 'MyPreciousTests',
+	#tag : 'Common'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTransporterMock >> initialize [
 	super initialize.
 	messageAnswersDict := Dictionary new
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTransporterMock >> selector: selector answer: answer [ 
 	messageAnswersDict
 		at: selector
 		put: answer
 ]
 
-{ #category : #communicating }
+{ #category : 'communicating' }
 MpTransporterMock >> send: selector arguments: arguments to: receiver [
 	| response |
 	response := messageAnswersDict 

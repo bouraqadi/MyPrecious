@@ -1,15 +1,17 @@
 Class {
-	#name : #MpReliableConnectedMiddlewareTest,
-	#superclass : #MpMiddlewareTest,
-	#category : #'MyPreciousTests-Connected'
+	#name : 'MpReliableConnectedMiddlewareTest',
+	#superclass : 'MpMiddlewareTest',
+	#category : 'MyPreciousTests-Connected',
+	#package : 'MyPreciousTests',
+	#tag : 'Connected'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 MpReliableConnectedMiddlewareTest class >> isAbstract [
 	^self == MpReliableConnectedMiddlewareTest 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> assertMiddleware: middleware persistsConnectionTo: address failMessage: aString [
 	self waitWhile: [middleware transporter connections isEmpty].
 	middleware transporter
@@ -18,12 +20,12 @@ MpReliableConnectedMiddlewareTest >> assertMiddleware: middleware persistsConnec
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> middlewareClass [ 
 	^MpConnectedMiddlewareForTest
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testAsynchrounousMessageSenderAndReceiverSaveConnections [
 	| valueHolderA remoteReferenceA |
 	valueHolderA := self newValueHolder.
@@ -40,7 +42,7 @@ MpReliableConnectedMiddlewareTest >> testAsynchrounousMessageSenderAndReceiverSa
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 	| valueHolderA remoteReferenceA initialConnections |
 	valueHolderA := self newValueHolder.
@@ -57,7 +59,7 @@ MpReliableConnectedMiddlewareTest >> testDeleteConnectionsUponStop [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testReconnectsIfOtherSideIsDisconnected [
 	| valueHolderA remoteReferenceA connectionA|
 	valueHolderA := self newValueHolder.
@@ -75,7 +77,7 @@ MpReliableConnectedMiddlewareTest >> testReconnectsIfOtherSideIsDisconnected [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testReconnectsIftherSideStopsReceiving [
 	| valueHolderA remoteReferenceA connectionA newValue |
 	valueHolderA := self newValueHolder.
@@ -90,7 +92,7 @@ MpReliableConnectedMiddlewareTest >> testReconnectsIftherSideStopsReceiving [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 	| valueHolderA remoteReferenceA message |
 	valueHolderA := self newValueHolder.
@@ -106,7 +108,7 @@ MpReliableConnectedMiddlewareTest >> testRemoteMessageBasicSend [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testStopConnectionHandlingService [
 	self allMiddleware do: [ : each |
 		self assert: each transporter connectionService isRunning.
@@ -115,7 +117,7 @@ MpReliableConnectedMiddlewareTest >> testStopConnectionHandlingService [
 	]
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testSynchrounousMessageSenderAndReceiverSaveConnections [
 	| valueHolderA remoteReferenceA |
 	valueHolderA := self newValueHolder.
@@ -132,7 +134,7 @@ MpReliableConnectedMiddlewareTest >> testSynchrounousMessageSenderAndReceiverSav
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpReliableConnectedMiddlewareTest >> testWaitsCreatingConnectionUntilOtherSideIsAvailable [
 	| valueHolderA remoteReferenceA newValue |
 	valueHolderA := self newValueHolder.

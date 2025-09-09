@@ -1,15 +1,17 @@
 Class {
-	#name : #MpUnconnectedTransportMiddlewareTest,
-	#superclass : #MpMiddlewareTest,
-	#category : #'MyPreciousTests-Unconnected'
+	#name : 'MpUnconnectedTransportMiddlewareTest',
+	#superclass : 'MpMiddlewareTest',
+	#category : 'MyPreciousTests-Unconnected',
+	#package : 'MyPreciousTests',
+	#tag : 'Unconnected'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpUnconnectedTransportMiddlewareTest >> middlewareClass [
 	^ MpUnconnectedTransportMiddlewareForTest
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpUnconnectedTransportMiddlewareTest >> testRemoteMessageBasicReceive [
 	| valueHolderA remoteReferenceA message bytes |
 	valueHolderA := self newValueHolder.
@@ -26,7 +28,7 @@ MpUnconnectedTransportMiddlewareTest >> testRemoteMessageBasicReceive [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpUnconnectedTransportMiddlewareTest >> testRemoteMessageBasicSend [
 	| valueHolderA remoteReferenceA message proxyB |
 	valueHolderA := self newValueHolder.
@@ -43,7 +45,7 @@ MpUnconnectedTransportMiddlewareTest >> testRemoteMessageBasicSend [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpUnconnectedTransportMiddlewareTest >> testStopReceptionService [
 	self allMiddleware do: [ : each |
 		self assert: each transporter receptionService isRunning.

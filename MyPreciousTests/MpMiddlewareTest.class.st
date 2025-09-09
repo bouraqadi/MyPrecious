@@ -1,6 +1,6 @@
 Class {
-	#name : #MpMiddlewareTest,
-	#superclass : #TestCase,
+	#name : 'MpMiddlewareTest',
+	#superclass : 'TestCase',
 	#traits : 'CcTConcurrencyTest',
 	#classTraits : 'CcTConcurrencyTest classTrait',
 	#instVars : [
@@ -8,47 +8,49 @@ Class {
 		'middlewareB',
 		'middlewareC'
 	],
-	#category : #'MyPreciousTests-Common'
+	#category : 'MyPreciousTests-Common',
+	#package : 'MyPreciousTests',
+	#tag : 'Common'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 MpMiddlewareTest class >> isAbstract [
 	^self == MpMiddlewareTest
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 MpMiddlewareTest class >> shouldInheritSelectors [
 	^true
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> allMiddleware [
 	^{ middlewareA . middlewareB . middlewareC }
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> assert: anObject instanceOf: aClass [
 	self assert: (self is: anObject instanceOf: aClass)
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> assertIsProxy: anObject [
 		self assert: (self isProxy: anObject). 
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> defaultReceptionTimeoutDuration [
 	^100 milliSeconds
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> denyIsProxy: anObject [
 		self deny: (self isProxy: anObject). 
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> is: anObject instanceOf: aClass [
 	"We cannot rely on the class messare or messages that use it such as isKindOf:"
 	"This is proxies are supposed to capture all message including class"
@@ -58,17 +60,17 @@ MpMiddlewareTest >> is: anObject instanceOf: aClass [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> isProxy: anObject [
 	^self is: anObject instanceOf: MpProxy
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> middlewareClass [
 	self subclassResponsibility
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> newMiddleware [
 	^self middlewareClass new
 		receptionTimeoutDuration: self defaultReceptionTimeoutDuration;
@@ -76,12 +78,12 @@ MpMiddlewareTest >> newMiddleware [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> newValueHolder [
 	^ MpValueHolderForTest new
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> passByCopyObjects [
 
 	^ { #someSymbol.
@@ -95,13 +97,13 @@ MpMiddlewareTest >> passByCopyObjects [
 		  (3 / 2) }
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> passByReferenceObjects [
 
 	^self passByReferenceObjectsForIdentityTest, self passByReferenceObjectsForEqualityTest 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> passByReferenceObjectsForEqualityTest [
 
 	^ { 
@@ -116,7 +118,7 @@ MpMiddlewareTest >> passByReferenceObjectsForEqualityTest [
 		  (MpValueHolderForTest contents: MpValueHolderForTest new) }
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> passByReferenceObjectsForIdentityTest [
 
 	^ { 
@@ -125,18 +127,20 @@ MpMiddlewareTest >> passByReferenceObjectsForIdentityTest [
 		  [ 1 + 2 ] }
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> runCaseManaged [
 	"Currently SUnit terminates all forked threads upon failure.
 This makes debugging very hard, if not impossible! We need to guess the state of the threads, since they are all terminated.
 Simply calling runCase is a dirty fix.
 We have to take care of terminating threads upon failures.
 "
-	thisContext sender methodSelector == #runCaseForDebug: ifTrue: [^self runCase].
-	^super runCaseManaged
+
+	thisContext sender selector == #runCaseForDebug: ifTrue: [
+		^ self runCase ].
+	^ super runCaseManaged
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> setUp [
 	super setUp.
 	middlewareA := self newMiddleware.
@@ -146,14 +150,14 @@ MpMiddlewareTest >> setUp [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> tearDown [
 	super tearDown.
 	self allMiddleware do: #stop.
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testArgPassByCopy [
 	| valueHolderA remoteReferenceA proxyB |
 	valueHolderA := self newValueHolder.
@@ -167,7 +171,7 @@ MpMiddlewareTest >> testArgPassByCopy [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testArgPassByReference [
 
 	| valueHolderA proxyAInB remoteReferenceA proxyBInA |
@@ -194,7 +198,7 @@ MpMiddlewareTest >> testArgPassByReference [
 			self assert: proxyBInA equals: equalObject ]
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testArgProxyToObjectInThirdMiddleware [
 	| a refA proxyAInB c refC proxyCInB proxyCInA |
 	a := self newValueHolder.
@@ -213,7 +217,7 @@ MpMiddlewareTest >> testArgProxyToObjectInThirdMiddleware [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testArgSymbolPassByCopy [
 	| valueHolderA remoteReferenceA proxyB |
 	valueHolderA := self newValueHolder.
@@ -226,7 +230,7 @@ MpMiddlewareTest >> testArgSymbolPassByCopy [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testExportObject [
 	| exportedObject1 remoteReference1 exportedObject2 |
 	exportedObject1 := self newValueHolder.
@@ -239,7 +243,7 @@ MpMiddlewareTest >> testExportObject [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testExportedArrayReference [
 	| exportedArray remoteReferenceA remoteReferenceACopy |
 	exportedArray := Array new.
@@ -251,7 +255,7 @@ MpMiddlewareTest >> testExportedArrayReference [
 	self deny: (middlewareA remoteReferenceFor: Array new) equals: remoteReferenceA.	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testExportedObjectReference [
 	| exportedObject remoteReferenceA remoteReferenceACopy |
 	exportedObject := Object new.
@@ -262,7 +266,7 @@ MpMiddlewareTest >> testExportedObjectReference [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testMessagePingPong [
 	| valueHolderA1 remoteReferenceA1 proxyA1InB valueHolderB1 valueHolderA2 remoteReferenceB1 proxyB1InA remoteReferenceA2 proxyA2InB |
 	self allMiddleware do: [ : each |
@@ -284,7 +288,7 @@ MpMiddlewareTest >> testMessagePingPong [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
 	| valueHolderA1 valueHolderA2 remoteReferenceA1 remoteReferenceA2 proxyB1 proxyB2 semaphore1 semaphore2 result1 result2 block1 block2 |
 	valueHolderA1 := self newValueHolder.
@@ -317,7 +321,7 @@ MpMiddlewareTest >> testMessagesInDifferentProcessesGetValidResponses [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testProxyCreatedOnDemand [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
@@ -325,7 +329,7 @@ MpMiddlewareTest >> testProxyCreatedOnDemand [
 	self assertIsProxy: proxy
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testProxyCreatedOnlyOnce [
 	| remoteReference proxy1 proxy2 |
 	remoteReference := middlewareA export: self newValueHolder.
@@ -335,7 +339,7 @@ MpMiddlewareTest >> testProxyCreatedOnlyOnce [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testProxyCreatedWithGivenId [
 
 	| remoteReference proxy id exportedObject |
@@ -351,7 +355,7 @@ MpMiddlewareTest >> testProxyCreatedWithGivenId [
 	self assert: proxy contents equals: 42
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testProxyOnBlock [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: [1+2].
@@ -359,7 +363,7 @@ MpMiddlewareTest >> testProxyOnBlock [
 	self assert: proxy value equals: 3
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testProxyOnClass [
 	| remoteReference classProxy instanceProxy otherRemoteRef otherClassProxy |
 	remoteReference := middlewareA export: Object.
@@ -372,7 +376,7 @@ MpMiddlewareTest >> testProxyOnClass [
 	self deny: classProxy == otherClassProxy
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testProxyUnicity [
 
 	| remoteReferenceA proxyB remoteReferenceACopy |
@@ -383,7 +387,7 @@ MpMiddlewareTest >> testProxyUnicity [
 	self assert: (middlewareB objectAt: remoteReferenceACopy) identicalTo: proxyB
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testProxyYourself [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: self newValueHolder.
@@ -391,7 +395,7 @@ MpMiddlewareTest >> testProxyYourself [
 	self assert: proxy yourself == proxy
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageAsynchronousSend0Args [
 	| remoteReferenceA x blockA |
 	x := 0.
@@ -402,7 +406,7 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSend0Args [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilAddress [
 
 	self
@@ -417,7 +421,7 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilAddress [
 		raise: MpCouldNotDeliverMessageError , MpConnectionFailed
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilReference [
 	self should: [
 		middlewareB sendAsync: #contents: arguments: #(3) to: nil
@@ -428,7 +432,7 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSendToNilReference [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageAsynchronousSendWithArgs [
 	| valueHolderA remoteReferenceA |
 	valueHolderA := self newValueHolder.
@@ -438,7 +442,7 @@ MpMiddlewareTest >> testRemoteMessageAsynchronousSendWithArgs [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageRaisesException [
 	| remoteReference proxy |
 	remoteReference := middlewareA export: Object new.
@@ -446,7 +450,7 @@ MpMiddlewareTest >> testRemoteMessageRaisesException [
 	self should: [proxy foo] raise: MpRemoteExceptionWrapper
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageSynchronousSend [
 	| arrayA remoteReferenceA|
 	arrayA := #(100 200 300).
@@ -456,7 +460,7 @@ MpMiddlewareTest >> testRemoteMessageSynchronousSend [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilAddress [
 
 	self
@@ -468,14 +472,14 @@ MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilAddress [
 		raise: MpCouldNotDeliverMessageError , MpConnectionFailed
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testRemoteMessageSynchronousSendToNilReference [
 	self should: [middlewareB send: #foo to: nil] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 	self should: [middlewareB send: #at: arguments: #(1) to: nil] raise: MpCouldNotDeliverMessageError, MpConnectionFailed.
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testResultPassByCopy [
 	| valueHolderA proxyB remoteReferenceA |
 	valueHolderA := self newValueHolder.
@@ -488,7 +492,7 @@ MpMiddlewareTest >> testResultPassByCopy [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testResultPassByReference [
 	| valueHolder proxy remoteReference |
 	valueHolder := self newValueHolder.
@@ -502,7 +506,7 @@ MpMiddlewareTest >> testResultPassByReference [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testResultProxyToObjectInThirdMiddleware [
 	| a refA proxyAInB c refC proxyCInB proxyCInA |
 	a := self newValueHolder.
@@ -521,7 +525,7 @@ MpMiddlewareTest >> testResultProxyToObjectInThirdMiddleware [
 	
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testTimeoutRemoteMessage [
 	| proxy remoteReference waitSemaphore doneSemaphore isTimeout |
 	waitSemaphore := Semaphore new.
@@ -538,7 +542,7 @@ MpMiddlewareTest >> testTimeoutRemoteMessage [
 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpMiddlewareTest >> testUnknownReference [
 	| remoteReference |
 	remoteReference := middlewareA referenceConverter newRemoteReferenceWithId: #any.

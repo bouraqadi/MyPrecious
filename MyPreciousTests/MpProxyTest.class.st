@@ -1,19 +1,21 @@
 Class {
-	#name : #MpProxyTest,
-	#superclass : #TestCase,
+	#name : 'MpProxyTest',
+	#superclass : 'TestCase',
 	#instVars : [
 		'proxy',
 		'transporter'
 	],
-	#category : #'MyPreciousTests-Common'
+	#category : 'MyPreciousTests-Common',
+	#package : 'MyPreciousTests',
+	#tag : 'Common'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpProxyTest >> proxyClass [
 	^MpProxy
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpProxyTest >> setUp [
 
 	| someReference |
@@ -25,7 +27,7 @@ MpProxyTest >> setUp [
 		         remoteReference: someReference
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpProxyTest >> testMessageWithExceptionResponse [
 
 	transporter
@@ -43,7 +45,7 @@ MpProxyTest >> testMessageWithExceptionResponse [
 	self assert: proxy class == Object
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpProxyTest >> testMessageWithNormalResponse [
 
 	transporter
@@ -57,7 +59,7 @@ MpProxyTest >> testMessageWithNormalResponse [
 	self assert: proxy class identicalTo: Object
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 MpProxyTest >> testUnknownMessage [
 
 	transporter
