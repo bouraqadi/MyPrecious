@@ -1,18 +1,16 @@
 Class {
-	#name : #BaselineOfMyPrecious,
-	#superclass : #BaselineOf,
-	#category : #BaselineOfMyPrecious
+	#name : 'BaselineOfMyPrecious',
+	#superclass : 'BaselineOf',
+	#category : 'BaselineOfMyPrecious',
+	#package : 'BaselineOfMyPrecious'
 }
 
-{ #category : #baselines }
+{ #category : 'baselines' }
 BaselineOfMyPrecious >> baseline: spec [
 	<baseline>
 
 	spec for: #'common' do: [
 		spec 
-			baseline: 'Equals' with: [
-				spec
-					repository: 'github://bouraqadi/PharoMisc' ];
 			baseline: 'Concurrency' with: [
 				spec
 					repository: 'github://bouraqadi/PharoMisc' ];
@@ -23,7 +21,7 @@ BaselineOfMyPrecious >> baseline: spec [
 		spec 
 			repository: 'github://bouraqadi/MyPrecious';
 			package: #MyPrecious with: [
-				spec requires: #('Equals' 'Concurrency')];
+				spec requires: #('Concurrency')];
 			package: #MyPreciousTests with: [
 				spec requires: #('MyPrecious')];
 			package: #MyPreciousNet with: [
