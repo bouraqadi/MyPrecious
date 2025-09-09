@@ -13,10 +13,10 @@ BaselineOfMyPrecious >> baseline: spec [
 		spec 
 			baseline: 'Concurrency' with: [
 				spec
-					repository: 'github://bouraqadi/PharoMisc' ];
+					repository: 'github://bouraqadi/PharoMisc:pharo12/Pharo' ];
 			baseline: 'NetworkExtras' with: [
 				spec
-					repository: 'github://bouraqadi/PharoMisc' ].
+					repository: 'github://bouraqadi/PharoMisc:pharo12/Pharo' ].
 
 		spec 
 			repository: 'github://bouraqadi/MyPrecious';
