@@ -12,6 +12,10 @@ To install evaluate the following expression in a Playground
 ```Smalltalk
 Metacello new
   baseline: 'MyPrecious';
-  repository: 'github://bouraqadi/MyPrecious:pharo9';
+  repository: 'github://SmalltalkWeb/MyPrecious:pharoXX';
   load
  ```
+
+ Where XX is a pharo version number. 
+ Examples are 9 and 12 for branches pharo9 and pharo12.
+ 
