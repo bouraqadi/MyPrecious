@@ -1,21 +1,21 @@
-Extension { #name : #ProtoObject }
+Extension { #name : 'ProtoObject' }
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 ProtoObject >> isPassByCopy [
 	^false
 ]
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 ProtoObject >> isPassByReference [
 	^self isPassByCopy not
 ]
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 ProtoObject >> marshalWith: aMarshaller [
 	^aMarshaller marshalObject: self
 ]
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 ProtoObject >> unmarshalWith: aMarshaller [
 	^aMarshaller unmarshalObject: self
 ]

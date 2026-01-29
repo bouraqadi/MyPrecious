@@ -1,35 +1,37 @@
 Class {
-	#name : #MpRemoteMessage,
-	#superclass : #Object,
+	#name : 'MpRemoteMessage',
+	#superclass : 'Object',
 	#instVars : [
 		'selector',
 		'arguments',
 		'receiver'
 	],
-	#category : #'MyPrecious-Messages'
+	#category : 'MyPrecious-Messages',
+	#package : 'MyPrecious',
+	#tag : 'Messages'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessage >> arguments [
 	^ arguments
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessage >> arguments: anObject [
 	arguments := anObject
 ]
 
-{ #category : #communicating }
+{ #category : 'communicating' }
 MpRemoteMessage >> deliverBy: transporter [
 	self subclassResponsibility
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpRemoteMessage >> marshalWith: aMarshaller [
 	^aMarshaller marshalRemoteMessage: self
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 MpRemoteMessage >> printOn: aStream [
 	super printOn: aStream.
 	self selector ifNil: [ ^self ].
@@ -38,34 +40,34 @@ MpRemoteMessage >> printOn: aStream [
 		<< self selector
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessage >> receiver [
 	^ receiver
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessage >> receiver: anObject [
 	receiver := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessage >> selector [
 	^ selector
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessage >> selector: anObject [
 	selector := anObject
 ]
 
-{ #category : #performing }
+{ #category : 'performing' }
 MpRemoteMessage >> send [
 	^self receiver
 		perform: selector 
 		withArguments: arguments
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpRemoteMessage >> unmarshalWith: aMarshaller [
 	^aMarshaller unmarshalRemoteMessage: self
 ]

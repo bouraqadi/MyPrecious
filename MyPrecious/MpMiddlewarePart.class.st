@@ -1,30 +1,32 @@
 Class {
-	#name : #MpMiddlewarePart,
-	#superclass : #Object,
+	#name : 'MpMiddlewarePart',
+	#superclass : 'Object',
 	#instVars : [
 		'middleware'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 MpMiddlewarePart class >> middleware: aMiddleware [
 	^self new
 		middleware: aMiddleware;
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewarePart >> middleware [
 	^ middleware
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewarePart >> middleware: anObject [
 	middleware := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddlewarePart >> newId [
 	^UUID new asString
 ]

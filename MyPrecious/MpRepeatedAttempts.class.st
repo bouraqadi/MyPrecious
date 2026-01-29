@@ -1,61 +1,63 @@
 Class {
-	#name : #MpRepeatedAttempts,
-	#superclass : #MpReliabilityStrategy,
+	#name : 'MpRepeatedAttempts',
+	#superclass : 'MpReliabilityStrategy',
 	#instVars : [
 		'maxAttemptsCount',
 		'durationBetweenAttempts'
 	],
-	#category : #'MyPrecious-Connected'
+	#category : 'MyPrecious-Connected',
+	#package : 'MyPrecious',
+	#tag : 'Connected'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpRepeatedAttempts >> defaultDurationBetweenAttempts [
 	^100 milliSeconds
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpRepeatedAttempts >> defaultMaxAttemptsCount [
 	^5
 ]
 
-{ #category : #attempting }
+{ #category : 'attempting' }
 MpRepeatedAttempts >> durationBetweenAttempts [
 	^ durationBetweenAttempts
 ]
 
-{ #category : #attempting }
+{ #category : 'attempting' }
 MpRepeatedAttempts >> durationBetweenAttempts: anObject [
 	durationBetweenAttempts := anObject
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpRepeatedAttempts >> handleException: exception onAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	self subclassResponsibility
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpRepeatedAttempts >> handleException: exception onSynchronousMessage: remoteMessage to: targetRemoteReference [
 	self subclassResponsibility
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpRepeatedAttempts >> initialize [
 	super initialize.
 	self maxAttemptsCount: self defaultMaxAttemptsCount.
 	self durationBetweenAttempts: self defaultDurationBetweenAttempts
 ]
 
-{ #category : #attempting }
+{ #category : 'attempting' }
 MpRepeatedAttempts >> maxAttemptsCount [
 	^maxAttemptsCount
 ]
 
-{ #category : #attempting }
+{ #category : 'attempting' }
 MpRepeatedAttempts >> maxAttemptsCount: anObject [
 	maxAttemptsCount := anObject
 ]
 
-{ #category : #attempting }
+{ #category : 'attempting' }
 MpRepeatedAttempts >> repeat: actionBlock onException: exceptionClass do: exceptionHandlerBlock onFail: failBlock [
 	| capturedException |
 	self maxAttemptsCount timesRepeat: [
@@ -68,7 +70,7 @@ MpRepeatedAttempts >> repeat: actionBlock onException: exceptionClass do: except
 	failBlock cull: capturedException
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpRepeatedAttempts >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	self 
 		repeat: [ self basicSendAsynchronousMessage: remoteMessage to: targetRemoteReference ]
@@ -77,7 +79,7 @@ MpRepeatedAttempts >> sendAsynchronousMessage: remoteMessage to: targetRemoteRef
 		onFail: [ : exception | exception signal ]
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpRepeatedAttempts >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
 	self 
 		repeat: [ ^self basicSendSynchronousMessage: remoteMessage to: targetRemoteReference ]

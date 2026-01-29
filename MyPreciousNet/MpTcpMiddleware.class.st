@@ -1,17 +1,19 @@
 Class {
-	#name : #MpTcpMiddleware,
-	#superclass : #MpMiddleware,
+	#name : 'MpTcpMiddleware',
+	#superclass : 'MpMiddleware',
 	#traits : 'MpTNetMiddleware',
 	#classTraits : 'MpTNetMiddleware classTrait',
-	#category : #'MyPreciousNet-Tcp'
+	#category : 'MyPreciousNet-Tcp',
+	#package : 'MyPreciousNet',
+	#tag : 'Tcp'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTcpMiddleware >> addressClass [
 	^MpIpFullAddress 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTcpMiddleware >> transporterClass [
 	^MpTcpConnectedTransporter
 ]

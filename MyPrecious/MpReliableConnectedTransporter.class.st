@@ -1,48 +1,50 @@
 Class {
-	#name : #MpReliableConnectedTransporter,
-	#superclass : #MpConnectedTransporter,
+	#name : 'MpReliableConnectedTransporter',
+	#superclass : 'MpConnectedTransporter',
 	#instVars : [
 		'reliabilityStrategy'
 	],
-	#category : #'MyPrecious-Connected'
+	#category : 'MyPrecious-Connected',
+	#package : 'MyPrecious',
+	#tag : 'Connected'
 }
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliableConnectedTransporter >> basicSendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	super sendAsynchronousMessage: remoteMessage to: targetRemoteReference
 
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliableConnectedTransporter >> basicSendSynchronousMessage: remoteMessage to: targetRemoteReference [
 	^super sendSynchronousMessage: remoteMessage to: targetRemoteReference
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpReliableConnectedTransporter >> defaultReliabilityStrategyClass [
 	^MpRecreateConnection
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpReliableConnectedTransporter >> initialize [
 	super initialize.
 	self reliabilityStrategy: self defaultReliabilityStrategyClass new.
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpReliableConnectedTransporter >> reliabilityStrategy [
 	^ reliabilityStrategy
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpReliableConnectedTransporter >> reliabilityStrategy: aMpReliabilityStrategy [
 	reliabilityStrategy := aMpReliabilityStrategy.
 	reliabilityStrategy transporter: self
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpReliableConnectedTransporter >> removeConnectionTo: remoteReference [
 	remoteReference ifNil: [ ^self ].
 	^connectionsLock critical: [
@@ -51,7 +53,7 @@ MpReliableConnectedTransporter >> removeConnectionTo: remoteReference [
 			removeKey: remoteReference address ifAbsent: nil "ignore"]
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliableConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	^self reliabilityStrategy
 		sendAsynchronousMessage: remoteMessage 
@@ -59,7 +61,7 @@ MpReliableConnectedTransporter >> sendAsynchronousMessage: remoteMessage to: tar
 
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliableConnectedTransporter >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
 	^self reliabilityStrategy
 		sendSynchronousMessage: remoteMessage 

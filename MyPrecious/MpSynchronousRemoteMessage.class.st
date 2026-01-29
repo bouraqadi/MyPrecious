@@ -1,34 +1,36 @@
 Class {
-	#name : #MpSynchronousRemoteMessage,
-	#superclass : #MpRemoteMessage,
+	#name : 'MpSynchronousRemoteMessage',
+	#superclass : 'MpRemoteMessage',
 	#instVars : [
 		'responseId',
 		'senderAddress'
 	],
-	#category : #'MyPrecious-Messages'
+	#category : 'MyPrecious-Messages',
+	#package : 'MyPrecious',
+	#tag : 'Messages'
 }
 
-{ #category : #communicating }
+{ #category : 'communicating' }
 MpSynchronousRemoteMessage >> deliverBy: transporter [
 	transporter deliverSynchronousMessage: self
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpSynchronousRemoteMessage >> responseId [
 	^ responseId
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpSynchronousRemoteMessage >> responseId: anObject [
 	responseId := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpSynchronousRemoteMessage >> senderAddress [
 	^ senderAddress
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpSynchronousRemoteMessage >> senderAddress: anObject [
 	senderAddress := anObject
 ]

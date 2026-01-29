@@ -1,27 +1,29 @@
 Class {
-	#name : #MpReferenceConverter,
-	#superclass : #MpMiddlewarePart,
+	#name : 'MpReferenceConverter',
+	#superclass : 'MpMiddlewarePart',
 	#instVars : [
 		'exportedObjectsDict',
 		'proxiesDict',
 		'lock'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpReferenceConverter >> address [
 	^self middleware address
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> export: anObject [
 	self remoteReferenceFor: anObject ifPresent: [ : existingReference | ^existingReference ].
 	^self export: anObject id: self newId
 
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> export: anObject id: id [ 
 	| reference |
 	lock critical: [
@@ -30,7 +32,7 @@ MpReferenceConverter >> export: anObject id: id [
 	^reference
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> exportedObjectAt: aRemoteReference [
 	^lock critical: [ 
 		exportedObjectsDict
@@ -38,7 +40,7 @@ MpReferenceConverter >> exportedObjectAt: aRemoteReference [
 			ifAbsent: [ MpUnknownObject signal ]]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpReferenceConverter >> initialize [
 	super initialize.
 	exportedObjectsDict := MpIdentityValueDictionary new.
@@ -47,12 +49,12 @@ MpReferenceConverter >> initialize [
 
 ]
 
-{ #category : #proxies }
+{ #category : 'proxies' }
 MpReferenceConverter >> newProxyTo: remoteReference [
 	^ self proxyClass transporter: self transporter remoteReference: remoteReference
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> newRemoteReferenceWithId: id [
 	^self remoteReferenceClass 
 		address: self address
@@ -60,19 +62,19 @@ MpReferenceConverter >> newRemoteReferenceWithId: id [
 
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> objectAt: aRemoteReference [
 	aRemoteReference address = self address ifTrue:[ 
 		^ self exportedObjectAt: aRemoteReference ].
 	^ self proxyTo: aRemoteReference
 ]
 
-{ #category : #proxies }
+{ #category : 'proxies' }
 MpReferenceConverter >> proxyClass [
 	^self middleware proxyClass
 ]
 
-{ #category : #proxies }
+{ #category : 'proxies' }
 MpReferenceConverter >> proxyTo: remoteReference [ 
 	^lock critical: [ 
 		proxiesDict 
@@ -80,29 +82,29 @@ MpReferenceConverter >> proxyTo: remoteReference [
 			ifAbsentPut: [ self newProxyTo: remoteReference]]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpReferenceConverter >> remoteReferenceClass [
 	^self middleware remoteReferenceClass
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> remoteReferenceFor: anObject [
 	^self remoteReferenceFor: anObject ifAbsent: [ self export: anObject ]
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> remoteReferenceFor: anObject ifAbsent: aBLock [
 	^lock critical: [
 		exportedObjectsDict keyAtValue: anObject ifAbsent: aBLock]
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpReferenceConverter >> remoteReferenceFor: anObject ifPresent: aBlock [
 	^lock critical: [
 		exportedObjectsDict keyAtValue: anObject ifPresent: aBlock]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpReferenceConverter >> transporter [
 	^self middleware transporter.
 ]

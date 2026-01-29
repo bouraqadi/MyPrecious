@@ -1,9 +1,11 @@
 Trait {
-	#name : #MpTPostMan,
-	#category : #'MyPrecious-Kernel'
+	#name : 'MpTPostMan',
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTPostMan >> basicDeliverSynchronousMessage: remoteMessage [
 	^[ 
 		self normalResponseClass
@@ -17,28 +19,28 @@ MpTPostMan >> basicDeliverSynchronousMessage: remoteMessage [
 	
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTPostMan >> deliverAsynchronousMessage: remoteMessage [
 	remoteMessage send 
 
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTPostMan >> deliverSynchronousMessage: remoteMessage [
 	self explicitRequirement
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTPostMan >> exceptionResponseClass [
 	^ MpExceptionRemoteResponse
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTPostMan >> normalResponseClass [
 	^ MpNormalRemoteResponse
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTPostMan >> schedule: aValuable [
 	| task |
 	task := TKTTask valuable: aValuable.

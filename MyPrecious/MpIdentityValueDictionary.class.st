@@ -1,10 +1,12 @@
 Class {
-	#name : #MpIdentityValueDictionary,
-	#superclass : #Dictionary,
-	#category : #'MyPrecious-Kernel'
+	#name : 'MpIdentityValueDictionary',
+	#superclass : 'Dictionary',
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpIdentityValueDictionary >> keyAtValue: value ifAbsent: exceptionBlock [
 	"Answer the key that is the external name for the argument, value. If 
 	there is none, answer the result of evaluating exceptionBlock.
@@ -15,7 +17,7 @@ MpIdentityValueDictionary >> keyAtValue: value ifAbsent: exceptionBlock [
 	^exceptionBlock value
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpIdentityValueDictionary >> keyAtValue: value ifPresent: aBlock [
 	| key |
 	key := self keyAtValue: value ifAbsent: [^self].

@@ -1,6 +1,6 @@
 Class {
-	#name : #MpMiddleware,
-	#superclass : #Object,
+	#name : 'MpMiddleware',
+	#superclass : 'Object',
 	#instVars : [
 		'marshaller',
 		'referenceConverter',
@@ -11,60 +11,67 @@ Class {
 		'maxNumberOfMessageProcessingWorkers',
 		'incomingMessagesRunner'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> address [
 	^address
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> address: anAddress [
 	address := anAddress 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> addressClass [
 	self subclassResponsibility
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> defaultMaxNumberOfMessageProcessingWorkers [
 	^15
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> defaultProcessingPriority [
 	^Processor userSchedulingPriority
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> defaultReceptionPriority [
 	^Processor userBackgroundPriority
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> defaultReceptionTimeoutDuration [
 	^500 milliSeconds 
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpMiddleware >> export: anObject [ 
 	^self referenceConverter export: anObject
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpMiddleware >> export: anObject id: aString [ 
 	^self referenceConverter export: anObject id: aString 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> incomingMessagesRunner [
 	^incomingMessagesRunner
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
+MpMiddleware >> initAddress: anAddress [
+	^self
+]
+
+{ #category : 'initialization' }
 MpMiddleware >> initialize [
 	super initialize.
 	referenceConverter := self referenceConverterClass middleware: self.
@@ -79,37 +86,41 @@ MpMiddleware >> initialize [
 
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpMiddleware >> isStarted [
 	^self transporter isStarted
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpMiddleware >> isStopped [
 	^self transporter isStopped
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> marshaller [
 	^ marshaller
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> marshallerClass [
 	^MpMarshaller
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> maxNumberOfMessageProcessingWorkers: anInteger [
 	self newIncomingMessagesRunner poolMaxSize: anInteger
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> newAddress [
-	^self addressClass new
+
+	| newAddress |
+	newAddress := self addressClass new.
+	self initAddress: newAddress.
+	^newAddress
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> newIncomingMessagesRunner [
 	^self workerPoolClass new
 		priority: self processingPriority;
@@ -117,12 +128,12 @@ MpMiddleware >> newIncomingMessagesRunner [
 		yourself
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpMiddleware >> objectAt: remoteReference [
 	^self referenceConverter objectAt: remoteReference
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 MpMiddleware >> printOn: aStream [
 	super printOn: aStream.
 	aStream
@@ -131,22 +142,22 @@ MpMiddleware >> printOn: aStream [
 		<<$)
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpMiddleware >> processingPriority [
 	^processingPriority
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> proxyClass [
 	^MpProxy
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpMiddleware >> receptionPriority [
 	^self transporter receptionPriority
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpMiddleware >> receptionPriority: newReceptionPriority processingPriority: newProcessingPriority [
 	newReceptionPriority < newProcessingPriority ifFalse: [ 
 		self error: 'Processing priority should be greater than reception priority' ].
@@ -154,47 +165,47 @@ MpMiddleware >> receptionPriority: newReceptionPriority processingPriority: newP
 	processingPriority  := newProcessingPriority
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> receptionTimeoutDuration [
 	^receptionTimeoutDuration
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> receptionTimeoutDuration: anObject [
 	receptionTimeoutDuration := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> referenceConverter [
 	^ referenceConverter
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> referenceConverterClass [
 	^MpReferenceConverter
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpMiddleware >> remoteReferenceClass [
 	^MpRemoteReference
 ]
 
-{ #category : #exporting }
+{ #category : 'exporting' }
 MpMiddleware >> remoteReferenceFor: anObject [
 	^self referenceConverter remoteReferenceFor: anObject
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 MpMiddleware >> send: selector arguments: args to: targetRemoteReference [ 
 	^self transporter send: selector arguments: args to: targetRemoteReference
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 MpMiddleware >> send: selector to: remoteReference [ 
 	^self transporter send: selector to: remoteReference.
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 MpMiddleware >> sendAsync: selector arguments: args to: targetRemoteReference [
 	self transporter 
 		sendAsync: selector 
@@ -202,34 +213,34 @@ MpMiddleware >> sendAsync: selector arguments: args to: targetRemoteReference [
 		to: targetRemoteReference
 ]
 
-{ #category : #messaging }
+{ #category : 'messaging' }
 MpMiddleware >> sendAsync: selector to: targetRemoteReference [ 
 	self transporter sendAsync: selector to: targetRemoteReference.
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpMiddleware >> start [
 	self incomingMessagesRunner start.
 	self transporter start
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpMiddleware >> stop [
 	self incomingMessagesRunner stop.
 	self transporter stop
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMiddleware >> transporter [
 	^transporter
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> transporterClass [
 	^self subclassResponsibility
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpMiddleware >> workerPoolClass [
 	^TKTWorkerPool
 ]

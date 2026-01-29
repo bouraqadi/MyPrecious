@@ -1,10 +1,12 @@
 Class {
-	#name : #MpWebConnection,
-	#superclass : #MpSocketStreamConnection,
-	#category : #'MyPreciousNet-Web'
+	#name : 'MpWebConnection',
+	#superclass : 'MpSocketStreamConnection',
+	#category : 'MyPreciousNet-Web',
+	#package : 'MyPreciousNet',
+	#tag : 'Web'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpWebConnection >> basicConnect [
 	| newSocketStream |
 	self otherSideAddress ifNil: [MpConnectionFailed signal].
@@ -16,7 +18,7 @@ MpWebConnection >> basicConnect [
 
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpWebConnection >> otherSideUrl [
 	^self otherSideAddress url
 ]

@@ -1,10 +1,12 @@
 Class {
-	#name : #MpCouldNotDeliverMessageError,
-	#superclass : #MpRemoteMessagingError,
-	#category : #'MyPrecious-Kernel'
+	#name : 'MpCouldNotDeliverMessageError',
+	#superclass : 'MpRemoteMessagingError',
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpCouldNotDeliverMessageError >> defaultMessageText [
 	^'Could not deliver remote message '
 ]

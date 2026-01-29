@@ -1,6 +1,6 @@
 Class {
-	#name : #MpConnection,
-	#superclass : #Object,
+	#name : 'MpConnection',
+	#superclass : 'Object',
 	#traits : 'MpTPostMan',
 	#classTraits : 'MpTPostMan classTrait',
 	#instVars : [
@@ -8,30 +8,32 @@ Class {
 		'receptionService',
 		'otherSideAddress'
 	],
-	#category : #'MyPrecious-Connected'
+	#category : 'MyPrecious-Connected',
+	#package : 'MyPrecious',
+	#tag : 'Connected'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> acceptConnectionWith: anObject [
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> address [
 	^self transporter address
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> basicConnect [
 	self subclassResponsibility
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> basicDisconnect [
 	self subclassResponsibility
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> connect [
 	| metaMessage |
 	self basicConnect.
@@ -40,82 +42,82 @@ MpConnection >> connect [
 	self sendObject: metaMessage
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> deliverResponse: aResponse [
 	self transporter deliverResponse: aResponse
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> deliverSaveConnection: saveConnectionMetaMessage [
 	self transporter saveConnection: self toAddress: saveConnectionMetaMessage otherSideAddress.
 	self otherSideAddress: saveConnectionMetaMessage otherSideAddress.
 
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> deliverSynchronousMessage: remoteMessage [
 	| response |
 	response := self basicDeliverSynchronousMessage: remoteMessage.
 	[self sendObject: response] on: Exception do: [ : exception | self sendingResponseToMessage: remoteMessage raised: exception ]
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> disconnect [
 	[self basicDisconnect] on: Exception do: [ "ignore" ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> incomingMessagesRunner [
 	^self transporter incomingMessagesRunner.
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> isConnected [
 	^self isReceptionStarted and: [ self isSendingPossible ]
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> isReceptionStarted [
 	^receptionService notNil and: [receptionService isRunning]
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> isReceptionStopped [
 	^receptionService isStopped
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> isSendingPossible [
 	self subclassResponsibility
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpConnection >> marshalAndSerialize: anObject [
 	^self transporter marshalAndSerialize: anObject
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> materializeAndUnmarshal: bytes [
 	^self transporter materializeAndUnmarshal: bytes
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> otherSideAddress [
 	^ otherSideAddress
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> otherSideAddress: newAddress [
 	otherSideAddress := newAddress.
 	self updateServiceName
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> receiveBytes [
 	self subclassResponsibility
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> receiveObject [
 	| receivedBytes receivedObject|
 	receivedBytes := [self receiveBytes] on: Exception do: [ ^self ].
@@ -125,12 +127,12 @@ MpConnection >> receiveObject [
 	]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> receptionPriority [
 	^ self transporter receptionPriority
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> receptionServiceName [
 	^String streamContents: [: stream |
 		stream 
@@ -140,12 +142,12 @@ MpConnection >> receptionServiceName [
 			print: self otherSideAddress]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> receptionTimeoutDuration [
 	^ self transporter receptionTimeoutDuration
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnection >> reset [
 	self disconnect.
 	self stopReceiving.
@@ -153,19 +155,19 @@ MpConnection >> reset [
 	self startReceiving
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpConnection >> sendBytes: bytes [
 	self subclassResponsibility
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpConnection >> sendObject: anObject [
 	| bytes |
 	bytes := self marshalAndSerialize: anObject.
 	self sendBytes: bytes
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> sendingResponseToMessage: remoteMessage raised: exception [
 	| logString |
 	logString := String streamContents: [: stream|
@@ -184,7 +186,7 @@ MpConnection >> sendingResponseToMessage: remoteMessage raised: exception [
 	self log: logString
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> startReceiving [
 	self isReceptionStarted
 		ifTrue: [ ^ self ].
@@ -197,22 +199,22 @@ MpConnection >> startReceiving [
 		start
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpConnection >> stopReceiving [
 	receptionService stop
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> transporter [
 	^ transporter
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> transporter: anObject [
 	transporter := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnection >> updateServiceName [
 	receptionService ifNil: [ ^self ].
 	receptionService name: self receptionServiceName

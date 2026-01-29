@@ -1,6 +1,6 @@
-Extension { #name : #UndefinedObject }
+Extension { #name : 'UndefinedObject' }
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 UndefinedObject >> isPassByCopy [
 	^true
 ]

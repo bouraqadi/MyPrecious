@@ -1,15 +1,17 @@
 Class {
-	#name : #MpWebConnectedTransporter,
-	#superclass : #MpTcpConnectedTransporter,
-	#category : #'MyPreciousNet-Web'
+	#name : 'MpWebConnectedTransporter',
+	#superclass : 'MpTcpConnectedTransporter',
+	#category : 'MyPreciousNet-Web',
+	#package : 'MyPreciousNet',
+	#tag : 'Web'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpWebConnectedTransporter >> connectionClass [
 	^MpWebConnection
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebConnectedTransporter >> serverClass [
 	^MpWebServer 
 ]

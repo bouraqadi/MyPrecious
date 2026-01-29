@@ -1,6 +1,6 @@
-Extension { #name : #Boolean }
+Extension { #name : 'Boolean' }
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 Boolean >> isPassByCopy [
 	^true
 ]

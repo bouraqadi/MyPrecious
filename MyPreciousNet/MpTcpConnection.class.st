@@ -1,10 +1,12 @@
 Class {
-	#name : #MpTcpConnection,
-	#superclass : #MpSocketStreamConnection,
-	#category : #'MyPreciousNet-Tcp'
+	#name : 'MpTcpConnection',
+	#superclass : 'MpSocketStreamConnection',
+	#category : 'MyPreciousNet-Tcp',
+	#package : 'MyPreciousNet',
+	#tag : 'Tcp'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpTcpConnection >> basicConnect [
 	| newSocketStream |
 	self otherSideAddress ifNil: [ MpConnectionFailed signal ].

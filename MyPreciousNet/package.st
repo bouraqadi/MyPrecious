@@ -1,1 +1,1 @@
-Package { #name : #MyPreciousNet }
+Package { #name : 'MyPreciousNet' }

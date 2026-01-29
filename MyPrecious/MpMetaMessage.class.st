@@ -1,15 +1,17 @@
 Class {
-	#name : #MpMetaMessage,
-	#superclass : #Object,
-	#category : #'MyPrecious-Connected'
+	#name : 'MpMetaMessage',
+	#superclass : 'Object',
+	#category : 'MyPrecious-Connected',
+	#package : 'MyPrecious',
+	#tag : 'Connected'
 }
 
-{ #category : #communicating }
+{ #category : 'communicating' }
 MpMetaMessage >> deliverBy: transporter [
 	self subclassResponsibility
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 MpMetaMessage >> isPassByCopy [
 	^true
 ]

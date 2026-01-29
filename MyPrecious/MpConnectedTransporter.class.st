@@ -1,15 +1,17 @@
 Class {
-	#name : #MpConnectedTransporter,
-	#superclass : #MpTransporter,
+	#name : 'MpConnectedTransporter',
+	#superclass : 'MpTransporter',
 	#instVars : [
 		'connectionsDict',
 		'connectionService',
 		'connectionsLock'
 	],
-	#category : #'MyPrecious-Connected'
+	#category : 'MyPrecious-Connected',
+	#package : 'MyPrecious',
+	#tag : 'Connected'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> acceptConnectionWith: anObject [
 	^ self newConnection
 		acceptConnectionWith: anObject;
@@ -17,7 +19,7 @@ MpConnectedTransporter >> acceptConnectionWith: anObject [
 		yourself
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpConnectedTransporter >> basicSendMessage: remoteMessage to: targetRemoteReference [
 	[| connection |
 	connection := self connectionTo: targetRemoteReference.
@@ -28,24 +30,24 @@ MpConnectedTransporter >> basicSendMessage: remoteMessage to: targetRemoteRefere
 		do: [ :ex | self signalSendingRemoteMessage: remoteMessage raisedException: ex ]
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> connectionAt: address ifAbsent: aBlock [
 	^connectionsLock critical: [connectionsDict 
 		at: address
 		ifAbsent: aBlock]
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> connectionClass [
 	self subclassResponsibility
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> connectionService [
 	^ connectionService
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> connectionTo: targetRemoteReference [
 	targetRemoteReference ifNil: [MpConnectionFailed signal].
 	^connectionsLock critical: [
@@ -54,12 +56,12 @@ MpConnectedTransporter >> connectionTo: targetRemoteReference [
 			ifAbsentPut: [ self newConnectionTo: targetRemoteReference ]]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpConnectedTransporter >> connections [
 	^connectionsLock critical: [connectionsDict values]
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpConnectedTransporter >> initialize [
 	super initialize.
 	connectionsLock := Mutex new.
@@ -67,25 +69,25 @@ MpConnectedTransporter >> initialize [
 	connectionService := self newConnectionHandlingService
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpConnectedTransporter >> isStarted [
 	^self connectionService isStarted.
 	
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> newConnection [
 	^self connectionClass new
 		transporter: self;
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpConnectedTransporter >> newConnectionHandlingService [
 	self subclassResponsibility
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
 	^ self newConnection
 		otherSideAddress: targetRemoteReference address;
@@ -94,36 +96,36 @@ MpConnectedTransporter >> newConnectionTo: targetRemoteReference [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpConnectedTransporter >> receptionPriority [
 	^connectionService priority
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpConnectedTransporter >> receptionPriority: anInteger [
 	connectionService priority: anInteger
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpConnectedTransporter >> resetConnectionsDict [
 	connectionsLock critical: [connectionsDict := Dictionary new]
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpConnectedTransporter >> saveConnection: aConnection toAddress: address [
 	connectionsLock critical: [
 		connectionsDict at: address ifPresent: [: oldConnection | oldConnection stopReceiving].
 		connectionsDict at: address put: aConnection]
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpConnectedTransporter >> start [
 	self connectionService 
 		name: 'Connection service ', self address printString;
 		start
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpConnectedTransporter >> stop [
 	self connectionService stop.
 	self connections do: #stopReceiving.

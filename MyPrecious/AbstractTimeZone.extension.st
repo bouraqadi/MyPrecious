@@ -1,6 +1,6 @@
-Extension { #name : #AbstractTimeZone }
+Extension { #name : 'AbstractTimeZone' }
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 AbstractTimeZone >> isPassByCopy [
 	^true
 ]

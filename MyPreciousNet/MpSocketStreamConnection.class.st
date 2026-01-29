@@ -1,34 +1,36 @@
 Class {
-	#name : #MpSocketStreamConnection,
-	#superclass : #MpConnection,
+	#name : 'MpSocketStreamConnection',
+	#superclass : 'MpConnection',
 	#instVars : [
 		'socketStream'
 	],
-	#category : #'MyPreciousNet-Common'
+	#category : 'MyPreciousNet-Common',
+	#package : 'MyPreciousNet',
+	#tag : 'Common'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpSocketStreamConnection >> acceptConnectionWith: aSocketStream [
 	self socketStream: aSocketStream
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpSocketStreamConnection >> basicDisconnect [
 	self socketStream ifNil: [ ^self ].
 	self socketStream close
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpSocketStreamConnection >> byteCountArraySize [
 	^4
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpSocketStreamConnection >> isSendingPossible [
 	^self socketStream isConnected
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpSocketStreamConnection >> receiveBytes [
 	| bytesCountSize bytesCount |
 	bytesCountSize := (socketStream next: self byteCountArraySize) asInteger.
@@ -37,7 +39,7 @@ MpSocketStreamConnection >> receiveBytes [
 	
 ]
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpSocketStreamConnection >> receptionTimeoutSeconds [
 	| timeoutSeconds |
 	timeoutSeconds := self receptionTimeoutDuration asSeconds.
@@ -45,7 +47,7 @@ MpSocketStreamConnection >> receptionTimeoutSeconds [
 	^timeoutSeconds
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpSocketStreamConnection >> sendBytes: bytes [
 	| bytesCountArray bytesCountSizeArray |
 	bytesCountArray := bytes size asByteArray.
@@ -57,12 +59,12 @@ MpSocketStreamConnection >> sendBytes: bytes [
 		flush
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpSocketStreamConnection >> socketStream [
 	^ socketStream
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpSocketStreamConnection >> socketStream: aSocketStream [
 	socketStream := aSocketStream.
 	socketStream timeout: self receptionTimeoutSeconds 

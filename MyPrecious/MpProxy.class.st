@@ -1,22 +1,24 @@
 Class {
-	#name : #MpProxy,
-	#superclass : #ProtoObject,
+	#name : 'MpProxy',
+	#superclass : 'ProtoObject',
 	#instVars : [
 		'remoteReference',
 		'isDebugging',
 		'transporter'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 MpProxy class >> transporter: aTransporter remoteReference: aRemoteReference [
 	^ self new
 		transporter: aTransporter remoteReference: aRemoteReference;
 		yourself
 ]
 
-{ #category : #'class membership' }
+{ #category : 'class membership' }
 MpProxy >> basicClass [
 	| message |
 	isDebugging ifTrue: [ ^ super class ]. "Make it possible to debug + avoid infinite debuggers"
@@ -24,20 +26,20 @@ MpProxy >> basicClass [
 	^ self doesNotUnderstand: message
 ]
 
-{ #category : #'class membership' }
+{ #category : 'class membership' }
 MpProxy >> basicSpecies [
 
 	^ self basicClass 
 ]
 
-{ #category : #'class membership' }
+{ #category : 'class membership' }
 MpProxy >> class [
 
 	isDebugging ifTrue: [ ^ super class ]. "Make it possible to debug + avoid infinite debuggers"
 	^ Smalltalk at: self className ifAbsent: [ self basicClass ]
 ]
 
-{ #category : #'class membership' }
+{ #category : 'class membership' }
 MpProxy >> className [
 
 	| message |
@@ -45,7 +47,7 @@ MpProxy >> className [
 	^ (self doesNotUnderstand: message) asSymbol
 ]
 
-{ #category : #'reflective operations' }
+{ #category : 'reflective operations' }
 MpProxy >> doesNotUnderstand: aMessage [
 
 	| result |
@@ -62,13 +64,13 @@ MpProxy >> doesNotUnderstand: aMessage [
 	^ result
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 MpProxy >> initialize [
 	super initialize.
 	isDebugging := false.
 ]
 
-{ #category : #'class membership' }
+{ #category : 'class membership' }
 MpProxy >> isKindOf: aClass [
 
 	"Answer whether the class, aClass, is a superclass or class of the receiver.
@@ -77,7 +79,7 @@ MpProxy >> isKindOf: aClass [
 	^ self class == aClass or: [ self class inheritsFrom: aClass ]
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 MpProxy >> longPrintOn: aStream limitedTo: sizeLimit indent: indent [
 	| message |
 	isDebugging ifTrue: [ ^'Proxy on Remote Object' ].
@@ -85,12 +87,12 @@ MpProxy >> longPrintOn: aStream limitedTo: sizeLimit indent: indent [
 	^ self doesNotUnderstand: message		
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpProxy >> marshalWith: marshaller [
 	^marshaller marshalRemoteReference: remoteReference
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 MpProxy >> printStringLimitedTo: limit [
 	| message |
 	isDebugging ifTrue: [^'Proxy on Remote Object']. "Make it possible to debug + avoid infinite debuggers"
@@ -98,14 +100,14 @@ MpProxy >> printStringLimitedTo: limit [
 	^ self doesNotUnderstand: message	
 ]
 
-{ #category : #'class membership' }
+{ #category : 'class membership' }
 MpProxy >> species [
 
 	isDebugging ifTrue: [ ^ super class ]. "Make it possible to debug + avoid infinite debuggers"
 	^ Smalltalk at: self speciesName ifAbsent: [ self basicSpecies ]
 ]
 
-{ #category : #'class membership' }
+{ #category : 'class membership' }
 MpProxy >> speciesName [
 
 	| message species |
@@ -114,7 +116,7 @@ MpProxy >> speciesName [
 	^species name asSymbol
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 MpProxy >> stDisplayString [
 	| message |
 	isDebugging ifTrue: [ ^ 'Proxy on Remote Object' ]. "Make it possible to debug + avoid infinite debuggers"
@@ -123,13 +125,13 @@ MpProxy >> stDisplayString [
 	
 ]
 
-{ #category : #'initialize-release' }
+{ #category : 'initialize-release' }
 MpProxy >> transporter: aTransporter remoteReference: aRemoteReference [
 	remoteReference := aRemoteReference. 
 	transporter := aTransporter.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpProxy >> yourself [
 	^self
 ]

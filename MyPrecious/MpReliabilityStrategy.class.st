@@ -1,43 +1,45 @@
 Class {
-	#name : #MpReliabilityStrategy,
-	#superclass : #Object,
+	#name : 'MpReliabilityStrategy',
+	#superclass : 'Object',
 	#instVars : [
 		'transporter'
 	],
-	#category : #'MyPrecious-Connected'
+	#category : 'MyPrecious-Connected',
+	#package : 'MyPrecious',
+	#tag : 'Connected'
 }
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliabilityStrategy >> basicSendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	^ self transporter
 		basicSendAsynchronousMessage: remoteMessage
 		to: targetRemoteReference
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliabilityStrategy >> basicSendSynchronousMessage: remoteMessage to: targetRemoteReference [
 	^ self transporter
 		basicSendSynchronousMessage: remoteMessage
 		to: targetRemoteReference
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliabilityStrategy >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	self subclassResponsibility
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpReliabilityStrategy >> sendSynchronousMessage: remoteMessage to: targetRemoteReference [
 	self subclassResponsibility
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpReliabilityStrategy >> transporter [
 	^ transporter
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpReliabilityStrategy >> transporter: anObject [
 	transporter := anObject
 ]

@@ -1,15 +1,17 @@
 Class {
-	#name : #MpMarshaller,
-	#superclass : #MpMiddlewarePart,
-	#category : #'MyPrecious-Kernel'
+	#name : 'MpMarshaller',
+	#superclass : 'MpMiddlewarePart',
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> marshal: anObject [ 
 	^anObject marshalWith: self
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> marshalNormalResponse: response [ 
 	| marshalledResult |
 	marshalledResult := self marshal: response result.
@@ -18,13 +20,13 @@ MpMarshaller >> marshalNormalResponse: response [
 		yourself
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> marshalObject: anObject [ 
 	anObject isPassByCopy ifTrue: [ ^anObject ].
 	^self remoteReferenceFor: anObject
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> marshalRemoteMessage: message [ 
 	|marshalledArgs marshalledReceiver |
 	marshalledReceiver := self marshal: message receiver.
@@ -35,12 +37,12 @@ MpMarshaller >> marshalRemoteMessage: message [
 		yourself.
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> marshalRemoteReference: aRemoteReference [
 	^aRemoteReference
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> marshallExceptionResponse: aMmExceptionResponse [ 
 	| marshalledException |
 	marshalledException := MpRemoteExceptionWrapper on: aMmExceptionResponse exception.
@@ -49,27 +51,27 @@ MpMarshaller >> marshallExceptionResponse: aMmExceptionResponse [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMarshaller >> objectAt: aRemoteReference [
 	^self referenceConverter objectAt: aRemoteReference
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMarshaller >> referenceConverter [
 	^self middleware referenceConverter
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpMarshaller >> remoteReferenceFor: anObject [ 
 	^self referenceConverter remoteReferenceFor: anObject
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> unmarshal: anObject [ 
 	^anObject unmarshalWith: self
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> unmarshalNormalResponse: response [ 
 	| unmarshalledResult |
 	unmarshalledResult := self unmarshal: response result.
@@ -78,12 +80,12 @@ MpMarshaller >> unmarshalNormalResponse: response [
 		yourself
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> unmarshalObject: anObject [ 
 	^anObject
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> unmarshalRemoteMessage: message [ 
 	|unmarshalledArgs unmarshalledReceiver |
 	unmarshalledReceiver := self unmarshal: message receiver.
@@ -94,7 +96,7 @@ MpMarshaller >> unmarshalRemoteMessage: message [
 		yourself.
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpMarshaller >> unmarshalRemoteReference: aRemoteReference [
 	^self objectAt: aRemoteReference
 ]

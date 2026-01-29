@@ -1,45 +1,47 @@
 Class {
-	#name : #MpWebServer,
-	#superclass : #ZnSingleThreadedServer,
+	#name : 'MpWebServer',
+	#superclass : 'ZnSingleThreadedServer',
 	#instVars : [
 		'communicationHandlingBlock',
 		'communicationHandlingPriority',
 		'service',
 		'serverName'
 	],
-	#category : #'MyPreciousNet-Web'
+	#category : 'MyPreciousNet-Web',
+	#package : 'MyPreciousNet',
+	#tag : 'Web'
 }
 
-{ #category : #'request handling' }
+{ #category : 'request handling' }
 MpWebServer >> augmentResponse: response forRequest: request [
 	super augmentResponse: response forRequest: request.
 	response setKeepAliveFor: request.
 	response setConnectionCloseFor: request
 ]
 
-{ #category : #'request handling' }
+{ #category : 'request handling' }
 MpWebServer >> authenticateAndDelegateRequest: request [
 	^ self
 		authenticateRequest: request
 		do: [ self handleRequest: request ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpWebServer >> communicationHandlingPriority [
 	^ communicationHandlingPriority
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebServer >> communicationHandlingPriority: anObject [
 	communicationHandlingPriority := anObject
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebServer >> defaultPriority [
 	^Processor userBackgroundPriority
 ]
 
-{ #category : #'request handling' }
+{ #category : 'request handling' }
 MpWebServer >> executeOneRequestResponseOn: stream [
 	| request response timing|
 	timing := ZnServerTransactionTiming new.
@@ -53,51 +55,51 @@ MpWebServer >> executeOneRequestResponseOn: stream [
 
 ]
 
-{ #category : #'request handling' }
+{ #category : 'request handling' }
 MpWebServer >> handleRequest: request [
 	^ZnResponse ok: (ZnEntity text: 'Connection established').
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebServer >> initialize [
 	super initialize.
 	service := CcService repeat: [ self listenLoop ] ensure: [self releaseServerSocket].
 	self communicationHandlingPriority: self defaultPriority.
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 MpWebServer >> isRunning [
 	^self isStarted
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 MpWebServer >> isStarted [
 	^service isStarted
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpWebServer >> name [
 	^serverName ifNil: [ self serverProcessName ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpWebServer >> name: aString [
 	serverName := aString.
 	service ifNil: [ ^self ].
 	service name: serverName
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpWebServer >> priority [
 	^service priority
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpWebServer >> priority: anObject [
 	service priority: anObject
 ]
 
-{ #category : #'request handling' }
+{ #category : 'request handling' }
 MpWebServer >> serveConnectionOn: listeningSocket [
 	| communicationStream communicationSocket |
 	communicationSocket := listeningSocket waitForAcceptFor: self acceptWaitTimeout.
@@ -108,7 +110,7 @@ MpWebServer >> serveConnectionOn: listeningSocket [
 
 ]
 
-{ #category : #public }
+{ #category : 'public' }
 MpWebServer >> start [
 	service 
 		name: self name;
@@ -116,12 +118,12 @@ MpWebServer >> start [
 
 ]
 
-{ #category : #public }
+{ #category : 'public' }
 MpWebServer >> stop [
 	service stop
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebServer >> withCommunicationStreamDo: aBlock [
 	communicationHandlingBlock := aBlock
 ]

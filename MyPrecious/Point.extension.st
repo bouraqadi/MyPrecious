@@ -1,6 +1,6 @@
-Extension { #name : #Point }
+Extension { #name : 'Point' }
 
-{ #category : #'*MyPrecious' }
+{ #category : '*MyPrecious' }
 Point >> isPassByCopy [
 	^true 
 ]

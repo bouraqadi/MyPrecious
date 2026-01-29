@@ -1,25 +1,27 @@
 Class {
-	#name : #MpTransporter,
-	#superclass : #MpMiddlewarePart,
+	#name : 'MpTransporter',
+	#superclass : 'MpMiddlewarePart',
 	#instVars : [
 		'promisesDict',
 		'promisesLock',
 		'incomingMessagesRunner'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpTransporter >> address [
 	^self middleware address
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> basicSendMessage: remoteMessage to: targetRemoteReference [
 	self subclassResponsibility
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTransporter >> deliverResponse: remoteResponse [
 	| promise |
 	promise := promisesLock critical: [
@@ -28,12 +30,12 @@ MpTransporter >> deliverResponse: remoteResponse [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpTransporter >> incomingMessagesRunner [
 	^self middleware incomingMessagesRunner
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTransporter >> initialize [
 	super initialize.
 	promisesDict := Dictionary new.
@@ -41,48 +43,48 @@ MpTransporter >> initialize [
 
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpTransporter >> isStarted [
 	^self subclassResponsibility
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpTransporter >> isStopped [
 	^self isStarted not
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> marshal: anObject [ 
 	^self marshaller marshal: anObject 
 
 
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> marshalAndSerialize: anObject [
 	| marshalledObject |
 	marshalledObject := self marshal: anObject.
 	^ self serialize: marshalledObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpTransporter >> marshaller [
 	^self middleware marshaller
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTransporter >> materializeAndUnmarshal: bytes [
 	| object |
 	object := self materializeFrom: bytes.
 	^self unmarshal: object
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTransporter >> materializeFrom: bytes [ 
 	^FLMaterializer materializeFromByteArray: bytes
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> newPromiseAt: id [
 	| newPromise |
 	newPromise := self promiseClass new.
@@ -90,27 +92,27 @@ MpTransporter >> newPromiseAt: id [
 	^newPromise
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> promiseClass [
 	^ CcPromise
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpTransporter >> receptionPriority [
 	^self subclassResponsibility
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTransporter >> receptionPriority: anInteger [
 	self subclassResponsibility
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> receptionTimeoutDuration [
 	^self middleware receptionTimeoutDuration
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> send: selector arguments: args to: targetRemoteReference [ 
 	|remoteMessage responseId|
 	responseId := self newId.
@@ -124,12 +126,12 @@ MpTransporter >> send: selector arguments: args to: targetRemoteReference [
 	^self sendSynchronousMessage: remoteMessage to: targetRemoteReference
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> send: selector to: remoteReference [ 
 	^self send: selector arguments: #() to: remoteReference
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> sendAsync: selector arguments: args to: targetRemoteReference [
 	|remoteMessage|
 	remoteMessage := MpAsynchronousRemoteMessage new
@@ -140,18 +142,18 @@ MpTransporter >> sendAsync: selector arguments: args to: targetRemoteReference [
 	self sendAsynchronousMessage: remoteMessage to: targetRemoteReference
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> sendAsync: selector to: targetRemoteReference [ 
 	self sendAsync: selector arguments: #() to: targetRemoteReference 
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> sendAsynchronousMessage: remoteMessage to: targetRemoteReference [
 	self basicSendMessage: remoteMessage to: targetRemoteReference
 
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	| promise response |
 	promise := self newPromiseAt: remoteMessage responseId.
@@ -163,12 +165,12 @@ MpTransporter >> sendSynchronousMessage: remoteMessage to: targetReference [
 	^ response contents
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> serialize: anObject [ 
 	^FLSerializer serializeToByteArray: anObject
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> signalReceivingResponseOfRemoteMessage: remoteMessage raisedException: exception [
 	MpRemoteMessageResultTimeout new
 		message: remoteMessage;
@@ -176,7 +178,7 @@ MpTransporter >> signalReceivingResponseOfRemoteMessage: remoteMessage raisedExc
 		signal
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> signalSendingRemoteMessage: remoteMessage raisedException: ex [
 	^ MpCouldNotDeliverMessageError new
 		message: remoteMessage;
@@ -184,22 +186,22 @@ MpTransporter >> signalSendingRemoteMessage: remoteMessage raisedException: ex [
 		signal
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpTransporter >> start [
 	self subclassResponsibility
 ]
 
-{ #category : #activity }
+{ #category : 'activity' }
 MpTransporter >> stop [
 	self subclassResponsibility
 ]
 
-{ #category : #receiving }
+{ #category : 'receiving' }
 MpTransporter >> unmarshal: anObject [ 
 	^self marshaller unmarshal: anObject.
 ]
 
-{ #category : #sending }
+{ #category : 'sending' }
 MpTransporter >> waitResponseFor: remoteMessage onPromise: promise [
 	[ promise wait: self receptionTimeoutDuration ]
 		on: CcPromiseTimeout

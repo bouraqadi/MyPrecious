@@ -1,33 +1,35 @@
 Class {
-	#name : #MpRemoteResponse,
-	#superclass : #Object,
+	#name : 'MpRemoteResponse',
+	#superclass : 'Object',
 	#instVars : [
 		'id'
 	],
-	#category : #'MyPrecious-Messages'
+	#category : 'MyPrecious-Messages',
+	#package : 'MyPrecious',
+	#tag : 'Messages'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteResponse >> contents [
 	self subclassResponsibility
 ]
 
-{ #category : #communicating }
+{ #category : 'communicating' }
 MpRemoteResponse >> deliverBy: transporter [
 	^transporter deliverResponse: self 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteResponse >> id [
 	^ id
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteResponse >> id: anObject [
 	id := anObject
 ]
 
-{ #category : #acting }
+{ #category : 'acting' }
 MpRemoteResponse >> trigger: aPromise [
 	self subclassResponsibility
 ]

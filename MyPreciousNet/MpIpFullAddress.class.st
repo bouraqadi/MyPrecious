@@ -1,16 +1,18 @@
 Class {
-	#name : #MpIpFullAddress,
-	#superclass : #Object,
+	#name : 'MpIpFullAddress',
+	#superclass : 'Object',
 	#traits : 'TEquality',
 	#classTraits : 'TEquality classTrait',
 	#instVars : [
 		'ip',
 		'port'
 	],
-	#category : #'MyPreciousNet-Common'
+	#category : 'MyPreciousNet-Common',
+	#package : 'MyPreciousNet',
+	#tag : 'Common'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 MpIpFullAddress class >> ip: ip port: port [
 	^self new
 		ip: ip;
@@ -18,27 +20,27 @@ MpIpFullAddress class >> ip: ip port: port [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpIpFullAddress >> ip [
 	^ ip
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpIpFullAddress >> ip: anObject [
 	ip := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpIpFullAddress >> port [
 	^ port
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpIpFullAddress >> port: anObject [
 	port := anObject
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 MpIpFullAddress >> printOn: aStream [
 	aStream
 		<< 'IP: ';

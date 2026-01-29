@@ -1,33 +1,35 @@
 Class {
-	#name : #MpWebMiddleware,
-	#superclass : #MpMiddleware,
+	#name : 'MpWebMiddleware',
+	#superclass : 'MpMiddleware',
 	#traits : 'MpTNetMiddleware',
 	#classTraits : 'MpTNetMiddleware classTrait',
-	#category : #'MyPreciousNet-Web'
+	#category : 'MyPreciousNet-Web',
+	#package : 'MyPreciousNet',
+	#tag : 'Web'
 }
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebMiddleware >> addressClass [
 	^MpWebFullAddress  
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebMiddleware >> defaultProtocol [
 	^MpWebFullAddress http
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebMiddleware >> initialize [
 	super initialize.
 	self protocol: self defaultProtocol
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebMiddleware >> protocol: webProtocol [
 	^self address protocol: webProtocol
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpWebMiddleware >> transporterClass [
 	^MpWebConnectedTransporter
 ]

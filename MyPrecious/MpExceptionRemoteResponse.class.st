@@ -1,13 +1,15 @@
 Class {
-	#name : #MpExceptionRemoteResponse,
-	#superclass : #MpRemoteResponse,
+	#name : 'MpExceptionRemoteResponse',
+	#superclass : 'MpRemoteResponse',
 	#instVars : [
 		'exception'
 	],
-	#category : #'MyPrecious-Messages'
+	#category : 'MyPrecious-Messages',
+	#package : 'MyPrecious',
+	#tag : 'Messages'
 }
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 MpExceptionRemoteResponse class >> id: id exception: exception [
 	^self new
 		id: id;
@@ -15,27 +17,27 @@ MpExceptionRemoteResponse class >> id: id exception: exception [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpExceptionRemoteResponse >> contents [
 	self exception signal
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpExceptionRemoteResponse >> exception [
 	^ exception
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpExceptionRemoteResponse >> exception: anObject [
 	exception := anObject
 ]
 
-{ #category : #marshalling }
+{ #category : 'marshalling' }
 MpExceptionRemoteResponse >> marshalWith: marshaller [
 	^marshaller marshallExceptionResponse: self
 ]
 
-{ #category : #acting }
+{ #category : 'acting' }
 MpExceptionRemoteResponse >> trigger: aPromise [	
 	[aPromise rejectWith: self] on: CcPromiseAlreadySettledError do: [nil]
 ]

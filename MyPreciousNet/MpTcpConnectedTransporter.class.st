@@ -1,15 +1,17 @@
 Class {
-	#name : #MpTcpConnectedTransporter,
-	#superclass : #MpReliableConnectedTransporter,
-	#category : #'MyPreciousNet-Tcp'
+	#name : 'MpTcpConnectedTransporter',
+	#superclass : 'MpReliableConnectedTransporter',
+	#category : 'MyPreciousNet-Tcp',
+	#package : 'MyPreciousNet',
+	#tag : 'Tcp'
 }
 
-{ #category : #connecting }
+{ #category : 'connecting' }
 MpTcpConnectedTransporter >> connectionClass [
 	^MpTcpConnection
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTcpConnectedTransporter >> newConnectionHandlingService [
 	^self serverClass new
 		withCommunicationStreamDo: [ : stream | 
@@ -17,13 +19,13 @@ MpTcpConnectedTransporter >> newConnectionHandlingService [
 		yourself
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpTcpConnectedTransporter >> port: integer [
 	self connectionService port: integer.
 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 MpTcpConnectedTransporter >> serverClass [
 	^NeTcpServer 
 ]

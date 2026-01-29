@@ -1,19 +1,21 @@
 Class {
-	#name : #MpRemoteMessagingError,
-	#superclass : #Error,
+	#name : 'MpRemoteMessagingError',
+	#superclass : 'Error',
 	#instVars : [
 		'message',
 		'originalException'
 	],
-	#category : #'MyPrecious-Kernel'
+	#category : 'MyPrecious-Kernel',
+	#package : 'MyPrecious',
+	#tag : 'Kernel'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessagingError >> defaultMessageText [
 	self subclassResponsibility
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessagingError >> description [
 	^String streamContents: [: stream |
 		stream << super description.
@@ -23,33 +25,33 @@ MpRemoteMessagingError >> description [
 			<< self originalException description]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessagingError >> message [
 	^ message
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessagingError >> message: anObject [
 	message := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessagingError >> messageText [
 	^super messageText ifEmpty: [ 
 		self defaultMessageText ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessagingError >> originalException [
 	^ originalException
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 MpRemoteMessagingError >> originalException: anObject [
 	originalException := anObject
 ]
 
-{ #category : #printing }
+{ #category : 'printing' }
 MpRemoteMessagingError >> printSelectorOn: stream [
 	self message ifNil: [ ^self ].
 	stream
